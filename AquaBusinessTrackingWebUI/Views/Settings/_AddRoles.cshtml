@@ -1,0 +1,208 @@
+﻿@using DTOLayer.Dtos.RolePermission
+@model ModalViewModel<CreateRoleDto>
+
+
+<style>
+    .perm-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .perm-item {
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .perm-item input {
+            display: none;
+        }
+
+        .perm-item:has(input:checked) {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+    .modal-scroll {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+</style>
+
+<div class="modal fade" id="roleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/Settings/AddRoles" method="post">
+
+                <div class="modal-body">
+                    <div class="modal-body modal-scroll">
+                    <!-- ROLE INFO -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Rol Adı</label>
+                            <input asp-for="Entity.Name" class="form-control form-control-sm" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Açıklama</label>
+                            <input asp-for="Entity.RoleName" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <hr />
+                   
+
+                      
+
+                    <label class="fw-semibold mb-2">Yetkiler</label>
+
+                    @{
+                        var permissions = (List<PermissionDto>)ViewBag.Permissions;
+
+                        var modules = permissions
+                        .GroupBy(x => x.Module);
+                    }
+
+                    <div class="accordion" id="permAccordion">
+
+                        @foreach (var module in modules)
+                        {
+                            var modKey = module.Key.Replace(" ", "_");
+
+                            var controllers = module.GroupBy(x => x.Controller);
+
+                            <div class="accordion-item mb-2 border rounded">
+
+                                <!-- MODULE HEADER -->
+                                <div class="accordion-header d-flex align-items-center px-3 py-2">
+
+                                    <input type="checkbox"
+                                           class="form-check-input me-2 module-check"
+                                           data-module="@modKey" />
+
+                                    <button class="accordion-button collapsed bg-transparent shadow-none p-0"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#m_@modKey">
+                                        <span class="fw-semibold">@module.Key</span>
+                                        <span class="badge bg-secondary ms-2">@module.Count()</span>
+                                    </button>
+
+                                </div>
+
+                                <!-- MODULE BODY -->
+                                <div id="m_@modKey"
+                                     class="accordion-collapse collapse"
+                                     data-bs-parent="#permAccordion">
+
+                                    <div class="accordion-body pt-2">
+
+                                        @foreach (var controller in controllers)
+                                        {
+                                            var ctrlKey = controller.Key.Replace(" ", "_");
+
+                                            <div class="mb-3 border rounded p-2">
+
+                                                <!-- CONTROLLER HEADER -->
+                                                <div class="d-flex align-items-center mb-2">
+
+                                                    <input type="checkbox"
+                                                           class="form-check-input me-2 controller-check"
+                                                           data-module="@modKey"
+                                                           data-controller="@ctrlKey" />
+
+                                                    <span class="fw-semibold small text-secondary">
+                                                        @controller.Key
+                                                    </span>
+
+                                                </div>
+
+                                                <!-- PERMISSIONS -->
+                                                <div class="perm-grid">
+
+                                                    @foreach (var perm in controller)
+                                                    {
+                                                        <label class="perm-item">
+                                                            <input type="checkbox"
+                                                                   class="perm-check"
+                                                                   data-module="@modKey"
+                                                                   data-controller="@ctrlKey"
+                                                                   name="Entity.PermissionIds"
+                                                                   value="@perm.RecId" />
+                                                            @perm.Action
+                                                        </label>
+                                                    }
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Kaydet
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+        // MODULE -> ALL
+        document.querySelectorAll(".module-check").forEach(cb => {
+            cb.addEventListener("change", function () {
+
+                const mod = this.dataset.module;
+
+                document.querySelectorAll(`[data-module="${mod}"].perm-check, [data-module="${mod}"].controller-check`)
+                    .forEach(x => x.checked = this.checked);
+            });
+        });
+
+        // CONTROLLER -> PERMISSIONS
+        document.querySelectorAll(".controller-check").forEach(cb => {
+            cb.addEventListener("change", function () {
+
+                const mod = this.dataset.module;
+                const ctrl = this.dataset.controller;
+
+                document.querySelectorAll(`.perm-check[data-module="${mod}"][data-controller="${ctrl}"]`)
+                    .forEach(x => x.checked = this.checked);
+            });
+        });
+
+    });
+</script>

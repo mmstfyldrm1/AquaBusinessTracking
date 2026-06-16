@@ -1,0 +1,109 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.ShiftDtos
+
+@model ModalViewModel<ShiftDto>
+
+<div class="modal fade" id="shiftModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <form method="post" action="/Shift/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Vardiya Adı
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.ShiftName"
+                                   class="form-control"
+                                   placeholder="Örn: Sabah Vardiyası" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Vardiya Kodu
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.ShiftCode"
+                                   class="form-control"
+                                   placeholder="Örn: SBH" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Başlangıç Saati
+                            </label>
+
+                            <input type="time"
+                                   asp-for="Entity.ShiftStartHours"
+                                   value="@(Model.Entity.ShiftStartHours?.ToString(@"hh\:mm"))"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Bitiş Saati
+                            </label>
+
+                            <input type="time"
+                                   asp-for="Entity.ShiftEndHours"
+                                   value="@(Model.Entity.ShiftEndHours?.ToString(@"hh\:mm"))"
+                                   class="form-control" />
+                        </div>
+
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

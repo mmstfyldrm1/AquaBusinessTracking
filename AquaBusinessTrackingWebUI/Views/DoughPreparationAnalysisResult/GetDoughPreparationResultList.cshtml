@@ -1,0 +1,228 @@
+﻿@using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationDetailDtos
+
+@{
+    ViewData["Title"] = "GetDoughPreparationResultList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+@model List<DoughPreparationAnalysisResultsDto>
+
+<h6 class="mb-0 text-uppercase">Laboratuvar Analiz Takip Sistemi</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table id="example2" class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Numune Alım Süresi</th>
+                        <th>Sonuç Teslim Süresi</th>
+                        <th>Numune Lokasyonu</th>
+                        <th>KM</th>
+                        <th>SR</th>
+                        <th>Kuru Madde</th>
+                        <th>pH</th>
+                        <th>İletkenlik</th>
+                        <th>CaCO3</th>
+                        <th>Dolgu</th>
+                        <th>Bulanıklık</th>
+                        <th>Açıklama</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme Tarihi</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int counter = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@counter</td>
+
+                            <td>
+                                @item.SampleCollectionTime dk
+                            </td>
+
+                            <td>
+                                @item.SampleResultDeliveryTime dk
+                            </td>
+
+                            <td>
+                                @item.SampleTakenLocation
+                            </td>
+
+                            <td>
+                                @item.KM
+                            </td>
+
+                            <td>
+                                @item.SR
+                            </td>
+
+                            <td>
+                                @item.DryMatter
+                            </td>
+
+                            <td>
+                                @item.pH
+                            </td>
+
+                            <td>
+                                @item.Conductivity
+                            </td>
+
+                            <td>
+                                @item.CaCO3
+                            </td>
+
+                            <td>
+                                @item.Filling
+                            </td>
+
+                            <td>
+                                @item.Blur
+                            </td>
+
+                            <td>
+                                @item.Explanation
+                            </td>
+
+                            <td>
+                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+                            <td>
+                                @item.CreatedByName
+                            </td>
+                            <td>
+                                @item.ShiftName
+                            </td>
+                            <td>
+                                @(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
+                                        onclick="openModal(@item.RecId)">
+
+                                    <i class="bi bi-pencil-square fs-6"></i>
+
+                                </button>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <form method="post"
+                                      asp-action="Delete"
+                                      asp-route-id="@item.RecId"
+                                      style="display:inline;">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Kayıt silinsin mi?');">
+
+                                        <ion-icon name="trash-outline"></ion-icon>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        counter++;
+                    }
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Numune Alım Süresi</th>
+                        <th>Sonuç Teslim Süresi</th>
+                        <th>Numune Lokasyonu</th>
+                        <th>KM</th>
+                        <th>SR</th>
+                        <th>Kuru Madde</th>
+                        <th>pH</th>
+                        <th>İletkenlik</th>
+                        <th>CaCO3</th>
+                        <th>Dolgu</th>
+                        <th>Bulanıklık</th>
+                        <th>Açıklama</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme Tarihi</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+
+        </div>
+
+        <button class="btn btn-primary shadow-sm mt-3"
+                onclick="openModal()">
+
+            <ion-icon name="add-circle-outline"></ion-icon>
+
+            Yeni Analiz Kaydı Ekle
+
+        </button>
+
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/DoughPreparationAnalysisResult/Edit/${id}`
+            : `/DoughPreparationAnalysisResult/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('doughPreparationResultModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/DoughPreparationAnalysisResult/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>

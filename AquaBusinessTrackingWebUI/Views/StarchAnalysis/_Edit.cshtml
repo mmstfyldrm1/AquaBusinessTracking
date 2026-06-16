@@ -1,0 +1,235 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.StarchAnalysis.StarchAnalysisHeadingDetail
+@model ModalViewModel<StarchAnalysisFormDto>
+
+<div class="modal fade" id="starchAnalysisModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/StarchAnalysis/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <input type="hidden" asp-for="Entity.StarchAnalysisDetailForm.RecId" />
+
+                    <!-- Genel Bilgiler -->
+                    <h6 class="fw-bold text-muted mb-3">Genel Bilgiler</h6>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Tarih</label>
+                            <input type="date"
+                                   asp-for="Entity.StarchAnalysisDetailForm.Date"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Saat</label>
+                            <input type="time"
+                                   asp-for="Entity.StarchAnalysisDetailForm.Time"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Makine Hızı</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.MachineSpeed"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Üretim Tipi</label>
+                            <input type="text"
+                                   asp-for="Entity.StarchAnalysisDetailForm.ProductionType"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Gramaj</label>
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.StarchAnalysisDetailForm.Grammage"
+                                       class="form-control" />
+                                <span class="input-group-text">g/m²</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Tur Sayısı</label>
+                            <input type="number"
+                                   asp-for="Entity.StarchAnalysisDetailForm.TurnCount"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Vardiya</label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <!-- Analiz Değerleri -->
+                    <h6 class="fw-bold text-muted mb-3">Analiz Değerleri</h6>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-3">
+                            <label class="form-label">FAU</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.Fau"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">NTU</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.Ntu"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Kuru Madde (Fırın)</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.DryMatterOven"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Kuru Madde (Refraktometre)</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.DryMatterRefractometer"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Sıcaklık</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.StarchAnalysisDetailForm.Temperature1"
+                                       class="form-control" />
+                                <span class="input-group-text">°C</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Viskozite (cP)</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StarchAnalysisDetailForm.ViscosityCp1"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Viskozite (Ford)</label>
+                            <input type="number"
+                                   asp-for="Entity.StarchAnalysisDetailForm.ViscosityFord1"
+                                   class="form-control" />
+                        </div>
+
+
+
+                    </div>
+
+                    <hr />
+
+                    <!-- Numune Bilgileri -->
+                    <h6 class="fw-bold text-muted mb-3">Numune Bilgileri</h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Numune Alım Süresi</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       asp-for="Entity.SampleCollectionTime"
+                                       class="form-control" />
+                                <span class="input-group-text">dk</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Sonuç Teslim Süresi</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       asp-for="Entity.SampleResultDeliveryTime"
+                                       class="form-control" />
+                                <span class="input-group-text">dk</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Lokasyon</label>
+
+                            <input type="text"
+                                   asp-for="Entity.Location"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Açıklama</label>
+
+                            <input type="text"
+                                   asp-for="Entity.Explanation"
+                                   class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.InUse" class="form-select">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

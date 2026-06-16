@@ -1,0 +1,368 @@
+﻿@using DTOLayer.Dtos.UserDtos
+@model ModalViewModel<UpdateUserDto>
+
+
+<style>
+    .ccb-wrap {
+        position: relative;
+        width: 100%;
+        user-select: none;
+    }
+
+    .ccb-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 12px;
+        cursor: pointer;
+        min-height: 38px;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+    }
+
+        .ccb-trigger:hover {
+            border-color: #adb5bd;
+        }
+
+        .ccb-trigger.open {
+            border-color: #534AB7;
+            box-shadow: 0 0 0 3px #EEEDFE;
+        }
+
+    .ccb-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        flex: 1;
+    }
+
+    .ccb-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #EEEDFE;
+        color: #3C3489;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    .ccb-pill-x {
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        color: #534AB7;
+    }
+
+    .ccb-placeholder {
+        font-size: 13px;
+        color: #adb5bd;
+    }
+
+    .ccb-chevron {
+        font-size: 14px;
+        color: #adb5bd;
+        transition: transform .2s;
+    }
+
+        .ccb-chevron.open {
+            transform: rotate(180deg);
+        }
+
+    .ccb-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 1055;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .ccb-dropdown.open {
+            display: block;
+        }
+
+    .ccb-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .ccb-search input {
+            border: none;
+            outline: none;
+            font-size: 13px;
+            width: 100%;
+        }
+
+    .ccb-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .ccb-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: background .1s;
+    }
+
+        .ccb-item:hover {
+            background: #f8f9fa;
+        }
+
+        .ccb-item.checked {
+            background: #EEEDFE;
+        }
+
+            .ccb-item.checked .ccb-label {
+                color: #3C3489;
+                font-weight: 500;
+            }
+
+    .ccb-check {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        flex-shrink: 0;
+        border: 1.5px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+    }
+
+    .ccb-item.checked .ccb-check {
+        background: #534AB7;
+        border-color: #534AB7;
+    }
+
+    .ccb-footer {
+        padding: 6px 12px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 12px;
+        color: #adb5bd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ccb-clear {
+        cursor: pointer;
+        color: #534AB7;
+    }
+
+        .ccb-clear:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/Settings/Edit" method="post" id="userForm" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="IsEdit" />
+                <input type="hidden" asp-for="Entity.Id" />
+                <input type="hidden" asp-for="Entity.CoverImgUrl" />
+
+                <div class="modal-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Entity.Name" class="form-label">Ad <span class="text-danger">*</span></label>
+                            <input asp-for="Entity.Name" class="form-control" placeholder="Ad giriniz" />
+                            <span asp-validation-for="Entity.Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Entity.SurName" class="form-label">Soyad</label>
+                            <input asp-for="Entity.SurName" class="form-control" placeholder="Soyad giriniz" />
+                            <span asp-validation-for="Entity.SurName" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Entity.UserName" class="form-label">Kullanıcı Adı</label>
+                            <input asp-for="Entity.UserName" class="form-control" placeholder="kullanici_adi" />
+                            <span asp-validation-for="Entity.UserName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Entity.DepartmentId" class="form-label">Departman <span class="text-danger">*</span></label>
+                            <select asp-for="Entity.DepartmentId"
+                                    asp-items="ViewBag.Departments"
+                                    class="form-select">
+                                <option value="">-- Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="Entity.DepartmentId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Entity.Email" class="form-label">E-posta <span class="text-danger">*</span></label>
+                            <input asp-for="Entity.Email" type="email" class="form-control" placeholder="ornek@mail.com" />
+                            <span asp-validation-for="Entity.Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Entity.PhoneNumber" class="form-label">Telefon</label>
+                            <input asp-for="Entity.PhoneNumber" type="tel" class="form-control" placeholder="05xx xxx xx xx" />
+                            <span asp-validation-for="Entity.PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Roller</label>
+
+                        <div class="dropdown">
+
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                                    type="button"
+                                    id="rolesDropdown"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    aria-expanded="false">
+                                <span id="rolesLabel">Rol seçiniz...</span>
+                            </button>
+
+                            <ul class="dropdown-menu w-100 p-2" aria-labelledby="rolesDropdown">
+                                @foreach (var role in (IEnumerable<SelectListItem>)ViewBag.Roles)
+                                {
+                                    <li>
+                                        <label class="dropdown-item d-flex align-items-center gap-2 rounded cursor-pointer">
+                                            <input type="checkbox"
+                                                   name="Entity.RoleName"
+                                                   value="@role.Value"
+                                                   class="form-check-input role-check mt-0"
+                                                   @(Model.Entity.RoleName != null && Model.Entity.RoleName.Contains(role.Value) ? "checked" : "") />
+                                            @role.Text
+                                        </label>
+                                    </li>
+                                }
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Profil Fotoğrafı
+                        </label>
+
+                        <div class="card border-0 shadow-sm rounded-4">
+
+                            <div class="card-body text-center p-4">
+
+                                <div class="position-relative d-inline-block mb-3">
+
+                                    <img id="profilePreview"
+                                         src="@(string.IsNullOrEmpty(Model.Entity.CoverImgUrl)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ? "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     : Model.Entity.CoverImgUrl)"
+                                         class="rounded-circle border shadow-sm"
+                                         style="width:130px;height:130px;object-fit:cover;" />
+
+                                    <label for="profileImageInput"
+                                           class="btn btn-primary btn-sm rounded-circle position-absolute bottom-0 end-0 shadow"
+                                           style="width:38px;height:38px;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+
+                                        <i class="bi bi-camera-fill"></i>
+
+                                    </label>
+
+                                </div>
+
+                                <input asp-for="Entity.ProfileImage"
+                                       type="file"
+                                       id="profileImageInput"
+                                       class="d-none"
+                                       accept="img/ProfilPhotos/*" />
+
+                                <div class="fw-semibold mb-1">
+                                    Fotoğraf Yükle
+                                </div>
+
+                                <div class="text-muted small">
+                                    JPG, PNG veya WEBP formatı desteklenir
+                                </div>
+
+                                <span asp-validation-for="Entity.ProfileImage"
+                                      class="text-danger small d-block mt-2"></span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document
+        .getElementById("profileImageInput")
+        .addEventListener("change", function (event) {
+
+            const file = event.target.files[0];
+
+            if (file) {
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+
+                    document.getElementById("profilePreview").src = e.target.result;
+
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+        });
+
+
+    function updateRolesLabel() {
+        const checked = document.querySelectorAll('.role-check:checked');
+        const label = document.getElementById('rolesLabel');
+        if (checked.length === 0) {
+            label.textContent = 'Rol seçiniz...';
+        } else {
+            label.textContent = Array.from(checked).map(c => c.closest('label').textContent.trim()).join(', ');
+        }
+    }
+
+    document.querySelectorAll('.role-check').forEach(cb => {
+        cb.addEventListener('change', updateRolesLabel);
+    });
+
+    updateRolesLabel();
+
+
+
+
+</script>

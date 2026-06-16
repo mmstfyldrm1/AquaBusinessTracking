@@ -1,0 +1,189 @@
+﻿@using DTOLayer.Dtos.SentezNotOrdersDtos
+@model ModalViewModel<SentezNotOrderDto>
+
+<div class="modal fade" id="sentezNotOrdersModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/SentezNotOrders/Edit">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <input type="hidden" asp-for="Entity.DepartmentId" />
+                    <input type="hidden" asp-for="Entity.AppUserId" />
+                    <input type="hidden" asp-for="Entity.InsertDate" />
+
+                    <!-- Genel Bilgiler -->
+                    <h6 class="fw-bold text-muted mb-3">Satın Alma Bilgileri</h6>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">İrsaliye Tarihi</label>
+                            <input type="date"
+                                   asp-for="Entity.InvoiceDate"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">İrsaliye/Fatura No</label>
+                            <input type="text"
+                                   asp-for="Entity.InvoiceNumber"
+                                   class="form-control"
+                                   placeholder="İrsaliye/fatura no giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Gelen Firma</label>
+                            <input type="text"
+                                   asp-for="Entity.SupplierCompany"
+                                   class="form-control"
+                                   placeholder="Gelen firma giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Sentez Kodu</label>
+                            <input type="text"
+                                   asp-for="Entity.SynthesisCode"
+                                   class="form-control"
+                                   placeholder="Sentez kodu giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Ürün/Malzeme</label>
+                            <input type="text"
+                                   asp-for="Entity.ProductMaterial"
+                                   class="form-control"
+                                   placeholder="Ürün/malzeme giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Ürün/Malzeme Grubu</label>
+                            <input type="text"
+                                   asp-for="Entity.ProductMaterialGroup"
+                                   class="form-control"
+                                   placeholder="Ürün grubu giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Miktar</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.Quantity"
+                                   class="form-control"
+                                   placeholder="Miktar giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Birim</label>
+                            <input type="text"
+                                   asp-for="Entity.Unit"
+                                   class="form-control"
+                                   placeholder="Birim giriniz" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Depo Giriş Tarihi</label>
+                            <input type="date"
+                                   asp-for="Entity.WarehouseEntryDate"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Bekleme Süresi</label>
+                            <input type="number"
+                                   asp-for="Entity.WaitingPeriod"
+                                   class="form-control"
+                                   placeholder="Bekleme süresi (dakika)" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Açıklama</label>
+                            <textarea asp-for="Entity.Description"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Genel açıklama giriniz">
+                            </textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Satın Alma Açıklaması</label>
+                            <textarea asp-for="Entity.PurchaseDescription"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Satın alma açıklaması giriniz">
+                            </textarea>
+                        </div>
+                        <!-- AKTİF/PASİF -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

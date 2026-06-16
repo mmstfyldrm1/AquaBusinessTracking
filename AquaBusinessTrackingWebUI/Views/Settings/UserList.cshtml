@@ -1,0 +1,143 @@
+﻿@using DTOLayer.Dtos.UserDtos
+
+@model List<GetUserDto>
+
+@{
+    ViewData["Title"] = "UserList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+
+<h6 class="mb-0 text-uppercase">Kullanıcı Listesi</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Profil</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Email</th>
+                        <th>Telefon</th>
+                        <th>Departman</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int counter = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+
+                            <td class="text-center">
+                                <img src="@item.CoverImgUrl"
+                                     style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+                            </td>
+
+                            <td>@item.Name</td>
+                            <td>@item.SurName</td>
+                            <td>@item.UserName</td>
+                            <td>@item.Email</td>
+                            <td>@item.PhoneNumber</td>
+                            <td>@item.DepartmentName</td>
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
+                                        onclick="openModal(@item.Id)">
+                                    <i class="bi bi-pencil-square fs-6"></i>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post"
+                                      asp-action="DeleteUser"
+                                      asp-route-id="@item.Id"
+                                      style="display:inline;">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger px-2 py-1"
+                                            onclick="return confirm('Silinsin mi?');">
+
+                                        <i class="bi bi-trash3 fs-6"></i>
+
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        counter++;
+                    }
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Profil</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Email</th>
+                        <th>Telefon</th>
+                        <th>Departman</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+       function openModal(id = null) {
+        const url = id
+            ? `/Settings/Edit/${id}`
+            : `/Settings/Add`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+
+
+                const modalEl = document.getElementById('userModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                // Modal DOM'a yazıldıktan sonra event ekle
+                modalEl.addEventListener('shown.bs.modal', function () {
+                    document.getElementById('userForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                       
+                        fetch(this.action, {
+                            method: 'POST',
+                            body: new FormData(this)
+                        })
+                        .then(r => {
+                            if (r.ok) {
+                                modal.hide();
+                                location.reload();
+                            }
+                        });
+                    });
+                }, { once: true }); // sadece bir kere çalışsın
+
+                modal.show();
+            });
+    }
+</script>
+

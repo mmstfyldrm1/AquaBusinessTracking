@@ -1,0 +1,214 @@
+﻿@using DTOLayer.Dtos.WinderCoilLengthControlDto
+@model ModalViewModel<WinderCoilLengthControlDto>
+
+<div class="modal fade" id="coilControlModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <form method="post" action="/WinderCoilLength/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- Bobin Genişliği -->
+                        <div class="col-md-4">
+                            <label class="form-label">Bobin Genişliği</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.CoilWidth"
+                                       class="form-control" />
+
+                                <span class="input-group-text">mm</span>
+                            </div>
+                        </div>
+
+                        <!-- Sarıcı Bobin Boyu -->
+                        <div class="col-md-4">
+                            <label class="form-label">Sarıcı Bobin Boyu</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.WinderCoilLength"
+                                       class="form-control" />
+
+                                <span class="input-group-text">m</span>
+                            </div>
+                        </div>
+
+                        <!-- Gramaj -->
+                        <div class="col-md-4">
+                            <label class="form-label">Gramaj</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.Gramaj"
+                                       class="form-control" />
+
+                                <span class="input-group-text">gr</span>
+                            </div>
+                        </div>
+
+                        <!-- Ağırlık -->
+                        <div class="col-md-4">
+                            <label class="form-label">Ağırlık</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.Weight"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Teorik Boy -->
+                        <div class="col-md-4">
+                            <label class="form-label">Teorik Bobin Boyu</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.TheoreticCoilLength"
+                                       class="form-control" />
+
+                                <span class="input-group-text">m</span>
+                            </div>
+                        </div>
+
+                        <!-- Boy Farkı -->
+                        <div class="col-md-4">
+                            <label class="form-label">Bobin Boy Farkı</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.CoilLengthDifference"
+                                       class="form-control" />
+
+                                <span class="input-group-text">m</span>
+                            </div>
+                        </div>
+
+                        <!-- Sapma -->
+                        <div class="col-md-4">
+                            <label class="form-label">Sapma (%)</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.CoilLengthDeflection"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Kullanım Durumu -->
+                        <div class="col-md-4">
+                            <label class="form-label">Durum</label>
+
+                            <select asp-for="Entity.InUse" class="form-select">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <!-- Vardiya -->
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">Vardiya Seçiniz</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Kayıt Eden -->
+                        <div class="col-md-6">
+                            <label class="form-label">Kayıt Eden</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+                            </div>
+                        </div>
+
+                        <!-- Kayıt Tarihi -->
+                        <div class="col-md-6">
+                            <label class="form-label">Kayıt Tarihi</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="@(Model.Entity.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? DateTime.Now.ToString("dd.MM.yyyy HH:mm"))"
+                                   disabled />
+                        </div>
+
+                        <!-- Hidden Alanlar -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

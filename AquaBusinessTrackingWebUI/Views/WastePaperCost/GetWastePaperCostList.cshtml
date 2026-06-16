@@ -1,0 +1,264 @@
+﻿@using DTOLayer.Dtos.WastePaperCost
+
+@{
+    ViewData["Title"] = "GetWastePaperCostList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+    int counter = 0;
+}
+
+@model List<WastePaperCostDto>
+
+<h6 class="mb-0 text-uppercase">Gelen Hammadde / Tartım Takip Sistemi</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sıra No</th>
+                        <th>Tarih</th>
+                        <th>İrsaliye No</th>
+                        <th>Firma</th>
+                        <th>Plaka</th>
+                        <th>Balya</th>
+                        <th>Kağıt Türü</th>
+                        <th>İrsaliye Kg</th>
+                        <th>Brüt Giriş</th>
+                        <th>Net Fatura</th>
+                        <th>Nem Ort.</th>
+                        <th>Yabancı Madde</th>
+                        <th>Anlaşılan Fiyat</th>
+                        <th>Brüt Tutar</th>
+                        <th>Net Fiyat</th>
+                        <th>Net Tutar</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme</th>
+                        <th>Durum</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@counter</td>
+
+                            <td>@item.SequenceNumber</td>
+
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+
+                            <td>@item.WaybillNumber</td>
+
+                            <td>@item.Company</td>
+
+                            <td>@item.VehicleLicensePlate</td>
+
+                            <td>@item.NumberOfBales</td>
+
+                            <td>@item.ReceivedPaperType</td>
+
+                            <td>
+                                @(item.WaybillQuantityKg?.ToString("N2") ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.GrossEntryQuantityKg?.ToString("N2") ?? "-")
+                            </td>
+
+                            <td>
+                                <span class="fw-bold text-success">
+                                    @(item.NetInvoiceBaseKg?.ToString("N2") ?? "-")
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-info">
+                                    @(item.AverageMoisturePercent?.ToString("N2") ?? "0") %
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    @(item.ForeignMaterialPercent?.ToString("N2") ?? "0") %
+                                </span>
+                            </td>
+
+                            <td>
+                                @(item.AgreedPrice)
+                            </td>
+
+                            <td>
+                                <span class="text-primary fw-semibold">
+                                    @(item.GrossAmount)
+                                </span>
+                            </td>
+
+                            <td>
+                                @(item.NetPrice)
+                            </td>
+
+                            <td>
+                                <span class="text-success fw-bold">
+                                    @(item.NetAmount)
+                                </span>
+                            </td>
+
+                            <td>
+                                @(item.InsertDate)
+                            </td>
+
+                            <td>
+                                @(item.CreatedByName)
+                            </td>
+
+                            <td>
+                                @(item.ShiftName)
+                            </td>
+
+                            <td>
+                                @(item.UpdateDate)
+                            </td>
+
+                            <td>
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge bg-success">
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-sm btn-outline-warning"
+                                        onclick="openModal(@item.RecId)">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </button>
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <form method="post"
+                                      asp-action="DeletePaperCost"
+                                      asp-route-id="@item.RecId"
+                                      style="display:inline;">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Silinsin mi?');">
+
+                                        <ion-icon name="trash-outline"></ion-icon>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        counter++;
+                    }
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Sıra No</th>
+                        <th>Tarih</th>
+                        <th>İrsaliye No</th>
+                        <th>Firma</th>
+                        <th>Plaka</th>
+                        <th>Balya</th>
+                        <th>Kağıt Türü</th>
+                        <th>İrsaliye Kg</th>
+                        <th>Brüt Giriş</th>
+                        <th>Net Fatura</th>
+                        <th>Nem Ort.</th>
+                        <th>Yabancı Madde</th>
+                        <th>Anlaşılan Fiyat</th>
+                        <th>Brüt Tutar</th>
+                        <th>Net Fiyat</th>
+                        <th>Net Tutar</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme</th>
+                        <th>Durum</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+        <button class="btn btn-primary shadow-sm"
+                onclick="openModal()">
+
+            <ion-icon name="add-circle-outline"></ion-icon>
+
+            Yeni Kayıt Ekle
+
+        </button>
+
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/WastePaperCost/Edit/${id}`
+            : `/WastePaperCost/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('wastePaperCostModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/WastePaperCost/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>

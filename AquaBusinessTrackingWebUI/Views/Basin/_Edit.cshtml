@@ -1,0 +1,140 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.BasinDtos.BasinDto
+@model ModalViewModel<BasinFormDto>
+
+<div class="modal fade" id="basinModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/Basin/Edit">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+                    <input type="hidden" asp-for="Entity.DepartmentId" />
+                    <input type="hidden" asp-for="Entity.AppUserId" />
+                    <input type="hidden" asp-for="Entity.InsertDate" />
+                    <input type="hidden" asp-for="Entity.Measurement.Id" />
+
+                    <!-- Basin Bilgileri -->
+                    <h6 class="fw-bold text-muted mb-3">Havuz Bilgileri</h6>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Havuz Adı</label>
+                            <input type="text" asp-for="Entity.Name" class="form-control" placeholder="Örn: Havuz-1" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Kategori</label>
+                            <input type="text" asp-for="Entity.Category" class="form-control" placeholder="Örn: Arıtma" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <!-- Ölçüm Bilgileri -->
+                    <h6 class="fw-bold text-muted mb-3">Ölçüm Bilgileri</h6>
+                    <div class="row g-3">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Giriş AKM</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.EnteranceAKM" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Çıkış AKM</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.OutAKM" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Giriş KOİ</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.EnteranceKOI" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Çıkış KOİ</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.OutKOI" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">TN</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.TN" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Fosfat</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.Fosfat" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">pH</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.pH" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Renk</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.Renk" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">DO</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.DO" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Imhoff</label>
+                            <input type="number" step="0.01" asp-for="Entity.Measurement.Imhoff" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Başlangıç Saati</label>
+                            <input type="time" asp-for="Entity.Measurement.StartHours" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bitiş Saati</label>
+                            <input type="time" asp-for="Entity.Measurement.EndHours" class="form-control" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

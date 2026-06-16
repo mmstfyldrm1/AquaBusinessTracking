@@ -1,0 +1,152 @@
+﻿@using DTOLayer.Dtos.KazanChemicalsDtos.KazanChemicalsHeadDtos
+@using DTOLayer.Dtos.KazanDtos.KazanHeadDtos
+
+@{
+    ViewData["Title"] = "GetKazanChemicalsList";
+    Layout = "~/Views/_UserLayout/Index.cshtml"; int counter = 1;
+}
+
+@model List<KazanChemicalsHeadDto>
+
+<h6 class="mb-0 text-uppercase">Kazan Kimyasalları Takip Sistemi</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Gün</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                        <th>Detay</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+
+                            <td>@item.InventoryCode</td>
+                            <td>@item.InventoryName</td>
+
+                            <td>@item.Day</td>
+
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+
+                            <td>@item.CreatedByName</td>
+
+                            <td>@item.ShiftName</td>
+
+                            <td>
+                                @(item.InsertDate.HasValue
+                                                            ? item.InsertDate.Value.ToString("dd.MM.yyyy HH:mm")
+                                                            : "-")
+                        </td>
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning"
+                                        onclick="openModal(@item.RecId)">
+                                    <ion-icon name="create-outline"></ion-icon>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post"
+                                      asp-action="Delete"
+                                      asp-route-id="@item.RecId"
+                                      style="display:inline;">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Silinsin mi?');">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td class="text-center">
+                                <a href="/KazanChemicals/Detail/@item.RecId"
+                                   class="btn btn-sm btn-outline-info"
+                                   title="Detay Gör">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
+
+                                        counter++;
+                    }
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Gün</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                        <th>Detay</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+
+        <button class="btn btn-primary shadow-sm" onclick="openModal()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Yeni Kayıt Ekle
+        </button>
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/KazanChemicals/Edit/${id}`
+            : `/KazanChemicals/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('kazanChemicalsModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/KazanChemicals/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>
+

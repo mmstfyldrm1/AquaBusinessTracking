@@ -1,0 +1,178 @@
+﻿@using DTOLayer.Dtos.LabWork
+@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.WaterTreatmentAnalysisResultsDtos
+
+@model ModalViewModel<WaterTreatmentAnalysisResultsDto>
+
+<div class="modal fade" id="waterTreatmentAnalysisResultsModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post" action="/WaterTreatmentAnalysisResults/Edit">
+
+                <input type="hidden" asp-for="Entity.RecId" />
+                <input type="hidden" asp-for="Entity.DepartmentId" />
+                <input type="hidden" asp-for="Entity.AppUserId" />
+                <input type="hidden" asp-for="Entity.DeletedBy" />
+                <input type="hidden" asp-for="Entity.UpdatedBy" />
+                <input type="hidden" asp-for="Entity.DeleteDate" />
+                <input type="hidden" asp-for="Entity.InsertDate" />
+                <input type="hidden" asp-for="Entity.UpdateDate" />
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <input type="hidden"
+                               asp-for="Entity.RecId" />
+
+                        <!-- NUMUNE ALMA SÜRESİ -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Numune Alma Süresi (dk)
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.SampleCollectionTime"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- SONUÇ TESLİM SÜRESİ -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Sonuç Teslim Süresi (dk)
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.SampleResultDeliveryTime"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- NUMUNE ALINAN YER -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Numune Alınan Yer
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.SampleTakenLocation"
+                                   class="form-control"
+                                   placeholder="Numune alınan yer" />
+                        </div>
+
+                        <!-- KURU MADDE -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Kuru Madde (%)
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.DryMatter"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- DOLULUK -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Doluluk
+                            </label>
+
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.Filling"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- AÇIKLAMA -->
+                        <div class="col-md-12">
+                            <label class="form-label">
+                                Açıklama
+                            </label>
+
+                            <textarea asp-for="Entity.Explanation"
+                                      class="form-control"
+                                      rows="3"></textarea>
+                        </div>
+
+                        <!-- VARDİYA -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <!-- DURUM -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+                        </div>
+
+
+                      
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

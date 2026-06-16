@@ -1,0 +1,129 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.PlcDtos.PlcTagsDtos
+@model ModalViewModel<PlcMachineTagsDto>
+
+<div class="modal fade" id="PlcTagModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/PlcTags/Edit">
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        @if (Model.IsEdit)
+                        {
+                            <input type="hidden" asp-for="Entity.RecId" />
+                        }
+
+                        <!-- Machine -->
+                        <div class="col-md-6">
+                            <label class="form-label">Makine</label>
+                            <select asp-for="Entity.MachineId"
+                                    asp-items="ViewBag.Machines"
+                                    class="form-select">
+                                <option value="">Makine Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <!-- Tag Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">Tag Adı</label>
+                            <input asp-for="Entity.TagName"
+                                   class="form-control"
+                                   placeholder="Paper_Uretim_Ton" />
+                        </div>
+
+                        <!-- Display Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">Görünen Ad</label>
+                            <input asp-for="Entity.DisplayName"
+                                   class="form-control"
+                                   placeholder="Üretim (Ton)" />
+                        </div>
+
+                        <!-- Group -->
+                        <div class="col-md-6">
+                            <label class="form-label">Grup</label>
+                            <input asp-for="Entity.Group"
+                                   class="form-control"
+                                   placeholder="Production / Power / Quality" />
+                        </div>
+
+                        <!-- Data Address -->
+                        <div class="col-md-6">
+                            <label class="form-label">PLC Adresi</label>
+                            <input asp-for="Entity.DataAddress"
+                                   class="form-control"
+                                   placeholder="DB1.DBD0" />
+                        </div>
+
+                        <!-- Data Type -->
+                        <div class="col-md-6">
+                            <label class="form-label">Veri Tipi</label>
+                            <select asp-for="Entity.DataType" class="form-select">
+                                <option value="">Seçiniz</option>
+                                <option value="Bool">Bool</option>
+                                <option value="Byte">Byte</option>
+                                <option value="Word">Word</option>
+                                <option value="DWord">DWord</option>
+                                <option value="Int">Int</option>
+                                <option value="DInt">DInt</option>
+                                <option value="Real">Real</option>
+                                <option value="String">String</option>
+                            </select>
+                        </div>
+
+                        <!-- Unit -->
+                        <div class="col-md-6">
+                            <label class="form-label">Birim</label>
+                            <input asp-for="Entity.Unit"
+                                   class="form-control"
+                                   placeholder="ton, kW, saat" />
+                        </div>
+
+                        <!-- IsActive -->
+                        <div class="col-md-6">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.IsActive" class="form-select">
+                                <option value="true">Aktif</option>
+                                <option value="false">Pasif</option>
+                            </select>
+                        </div>
+
+                        <!-- MachineName (SADECE GÖSTERİM) -->
+                        @if (Model.IsEdit)
+                        {
+                            <div class="col-md-12">
+                                <label class="form-label">Makine Adı</label>
+                                <input asp-for="Entity.MachineName"
+                                       class="form-control"
+                                       disabled />
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit" class="btn btn-success">
+                        <ion-icon name="save-outline"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

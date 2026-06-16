@@ -1,0 +1,433 @@
+﻿@using DTOLayer.Dtos.SentezAllDataDtos
+@using AquaBusinessTrackingWebUI.Models
+@model ModalViewModel<SentezAllDataDto>
+
+<div class="modal fade" id="sentezAllDataModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/SentezAllData/Edit">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+                    <input type="hidden" asp-for="Entity.DepartmentId" />
+                    <input type="hidden" asp-for="Entity.AppUserId" />
+                    <input type="hidden" asp-for="Entity.InsertDate" />
+
+
+                    <!-- TAB MENÜ -->
+                    <ul class="nav nav-tabs mb-3" id="sentezTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#genelTab" type="button">Genel</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#makineTab" type="button">Makine</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#uretimTab" type="button">Üretim</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#kimyasalTab" type="button">Kimyasal</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nisastaTab" type="button">Nişasta</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#labTab" type="button">Laboratuvar</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#musteriTab" type="button">Müşteri</button>
+                        </li>
+                    </ul>
+
+                    <!-- TAB CONTENT -->
+                    <div class="tab-content">
+
+                        <!-- GENEL -->
+                        <div class="tab-pane fade show active" id="genelTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Tarih</label>
+                                    <input type="date" asp-for="Entity.Date" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Başlangıç Saati</label>
+                                    <input type="time" asp-for="Entity.StartTime" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Bitiş Saati</label>
+                                    <input type="time" asp-for="Entity.EndTime" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Vardiya</label>
+                                    <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select form-select-sm">
+                                        <option value="">Vardiya Seçiniz</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Tampon No</label>
+                                    <input type="text" asp-for="Entity.BufferNo" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Ürün Cinsi</label>
+                                    <input type="text" asp-for="Entity.ProductType" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Gramaj</label>
+                                    <input type="number" step="0.01" asp-for="Entity.Grammage" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Tampon Genişliği</label>
+                                    <input type="number" step="0.01" asp-for="Entity.BufferWidth" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Tampon Fiş Açıklama</label>
+                                    <input type="text" asp-for="Entity.BufferRollDescription" class="form-control form-control-sm" />
+                                </div>
+                                <!-- AKTİF/PASİF -->
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Durum
+                                    </label>
+
+                                    <select asp-for="Entity.InUse"
+                                            class="form-select form-select-sm">
+
+                                        <option value="1">Aktif</option>
+                                        <option value="0">Pasif</option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- MAKİNE -->
+                        <div class="tab-pane fade" id="makineTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">İdeal Hız (m/d)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.IdealMachineSpeed" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Gerçek Hız (m/d)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.ActualMachineSpeed" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Makine SR</label>
+                                    <input type="number" step="0.01" asp-for="Entity.MachineSr" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Hamur Kasası SR</label>
+                                    <input type="number" step="0.01" asp-for="Entity.PulpChestSr" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Hız Düşme Nedeni</label>
+                                    <input type="text" asp-for="Entity.SpeedReductionReason" class="form-control form-control-sm" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ÜRETİM -->
+                        <div class="tab-pane fade" id="uretimTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Üretilen Miktar (Kg)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.ProducedQuantityKg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Kusurlu Miktar (Kg)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.DefectiveQuantityKg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Net Üretim (Kg)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.NetProductionKg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">QCS Gramaj</label>
+                                    <input type="number" step="0.01" asp-for="Entity.QcsGrammage" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">QCS Rutubet</label>
+                                    <input type="number" step="0.01" asp-for="Entity.QcsMoisture" class="form-control form-control-sm" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- KİMYASAL -->
+                        <div class="tab-pane fade" id="kimyasalTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Retansiyon Dozaj (LT/DK)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.RetentionDosageLtMin" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Retansiyon Dozaj %</label>
+                                    <input type="number" step="0.01" asp-for="Entity.RetentionDosagePercent" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Silika Var mı?</label>
+                                    <select asp-for="Entity.SilicaAdded" class="form-select form-select-sm">
+                                        <option value="">Seçiniz</option>
+                                        <option value="true">Evet</option>
+                                        <option value="false">Hayır</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Silika Dozaj Miktarı</label>
+                                    <input type="number" step="0.01" asp-for="Entity.SilicaDosageAmount" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">ATC Var mı?</label>
+                                    <select asp-for="Entity.AtcAdded" class="form-select form-select-sm">
+                                        <option value="">Seçiniz</option>
+                                        <option value="true">Evet</option>
+                                        <option value="false">Hayır</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">ATC Miktar</label>
+                                    <input type="number" step="0.01" asp-for="Entity.AtcAmount" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Boya Dozaj Miktar</label>
+                                    <input type="number" step="0.01" asp-for="Entity.DyeDosageAmount" class="form-control form-control-sm" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- NİŞASTA -->
+                        <div class="tab-pane fade" id="nisastaTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Sizer Nişasta (gr/m²)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.SizerStarchGsm" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Çalışma Nişasta %KM</label>
+                                    <input type="number" step="0.01" asp-for="Entity.OperatingStarchSolidContent" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Çalışma Nişasta Sıcaklık</label>
+                                    <input type="number" step="0.01" asp-for="Entity.OperatingStarchTemperature" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Hazırlama Nişasta %KM</label>
+                                    <input type="number" step="0.01" asp-for="Entity.PreparationStarchSolidContent" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Hazırlama Nişasta Sıcaklık</label>
+                                    <input type="number" step="0.01" asp-for="Entity.PreparationStarchTemperature" class="form-control form-control-sm" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- LABORATUVAR -->
+                        <div class="tab-pane fade" id="labTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Laborant</label>
+                                    <input type="text" asp-for="Entity.Laborant" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Kalite Kontrol No</label>
+                                    <input type="text" asp-for="Entity.QualityControlNumber" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Ölçülen Gramaj Ort. (g/m²)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.MeasuredGrammageAvg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Ölçülen Kalınlık Ort. (µm)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.MeasuredThicknessAvg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Ölçülen Rutubet Ort. (%)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.MeasuredMoistureAvg" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Patlama (kPa)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.BurstStrengthKpa" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Patlama Index</label>
+                                    <input type="number" step="0.01" asp-for="Entity.BurstIndex" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">SCT CD (kN/m)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.SctCd" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">SCT Index</label>
+                                    <input type="number" step="0.01" asp-for="Entity.SctIndex" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">RCT (kgf)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.RctKgf" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">ECT (kN/m)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.EctKnM" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">CCT (kN/m)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.CctKnM" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">CMT (kN/m)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.CmtKnM" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Gurley (sn)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.GurleyPorositySec" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Bendsen</label>
+                                    <input type="number" step="0.01" asp-for="Entity.BendsenPorosity" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Cobb 60 (g/m²)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.Cobb60Absorption" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Kopma (mm/dak)</label>
+                                    <input type="number" step="0.01" asp-for="Entity.TensileSpeed" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Schopper</label>
+                                    <input type="number" step="0.01" asp-for="Entity.Schopper" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Dolgu</label>
+                                    <input type="number" step="0.01" asp-for="Entity.Filler" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Kül</label>
+                                    <input type="number" step="0.01" asp-for="Entity.Ash" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Renk L</label>
+                                    <input type="number" step="0.01" asp-for="Entity.ColorL" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Renk A</label>
+                                    <input type="number" step="0.01" asp-for="Entity.ColorA" class="form-control form-control-sm" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Renk B</label>
+                                    <input type="number" step="0.01" asp-for="Entity.ColorB" class="form-control form-control-sm" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- MÜŞTERİ -->
+                        <div class="tab-pane fade" id="musteriTab">
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Özel Müşteriye Uygun mu?</label>
+                                    <select asp-for="Entity.SuitableForSpecialCustomer" class="form-select form-select-sm">
+                                        <option value="">Seçiniz</option>
+                                        <option value="true">Evet</option>
+                                        <option value="false">Hayır</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Şikayet Alındı mı?</label>
+                                    <select asp-for="Entity.ComplaintReceived" class="form-select form-select-sm">
+                                        <option value="">Seçiniz</option>
+                                        <option value="true">Evet</option>
+                                        <option value="false">Hayır</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

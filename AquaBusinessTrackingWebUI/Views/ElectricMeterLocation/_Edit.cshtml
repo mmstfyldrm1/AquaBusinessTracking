@@ -1,0 +1,83 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.ElectricDtos.ElectricMeterLocationDtos
+@model ModalViewModel<ElectricMeterLocationDto>
+
+<div class="modal fade" id="ElectricMeterLocationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/ElectricMeterLocation/Edit">
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        @if (Model.IsEdit)
+                        {
+                            <input type="hidden" asp-for="Entity.RecId" />
+                        }
+
+                        <div class="col-12">
+                            <label class="form-label">Lokasyon Adı</label>
+                            <input type="text"
+                                   asp-for="Entity.LocationName"
+                                   class="form-control"
+                                   placeholder="Örn: PM-2 Elektrik Odası" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Açıklama</label>
+                            <textarea asp-for="Entity.Explanation"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Açıklama giriniz"></textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+                            </div>
+                        </div>
+
+                        <input type="hidden" asp-for="Entity.DepartmanId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertedDate" />
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

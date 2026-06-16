@@ -1,0 +1,235 @@
+﻿@using DTOLayer.Dtos.VechileFuelLogsDtos
+@model ModalViewModel<VechileFuelLogsDto>
+
+<div class="modal fade" id="vechileFuelLogsModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post"
+                  action="/VehicleFuel/Edit">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+
+                        <input type="hidden"
+                               asp-for="Entity.RecId" />
+
+
+                        <!-- TARİH -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tarih
+                            </label>
+
+                            <input type="date"
+                                   asp-for="Entity.Date"
+                                   class="form-control" />
+
+                        </div>
+
+                        <!-- ARAÇ PLAKASI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Araç Plakası
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.VehicleLicensePlate"
+                                   class="form-control"
+                                   placeholder="Araç plakası giriniz" />
+
+                        </div>
+
+                        <!-- ARAÇ ADI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Araç Adı
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.VehicleName"
+                                   class="form-control"
+                                   placeholder="Araç adı giriniz" />
+
+                        </div>
+
+                        <!-- MOTOR SAATİ/KM -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Motor Saati/KM
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.EngineHourOrKm"
+                                   class="form-control"
+                                   placeholder="Motor saati veya KM giriniz" />
+
+                        </div>
+
+                        <!-- VERİLEN MAZOT MİKTARI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Verilen Mazot (Lt)
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.FuelDeliveredLiters"
+                                   class="form-control"
+                                   placeholder="Verilen mazot miktarı giriniz"
+                                   step="0.01" />
+
+                        </div>
+
+                        <!-- MAZOT LT FİYATI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Mazot Lt Fiyatı
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.FuelPricePerLiter"
+                                   class="form-control"
+                                   placeholder="Lt başına fiyat giriniz"
+                                   step="0.01" />
+
+                        </div>
+
+                        <!-- TOPLAM TUTAR -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Toplam Tutar
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.TotalAmount"
+                                   class="form-control"
+                                   placeholder="Toplam tutar"
+                                   step="0.01"
+                                   readonly />
+
+                        </div>
+
+                        <!-- TESLİM ALAN -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Teslim Alan
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.Recipient"
+                                   class="form-control"
+                                   placeholder="Teslim alan kişi" />
+
+                        </div>
+
+                        <!-- İLGİLİ BİRİM -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                İlgili Birim
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.ResponsibleDepartment"
+                                   class="form-control"
+                                   placeholder="İlgili birim" />
+
+                        </div>
+
+                      
+
+                        <!-- VARDIYA -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- AKTİF/PASİF -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

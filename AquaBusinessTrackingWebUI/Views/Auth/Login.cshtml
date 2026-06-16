@@ -1,0 +1,151 @@
+﻿@using DTOLayer.Dtos.AuthDtos
+@model LoginDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en" class="light-theme">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- loader-->
+    <link href="~/ltr/assets/css/pace.min.css" rel="stylesheet" />
+    <script src="~/ltr/assets/js/pace.min.js"></script>
+
+    <!--plugins-->
+    <link href="~/ltr/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="~/ltr/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/ltr/assets/css/bootstrap-extended.css" rel="stylesheet">
+    <link href="~/ltr/assets/css/style.css" rel="stylesheet">
+    <link href="~/ltr/assets/css/icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>AQUAKRAFT - Giriş Yap</title>
+
+    <style>
+        body {
+            /* Netleştirdiğimiz görselin yolu - Kayıt sayfasındakiyle aynı olmalı */
+            background-image: url('/img/indir.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+        }
+
+            /* Arka planı karartma katmanı */
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: -1;
+            }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Modern Cam Efekti Kartı */
+        .login-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .btn-primary {
+            padding: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <h4 class="brand-title">AQUAKRAFT'A HOŞGELDİNİZ</h4>
+                            <p class="text-muted">Lütfen giriş yapınız.</p>
+                        </div>
+
+                        <form asp-action="Login" asp-controller="Auth" method="post" class="form-body row g-3">
+                            @Html.AntiForgeryToken()
+
+                            <div class="col-12">
+                                <label asp-for="UserName" class="form-label">E-posta Adresiniz</label>
+                                <div class="input-group">
+                                    <input asp-for="UserName" type="email" class="form-control" id="inputEmail" placeholder="ornek@aquakraft.com" required />
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Password" class="form-label">Şifre</label>
+                                <input asp-for="Password" type="password" class="form-control" id="inputPassword" placeholder="********" required />
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                                </div>
+                                <a href="javascript:;" class="small text-primary">Şifremi Unuttum</a>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">GİRİŞ YAP</button>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-center mt-4">
+                                <p class="mb-0">Hesabınız yok mu? <a href="~/Auth/Register" class="fw-bold">Kayıt Ol</a></p>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

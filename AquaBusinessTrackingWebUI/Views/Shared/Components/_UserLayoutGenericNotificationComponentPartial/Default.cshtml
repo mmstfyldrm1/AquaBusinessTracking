@@ -1,0 +1,56 @@
+﻿@if (TempData["Success"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Lobibox.notify('success', {
+                msg: '@TempData["Success"]',
+                position: 'top right',
+                delay: 3000,
+                rounded: true,
+                icon: true
+            });
+        });
+    </script>
+}
+@if (TempData["Error"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Lobibox.notify('error', {
+                msg: '@TempData["Error"]',
+                position: 'top right',
+                delay: 4000,
+                rounded: true,
+                icon: true
+            });
+        });
+    </script>
+}
+@if (TempData["Warning"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Lobibox.notify('warning', {
+                msg: '@TempData["Warning"]',
+                position: 'top right',
+                delay: 3000,
+                rounded: true,
+                icon: true
+            });
+        });
+    </script>
+}
+@if (TempData["Info"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Lobibox.notify('info', {
+                msg: '@TempData["Info"]',
+                position: 'top right',
+                delay: 3000,
+                rounded: true,
+                icon: true
+            });
+        });
+    </script>
+}

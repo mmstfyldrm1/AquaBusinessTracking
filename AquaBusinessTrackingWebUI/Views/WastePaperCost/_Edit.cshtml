@@ -1,0 +1,447 @@
+﻿@using DTOLayer.Dtos.WastePaperCost
+@model ModalViewModel<WastePaperCostDto>
+
+<div class="modal fade" id="wastePaperCostModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <form method="post" action="/WastePaperCost/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- Sıra No -->
+                        <div class="col-md-3">
+                            <label class="form-label">Sıra No</label>
+                            <input type="number"
+                                   asp-for="Entity.SequenceNumber"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Tarih -->
+                        <div class="col-md-3">
+                            <label class="form-label">Tarih</label>
+                            <input type="date"
+                                   asp-for="Entity.Date"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- İrsaliye -->
+                        <div class="col-md-3">
+                            <label class="form-label">İrsaliye No</label>
+                            <input type="text"
+                                   asp-for="Entity.WaybillNumber"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Firma -->
+                        <div class="col-md-3">
+                            <label class="form-label">Firma</label>
+                            <input type="text"
+                                   asp-for="Entity.Company"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Plaka -->
+                        <div class="col-md-3">
+                            <label class="form-label">Araç Plakası</label>
+                            <input type="text"
+                                   asp-for="Entity.VehicleLicensePlate"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Balya -->
+                        <div class="col-md-3">
+                            <label class="form-label">Balya Sayısı</label>
+                            <input type="number"
+                                   asp-for="Entity.NumberOfBales"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Kağıt Türü -->
+                        <div class="col-md-3">
+                            <label class="form-label">Gelen Kağıt Türü</label>
+                            <input type="text"
+                                   asp-for="Entity.ReceivedPaperType"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Oluklu -->
+                        <div class="col-md-3">
+                            <label class="form-label">Oluklu (%)</label>
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.CorrugatedPercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Karışık -->
+                        <div class="col-md-3">
+                            <label class="form-label">Karışık (%)</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.MixedPercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- İrsaliye Kg -->
+                        <div class="col-md-3">
+                            <label class="form-label">İrsaliye Miktarı</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.WaybillQuantityKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Dolu Araç -->
+                        <div class="col-md-3">
+                            <label class="form-label">Dolu Araç Ağırlığı</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.GrossVehicleWeightKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Boş Araç -->
+                        <div class="col-md-3">
+                            <label class="form-label">Boş Araç Ağırlığı</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.EmptyVehicleWeightKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Brüt Giriş -->
+                        <div class="col-md-3">
+                            <label class="form-label">Brüt Giriş</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.GrossEntryQuantityKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Ortalama Balya -->
+                        <div class="col-md-3">
+                            <label class="form-label">Ort. Balya Ağırlığı</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.AverageBaleWeightKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Yabancı Madde -->
+                        <div class="col-md-3">
+                            <label class="form-label">Yabancı Madde</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.ForeignMaterialPercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Cihaz Nem -->
+                        <div class="col-md-3">
+                            <label class="form-label">Cihaz Nem</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.DeviceMoisturePercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Etüv Nem -->
+                        <div class="col-md-3">
+                            <label class="form-label">Etüv Nem</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.OvenMoisturePercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Ortalama Nem -->
+                        <div class="col-md-3">
+                            <label class="form-label">Ortalama Nem</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.AverageMoisturePercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Nem Muafiyet -->
+                        <div class="col-md-3">
+                            <label class="form-label">Nem Muafiyeti</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.MoistureExemptionPercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Net Nem -->
+                        <div class="col-md-3">
+                            <label class="form-label">Net Nem</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.NetMoisturePercent"
+                                       class="form-control" />
+
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+                        <!-- Nem Kesinti -->
+                        <div class="col-md-3">
+                            <label class="form-label">Nem Kesintisi</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.MoistureDeductionKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Yabancı Madde Kesinti -->
+                        <div class="col-md-3">
+                            <label class="form-label">Yabancı Madde Kesinti</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.ForeignMaterialDeductionKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Net Fatura -->
+                        <div class="col-md-3">
+                            <label class="form-label">Net Fatura Kg</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.NetInvoiceBaseKg"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Anlaşılan Fiyat -->
+                        <div class="col-md-3">
+                            <label class="form-label">Anlaşılan Fiyat</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.AgreedPrice"
+                                       class="form-control" />
+
+                                <span class="input-group-text">₺</span>
+                            </div>
+                        </div>
+
+                        <!-- Brüt Tutar -->
+                        <div class="col-md-3">
+                            <label class="form-label">Brüt Tutar</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.GrossAmount"
+                                       class="form-control" />
+
+                                <span class="input-group-text">₺</span>
+                            </div>
+                        </div>
+
+                        <!-- Net Fiyat -->
+                        <div class="col-md-3">
+                            <label class="form-label">Net Fiyat</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.NetPrice"
+                                       class="form-control" />
+
+                                <span class="input-group-text">₺</span>
+                            </div>
+                        </div>
+
+                        <!-- Net Tutar -->
+                        <div class="col-md-3">
+                            <label class="form-label">Net Tutar</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.NetAmount"
+                                       class="form-control" />
+
+                                <span class="input-group-text">₺</span>
+                            </div>
+                        </div>
+
+                        <!-- Vardiya -->
+                        <div class="col-md-3">
+                            <label class="form-label">Vardiya</label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">Vardiya Seçiniz</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Durum -->
+                        <div class="col-md-3">
+                            <label class="form-label">Durum</label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Kayıt Eden -->
+                        <div class="col-md-6">
+                            <label class="form-label">Kayıt Eden</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+                            </div>
+                        </div>
+
+                        <!-- Hidden -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

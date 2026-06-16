@@ -1,0 +1,215 @@
+﻿@using DTOLayer.Dtos.WinderCoilTrackingDto
+@model ModalViewModel<WinderCoilTrackingDto>
+
+<div class="modal fade" id="coilTrackingModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <form method="post" action="/WinderCoilTracking/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- Buffer No -->
+                        <div class="col-md-4">
+                            <label class="form-label">Tampon No</label>
+                            <input type="text" asp-for="Entity.BufferNo" class="form-control" />
+                        </div>
+
+                        <!-- Paper Type -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kağıt Tipi</label>
+                            <input type="text" asp-for="Entity.PaperType" class="form-control" />
+                        </div>
+
+                        <!-- Set No -->
+                        <div class="col-md-4">
+                            <label class="form-label">Set No</label>
+                            <input type="number" asp-for="Entity.SetNo" class="form-control" />
+                        </div>
+
+                        <!-- Gramaj -->
+                        <div class="col-md-4">
+                            <label class="form-label">Gramaj</label>
+                            <input type="number" asp-for="Entity.Gramaj" class="form-control" />
+                        </div>
+
+                        <!-- Machine Speed -->
+                        <div class="col-md-4">
+                            <label class="form-label">Makine Hızı</label>
+                            <input type="number" asp-for="Entity.MachineSpeed" class="form-control" />
+                        </div>
+
+                        <!-- Coil Diameter -->
+                        <div class="col-md-4">
+                            <label class="form-label">Bobin Çapı</label>
+                            <input type="number" step="0.01" asp-for="Entity.CoilDiameter" class="form-control" />
+                        </div>
+
+                        <!-- Coil Length -->
+                        <div class="col-md-4">
+                            <label class="form-label">Bobin Boyu</label>
+                            <input type="number" asp-for="Entity.CoilLength" class="form-control" />
+                        </div>
+
+                        <!-- Out Diameter -->
+                        <div class="col-md-4">
+                            <label class="form-label">Dış Çap</label>
+                            <input type="number" asp-for="Entity.OutDiamater" class="form-control" />
+                        </div>
+
+                        <!-- Additional Number -->
+                        <div class="col-md-4">
+                            <label class="form-label">Ek Numara</label>
+                            <input type="number" asp-for="Entity.AdditionalNumber" class="form-control" />
+                        </div>
+
+                        <!-- Start Date -->
+                        <div class="col-md-6">
+                            <label class="form-label">Başlangıç Tarihi</label>
+                            <input type="datetime-local"
+                                   asp-for="Entity.SetCutterStartDate"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="col-md-6">
+                            <label class="form-label">Bitiş Tarihi</label>
+                            <input type="datetime-local"
+                                   asp-for="Entity.SetCutterEndDate"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Coil Inputs -->
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 1</label>
+                            <input type="number" asp-for="Entity.Coil1" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 2</label>
+                            <input type="number" asp-for="Entity.Coil2" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 3</label>
+                            <input type="number" asp-for="Entity.Coil3" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 4</label>
+                            <input type="number" asp-for="Entity.Coil4" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 5</label>
+                            <input type="number" asp-for="Entity.Coil5" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 6</label>
+                            <input type="number" asp-for="Entity.Coil6" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 7</label>
+                            <input type="number" asp-for="Entity.Coil7" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bobin 8</label>
+                            <input type="number" asp-for="Entity.Coil8" class="form-control" />
+                        </div>
+
+                        <!-- Explanation -->
+                        <div class="col-md-12">
+                            <label class="form-label">Açıklama</label>
+                            <textarea asp-for="Entity.Explanation"
+                                      class="form-control"
+                                      rows="3"></textarea>
+                        </div>
+
+                        <!-- Shift -->
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">Seçiniz</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Durum -->
+                        <div class="col-md-4">
+                            <label class="form-label">Durum</label>
+
+                            <select asp-for="Entity.InUse" class="form-select">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <!-- Kayıt Eden -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="@ViewBag.AppUserName"
+                                   disabled />
+                        </div>
+
+                        <!-- Hidden -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

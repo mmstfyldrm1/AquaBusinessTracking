@@ -1,0 +1,191 @@
+﻿@using DTOLayer.Dtos.LabWork
+@using AquaBusinessTrackingWebUI.Models
+
+@model ModalViewModel<LabWorkDto>
+
+<div class="modal fade" id="labWorkModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post"
+                  action="/LabWork/Edit">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+
+                        <input type="hidden"
+                               asp-for="Entity.RecId" />
+
+
+                        <!-- TEST ADI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Test Adı
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.LabTestName"
+                                   class="form-control"
+                                   placeholder="Test adı giriniz" />
+
+                        </div>
+
+                        <!-- TEST TALEBİ -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Test Talebi
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.LabTestRequest"
+                                   class="form-control"
+                                   placeholder="Test talebi giriniz" />
+
+                        </div>
+
+                        <!-- TEST SAYISI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Test Sayısı
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.LabTestCount"
+                                   class="form-control"
+                                   placeholder="Test sayısı giriniz" />
+
+                        </div>
+
+                        <!-- TEST KULLANICILARI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Test Kullanıcıları
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.LabTestUserNames"
+                                   class="form-control"
+                                   placeholder="Kullanıcı adlarını giriniz" />
+
+                        </div>
+
+                        <!-- VARDIYA -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- AKTİF/PASİF -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- KAYIT TARİHİ -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Kayıt Tarihi
+                            </label>
+
+                            <input type="datetime-local"
+                                   asp-for="Entity.InsertDate"
+                                   class="form-control" />
+
+                        </div>
+
+                        <!-- GÜNCELLEME TARİHİ -->
+                        @if (Model.IsEdit)
+                        {
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Güncelleme Tarihi
+                                </label>
+
+                                <input type="datetime-local"
+                                       asp-for="Entity.UpdateDate"
+                                       class="form-control" />
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

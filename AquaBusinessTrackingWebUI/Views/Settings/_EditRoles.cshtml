@@ -1,0 +1,183 @@
+﻿@using DTOLayer.Dtos.RoleDtos
+@using DTOLayer.Dtos.RolePermission
+@model ModalViewModel<UpdateRoleDto>
+
+<style>
+    .perm-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .modal-scroll {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+</style>
+
+<div class="modal fade" id="roleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/Settings/EditRoles" method="post">
+
+                <input type="hidden" asp-for="Entity.Id" />
+
+                @{
+                    var permissions = (List<PermissionDto>)ViewBag.Permissions;
+                    var modules = permissions?.GroupBy(x => x.Module);
+                    var selectedPermissions = Model.Entity.PermissionIds ?? new List<int>();
+                }
+
+                <div class="modal-body modal-scroll">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label>Rol Adı</label>
+                            <input asp-for="Entity.Name" class="form-control form-control-sm" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Açıklama</label>
+                            <input asp-for="Entity.RoleName" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h6>Yetkiler</h6>
+
+                    @if (modules != null && modules.Any())
+                    {
+                        <div class="accordion" id="permAccordion">
+
+                            @foreach (var module in modules)
+                            {
+                                var moduleKey = module.Key.Replace(" ", "_");
+                                var collapseId = "m_" + moduleKey;
+                                var controllerGroups = module.GroupBy(x => x.Controller);
+                                var isModuleChecked = module.Any(x => selectedPermissions.Contains(x.RecId));
+
+                                <div class="accordion-item mb-2">
+
+                                    <div class="accordion-header d-flex align-items-center px-3 py-2">
+
+                                        <input type="checkbox"
+                                               class="form-check-input me-2 module-select"
+                                               data-module="@module.Key"
+                                               checked="@isModuleChecked" />
+
+                                        <button class="accordion-button collapsed bg-transparent shadow-none"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#@collapseId">
+                                            @module.Key
+                                            <span class="badge bg-secondary ms-2">@module.Count()</span>
+                                        </button>
+
+                                    </div>
+
+                                    <div id="@collapseId" class="accordion-collapse collapse">
+                                        <div class="accordion-body">
+
+                                            @foreach (var controller in controllerGroups)
+                                            {
+                                                var controllerList = controller.ToList();
+                                                var isControllerChecked = controllerList.Any(x => selectedPermissions.Contains(x.RecId));
+
+                                                <div class="mb-3">
+
+                                                    <div class="d-flex align-items-center mb-1">
+
+                                                        <input type="checkbox"
+                                                               class="form-check-input me-2 controller-select"
+                                                               data-module="@module.Key"
+                                                               data-controller="@controller.Key"
+                                                               checked="@isControllerChecked" />
+
+                                                        <label class="small text-muted mb-0">
+                                                            @controller.Key
+                                                        </label>
+
+                                                    </div>
+
+                                                    <div class="perm-grid ms-3">
+
+                                                        @foreach (var perm in controllerList)
+                                                        {
+                                                            var isChecked = selectedPermissions.Contains(perm.RecId);
+
+                                                            <div class="form-check">
+                                                                <input class="form-check-input perm-checkbox"
+                                                                       type="checkbox"
+                                                                       name="Entity.PermissionIds"
+                                                                       value="@perm.RecId"
+                                                                       data-module="@module.Key"
+                                                                       data-controller="@controller.Key"
+                                                                       checked="@isChecked" />
+
+                                                                <label class="form-check-label small">
+                                                                    @perm.Action
+                                                                </label>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Yetki bulunamadı</p>
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Kaydet</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.module-select').forEach(cb => {
+            cb.addEventListener('change', function () {
+                var mod = this.dataset.module;
+                document.querySelectorAll(
+                    '.perm-checkbox[data-module="' + mod + '"], .controller-select[data-module="' + mod + '"]'
+                ).forEach(x => x.checked = cb.checked);
+            });
+        });
+
+        document.querySelectorAll('.controller-select').forEach(cb => {
+            cb.addEventListener('change', function () {
+                var mod = this.dataset.module;
+                var ctrl = this.dataset.controller;
+                document.querySelectorAll(
+                    '.perm-checkbox[data-module="' + mod + '"][data-controller="' + ctrl + '"]'
+                ).forEach(x => x.checked = cb.checked);
+            });
+        });
+
+    });
+</script>

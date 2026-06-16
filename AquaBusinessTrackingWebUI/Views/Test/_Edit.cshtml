@@ -1,0 +1,166 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.TestDtos.TestHeadDtos
+@model ModalViewModel<TestFormDto>
+
+<div class="modal fade" id="testModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/Test/Edit">
+
+                <div class="modal-body">
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <input type="hidden" asp-for="Entity.DepartmentId" />
+                    <input type="hidden" asp-for="Entity.AppUserId" />
+                    <input type="hidden" asp-for="Entity.InsertDate" />
+
+                    <input type="hidden" asp-for="Entity.Detail.RecId" />
+                    <input type="hidden" asp-for="Entity.Detail.TestHeaderId" />
+
+                    <!-- HEADER -->
+                    <h6 class="fw-bold text-muted mb-3">Test Bilgileri</h6>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Test Departman Adı</label>
+                            <input type="text" asp-for="Entity.TestDepartmentName" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.InUse" class="form-select">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <!-- DETAIL -->
+                    <h6 class="fw-bold text-muted mb-3">Proses Ölçümleri</h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Giriş Debi (m³/h)</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.InletFlowRate" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Giriş DM (%)</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.InletDryMatterPercent" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Polimer Konsantrasyon (%)</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.PolyelectrolyteConcentration" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Polimer Debi</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.PolyelectrolyteFlowRate" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bowl Speed (rpm)</label>
+                            <input type="number" asp-for="Entity.Detail.BowlSpeed" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Torque (%)</label>
+                            <input type="number" asp-for="Entity.Detail.ActualTorque" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Diff Speed</label>
+                            <input type="number" asp-for="Entity.Detail.ActualDifferentialSpeed" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Weir Level (mm)</label>
+                            <input type="number" asp-for="Entity.Detail.CentrateWeirLevel" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cake DM (%)</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.CakeDryMatterPercent" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">TSS (mg/L)</label>
+                            <input type="number" asp-for="Entity.Detail.CentrateTSS" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Polimer Tüketim</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.PolyelectrolyteConsumption" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Bowl Torque (%)</label>
+                            <input type="number" asp-for="Entity.Detail.BowlTorque" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Vibration</label>
+                            <input type="number" asp-for="Entity.Detail.Vibration" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Energy (kW/h)</label>
+                            <input type="number" asp-for="Entity.Detail.EnergyConsumption" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Energy / Feed</label>
+                            <input type="number" step="0.01" asp-for="Entity.Detail.EnergyConsumptionPerFeed" class="form-control" />
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

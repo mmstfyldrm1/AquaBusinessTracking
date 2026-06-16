@@ -1,0 +1,105 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.MassWasteDtos.MassWasteSupplierDtos
+@model ModalViewModel<MassWasteSupplierDto>
+
+<div class="modal fade" id="massWasteSupplierModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/MassWasteSupplier/Edit">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- AY -->
+                        <div class="col-md-4">
+                            <label class="form-label">Ay</label>
+                            <input type="number" asp-for="Entity.Month" class="form-control" min="1" max="12" />
+                        </div>
+
+                        <!-- YIL -->
+                        <div class="col-md-4">
+                            <label class="form-label">Yıl</label>
+                            <input type="number" asp-for="Entity.Year" class="form-control" />
+                        </div>
+
+                        <!-- FİRMA -->
+                        <div class="col-md-4">
+                            <label class="form-label">Firma Adı</label>
+                            <input type="text" asp-for="Entity.CompanyName" class="form-control" />
+                        </div>
+
+                        <!-- BRÜT -->
+                        <div class="col-md-4">
+                            <label class="form-label">Brüt Ağırlık</label>
+                            <input type="number" step="0.01" asp-for="Entity.GrossWeight" class="form-control" />
+                        </div>
+
+                        <!-- NET -->
+                        <div class="col-md-4">
+                            <label class="form-label">Net Ağırlık</label>
+                            <input type="number" step="0.01" asp-for="Entity.NetWeight" class="form-control" />
+                        </div>
+
+                        <!-- ATIK KODU -->
+                        <div class="col-md-4">
+                            <label class="form-label">Atık Kodu</label>
+                            <input type="text" asp-for="Entity.WasteCode" class="form-control" />
+                        </div>
+
+                        <!-- VARDİYA -->
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <!-- KULLANICI -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
+                            </div>
+                        </div>
+
+                        <!-- HIDDEN FIELDS -->
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.InUse" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

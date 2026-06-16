@@ -1,0 +1,179 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos
+@model ModalViewModel<NaturelGasMeterMonitoringDto>
+
+<div class="modal fade" id="NaturelGasMeterMonitoringModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/NaturelGasMeterMonitoring/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden" asp-for="Entity.RecId" />
+
+                    <div class="row g-3">
+
+                        <!-- TARİH -->
+                        <div class="col-md-4">
+                            <label class="form-label">Tarih</label>
+                            <input type="date"
+                                   asp-for="Entity.Date"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- GÜNLÜK TÜKETİM -->
+                        <div class="col-md-4">
+                            <label class="form-label">Günlük Tüketim</label>
+                            <input type="number"
+                                   asp-for="Entity.DailyConsumption"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- BASINÇ -->
+                        <div class="col-md-4">
+                            <label class="form-label">Basınç</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.Pressure"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- ISI -->
+                        <div class="col-md-4">
+                            <label class="form-label">Isı</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.Heat"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- KALORİFİK DEĞER -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kalorifik Değer</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.CalorificValue"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- STANDART m³ -->
+                        <div class="col-md-4">
+                            <label class="form-label">Standart m³</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.StandartCubicmeter"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- ÇEVRİM FAKTÖRÜ -->
+                        <div class="col-md-4">
+                            <label class="form-label">Çevrim Faktörü</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.ConversionFactor"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- kW -->
+                        <div class="col-md-4">
+                            <label class="form-label">kW</label>
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.kW"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- AÇIKLAMA -->
+                        <div class="col-md-4">
+                            <label class="form-label">Açıklama</label>
+                            <input type="text"
+                                   asp-for="Entity.Explanation"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- KONTROL -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kontrol</label>
+                            <input type="number"
+                                   asp-for="Entity.Control"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- ONAY -->
+                        <div class="col-md-4">
+                            <label class="form-label">Onay Durumu</label>
+                            <select asp-for="Entity.IsApproved"
+                                    class="form-select">
+                                <option value="0">Beklemede</option>
+                                <option value="1">Onaylı</option>
+                            </select>
+                        </div>
+
+                        <!-- VARDİYA -->
+                        <div class="col-md-4">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.InUse" class="form-select">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <!-- KULLANICI -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıt Eden</label>
+                            <input type="text"
+                                   class="form-control"
+                                   value="@ViewBag.AppUserName"
+                                   disabled />
+                        </div>
+
+                        <!-- HIDDEN ALANLAR -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.InUse" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@using DTOLayer.Dtos.Integrations
+@model List<PlcReadingDto>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        Henüz PLC verisi yok.
+    </div>
+}
+else
+{
+    @foreach (var group in Model.GroupBy(r => r.Group))
+    {
+        <div class="row row-cols-1 row-cols-lg-4 g-3 mb-3">
+            <div class="col-12">
+                <h6 class="text-muted fw-bold">@group.Key</h6>
+            </div>
+            @foreach (var r in group)
+            {
+                <div class="col">
+                    <div class="card kpi-card">
+                        <div class="card-body">
+                            <div class="kpi-title">@r.DisplayName</div>
+                            <div class="kpi-value">@r.Value.ToString("F2")</div>
+                            <small class="soft-green">@r.Unit</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <small class="text-muted">
+        Son okuma: @Model.FirstOrDefault()?.ReadingTime.ToString("dd.MM.yyyy HH:mm")
+    </small>
+}

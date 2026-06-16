@@ -1,0 +1,23 @@
+﻿using DataAccsessLayer.Abstract;
+using EntityLayer.Concrete;
+using Microsoft.EntityFrameworkCore;
+
+namespace DataAccsessLayer.Concrete.Repository
+{
+    public class MassWasteSupplierRepository : GenericRepository<DB_MassWasteSupplier>, IMassWasteSupplierRepository
+    {
+        private readonly AquaBusinessTrackingContext _context;
+        public MassWasteSupplierRepository(AquaBusinessTrackingContext context) : base(context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<DB_MassWasteSupplier>> GetWithDetails()
+        {
+            return await _context.DB_MassWasteSupplier
+             .Include(x => x.Shift)
+             .Include(x => x.AppUser)
+             .ToListAsync();
+        }
+    }
+}

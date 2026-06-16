@@ -1,0 +1,94 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.PlcDtos.PlcMachineDtos
+@model ModalViewModel<PlcMachineDto>
+
+<div class="modal fade" id="PlcMachineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/PlcMachine/Edit">
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        @if (Model.IsEdit)
+                        {
+                            <input type="hidden" asp-for="Entity.RecId" />
+                        }
+
+                        <!-- Makine Adı -->
+                        <div class="col-md-6">
+                            <label class="form-label">Makine Adı</label>
+                            <input type="text"
+                                   asp-for="Entity.Name"
+                                   class="form-control"
+                                   placeholder="Örn: Kağıt Makinesi 1" />
+                        </div>
+
+                        <!-- IP Adresi -->
+                        <div class="col-md-6">
+                            <label class="form-label">IP Adresi</label>
+                            <input type="text"
+                                   asp-for="Entity.IpAddress"
+                                   class="form-control"
+                                   placeholder="192.168.1.10" />
+                        </div>
+
+                        <!-- Rack -->
+                        <div class="col-md-4">
+                            <label class="form-label">Rack</label>
+                            <input type="number"
+                                   asp-for="Entity.Rack"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Slot -->
+                        <div class="col-md-4">
+                            <label class="form-label">Slot</label>
+                            <input type="number"
+                                   asp-for="Entity.Slot"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- CPU Type -->
+                        <div class="col-md-4">
+                            <label class="form-label">CPU Tipi</label>
+                            <select asp-for="Entity.CpuType" class="form-select">
+                                <option value="">Seçiniz</option>
+                                <option value="S71200">S7-1200</option>
+                                <option value="S71500">S7-1500</option>
+                            </select>
+                        </div>
+
+                        <!-- IsActive -->
+                        <div class="col-md-4">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.IsActive" class="form-select">
+                                <option value="true">Aktif</option>
+                                <option value="false">Pasif</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

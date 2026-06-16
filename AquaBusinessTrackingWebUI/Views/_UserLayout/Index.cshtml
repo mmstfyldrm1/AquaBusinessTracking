@@ -1,0 +1,53 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!doctype html>
+<html lang="en">
+@await Component.InvokeAsync("_UserLayoutHeadComponentPartial")
+<body>
+
+
+    <!--start wrapper-->
+    <div class="wrapper">
+        <!--start sidebar -->
+        @await Component.InvokeAsync("_UserLayoutAsideComponentPartial")
+        <!--end sidebar -->
+        <!--start top header-->
+        <header class="top-header">
+            @await Component.InvokeAsync("_UserLayoutNavbarComponentPartial")
+        </header>
+        <!--end top header-->
+        <!-- start page content wrapper-->
+        <div class="page-content-wrapper">
+            <!-- start page content-->
+            <div class="page-content">
+
+                <!--start breadcrumb-->
+                @await Component.InvokeAsync("_UserLayoutBreadCrumpComponentPartial")
+                <!--end breadcrumb-->
+                @RenderBody()
+
+
+
+            </div>
+            <!-- end page content-->
+        </div>
+
+
+        @await Component.InvokeAsync("_UserLayoutSwitcherComponentPartial")
+
+
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <!--end wrapper-->
+    <!-- JS Files-->
+    @await Component.InvokeAsync("_UserLayoutScriptComponentPartial")
+    @await Component.InvokeAsync("_UserLayoutGenericNotificationComponentPartial")
+
+
+
+</body>
+</html>

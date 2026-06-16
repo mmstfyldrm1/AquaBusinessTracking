@@ -1,0 +1,214 @@
+﻿@using DTOLayer.Dtos.BufferAnalysisReportDtos
+@{
+    ViewData["Title"] = "GetBufferAnalysisReportList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+@model List<BufferAnalysisReportDto>
+
+<h6 class="mb-0 text-uppercase">Tampon Analiz Raporu</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Tampon No</th>
+                        <th>Ürün Tipi</th>
+
+                        <th>Hedef Gramaj</th>
+                        <th>Lab Ort. Gramaj</th>
+                        <th>QCS Gramaj</th>
+
+                        <th>Kalınlık</th>
+                        <th>Ort. Nem %</th>
+
+                        <th>Patlama (kPa)</th>
+                        <th>CMT (N)</th>
+
+                        <th>Filler %</th>
+
+                        <th>MONDİ Uygun</th>
+
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelleme</th>
+
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int counter = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@counter</td>
+
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+
+                            <td>@item.BufferNo</td>
+
+                            <td>@item.ProductType</td>
+
+                            <td>@item.TargetGrammage</td>
+
+                            <td>@item.LabAverageGrammage</td>
+
+                            <td>@item.QcsGrammage</td>
+
+                            <td>@item.ThicknessMicrons</td>
+
+                            <td>@item.AverageMoisture</td>
+
+                            <td>@item.BurstStrengthKpa</td>
+
+                            <td>@item.CmtNewton</td>
+
+                            <td>@item.FillerPercent</td>
+
+                            <td>
+                                @if (item.SuitableForMondi == true)
+                                {
+                                    <span class="badge bg-success">Uygun</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Uygun Değil</span>
+                                }
+                            </td>
+
+                            <td>@item.ShiftId</td>
+
+                            <td>
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
+
+                            <td>
+                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning"
+                                        onclick="openModal(@item.RecId)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post"
+                                      asp-action="Delete"
+                                      asp-route-id="@item.RecId"
+                                      style="display:inline;">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Silinsin mi?');">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </button>
+
+                                </form>
+                            </td>
+
+                        </tr>
+
+                        counter++;
+                    }
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Tampon No</th>
+                        <th>Ürün Tipi</th>
+                        <th>Hedef Gramaj</th>
+                        <th>Lab Ort.</th>
+                        <th>QCS</th>
+                        <th>Kalınlık</th>
+                        <th>Nem</th>
+                        <th>Patlama</th>
+                        <th>CMT</th>
+                        <th>Filler</th>
+                        <th>MONDİ</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt</th>
+                        <th>Güncelleme</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+        <button class="btn btn-primary shadow-sm" onclick="openModal()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Yeni Kayıt Ekle
+        </button>
+
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/BufferAnalysisReport/Edit/${id}`
+            : `/BufferAnalysisReport/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('BufferAnalysisReportModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/BufferAnalysisReport/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>
+

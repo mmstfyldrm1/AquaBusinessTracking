@@ -1,0 +1,189 @@
+﻿@using DTOLayer.Dtos.PapperMachineChemicalDtos
+@model ModalViewModel<PapperMachineChemicalDto>
+
+<div class="modal fade" id="papperMachineChemicalModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post"
+                  action="/PapperMachineChemical/Edit">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+
+                        <input type="hidden"
+                               asp-for="Entity.RecId" />
+
+
+                        <!-- STOK KODU -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Stok Kodu
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.InventoryCode"
+                                   class="form-control"
+                                   placeholder="Stok kodu giriniz" />
+
+                        </div>
+
+                        <!-- STOK ADI -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Stok Adı
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.InventoryName"
+                                   class="form-control"
+                                   placeholder="Stok adı giriniz" />
+
+                        </div>
+
+                        <!-- GELEN MİKTAR -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Gelen Miktar
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.IncomingQuantity"
+                                   class="form-control"
+                                   placeholder="Gelen miktar giriniz"
+                                   step="0.01" />
+
+                        </div>
+
+                        <!-- TÜKETİLEN MİKTAR -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tüketilen Miktar
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.ConsumedQuantity"
+                                   class="form-control"
+                                   placeholder="Tüketilen miktar giriniz"
+                                   step="0.01" />
+
+                        </div>
+
+                        <!-- Kalan MİKTAR -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Kalan Miktar
+                            </label>
+
+                            <input type="number"
+                                   asp-for="Entity.RemainingQuantity"
+                                   class="form-control"
+                                   placeholder="Tüketilen miktar giriniz"
+                                   step="0.01" />
+
+                        </div>
+
+                        <!-- TARİH -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tarih
+                            </label>
+
+                            <input type="date"
+                                   asp-for="Entity.Date"
+                                   class="form-control" />
+
+                        </div>
+
+                        <!-- VARDIYA -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- AKTİF/PASİF -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

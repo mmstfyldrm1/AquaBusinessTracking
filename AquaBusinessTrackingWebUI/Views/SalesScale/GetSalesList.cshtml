@@ -1,0 +1,139 @@
+﻿@using DTOLayer.Dtos.SalesScale
+@model List<SalesScaleDto>
+@{
+    ViewData["Title"] = "GetSalesList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+    int counter = 0;
+}
+
+<h6 class="mb-0 text-uppercase">Kantar Takip Sistemi</h6>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tartım No</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>İrsaliye No</th>
+                        <th>Cari</th>
+                        <th>Plaka</th>
+                        <th>Sevkiyat Miktar</th>
+                        <th>Kantar Miktar</th>
+                        <th>Fark</th>
+                        <th>Sorumlu</th>
+                        <th>Karar</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+                            <td>@item.ScaleNo</td>
+                            <td>@item.ScaleDate.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ScaleHours.ToString("HH:mm")</td>
+                            <td>@item.DeliveryNumber</td>
+                            <td>@item.CurrentAccountName</td>
+                            <td>@item.TruckPlate</td>
+                            <td>@item.DeliveryQuantity</td>
+                            <td>@item.ScaleQuantity</td>
+                            <td>@item.ScaleGap</td>
+                            <td>@item.GapSuperVisior</td>
+                            <td>@item.GapDesicion</td>
+                            <td>@item.ShiftName</td>
+                            <td>@item.InsertDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@item.CreatedByName</td>
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
+                                        onclick="openModal(@item.RecId)">
+                                    <i class="bi bi-pencil-square fs-6"></i>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post" asp-action="DeleteSalesScale" asp-route-id="@item.RecId" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Silinsin mi?');">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        counter++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tartım No</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>İrsaliye No</th>
+                        <th>Cari</th>
+                        <th>Plaka</th>
+                        <th>Sevkiyat Miktar</th>
+                        <th>Kantar Miktar</th>
+                        <th>Fark</th>
+                        <th>Sorumlu</th>
+                        <th>Karar</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <button class="btn btn-primary shadow-sm" onclick="openModal()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Yeni Kayıt Ekle
+        </button>
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/SalesScale/Edit/${id}`
+            : `/SalesScale/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('salesScaleModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/SalesScale/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>

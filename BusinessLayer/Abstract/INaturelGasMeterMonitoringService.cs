@@ -1,0 +1,9 @@
+﻿using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos;
+
+namespace BusinessLayer.Abstract
+{
+    public interface INaturelGasMeterMonitoringService : IGenericService<NaturelGasMeterMonitoringDto, CreateNaturelGasMeterMonitoringDto, UpdateNaturelGasMeterMonitoringDto>
+    {
+        public Task<List<NaturelGasMeterMonitoringDto>> GetWithDetails();
+    }
+}
