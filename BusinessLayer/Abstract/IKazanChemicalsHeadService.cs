@@ -5,5 +5,7 @@ namespace BusinessLayer.Abstract
     public interface IKazanChemicalsHeadService : IGenericService<KazanChemicalsHeadDto, CreateKazanChemicalsHeadDto, UpdateKazanChemicalsHeadDto>
     {
         public Task<List<KazanChemicalsHeadDto>> GetWithDetails();
+
+        public Task<List<KazanChemicalsHeadDto>> GetPreviousDay();
     }
 }

@@ -28,5 +28,12 @@
         public int? DeletedBy { get; set; }
 
         public int? UpdatedBy { get; set; }
+
+
+        public decimal Incoming { get; set; }
+
+        public decimal Consumption { get; set; }
+
+        public decimal Remaining { get; set; }
     }
 }

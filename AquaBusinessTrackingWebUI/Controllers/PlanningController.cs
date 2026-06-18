@@ -1,7 +1,9 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.PlanningDto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace AquaBusinessTrackingWebUI.Controllers
 {
@@ -20,7 +22,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
         public async Task<IActionResult> GetDailyConsumables()
         {
-            return View();
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Planning/planning");
+            if (!response.IsSuccessStatusCode)
+                return View(new PlanningDto());
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<PlanningDto>(json);
+            return View(data);
         }
     }
 }

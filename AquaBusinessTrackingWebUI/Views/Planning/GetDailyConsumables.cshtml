@@ -1,8 +1,1134 @@
-﻿
+﻿@using DTOLayer.Dtos.PlanningDto
+
 @{
-    ViewData["Title"] = "GetDailyConsumables";
+    ViewData["Title"] = "Günlük Tüketim Raporu";
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
+@model PlanningDto
+
+<style>
+    /* ── Page header ── */
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 0 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 1.75rem;
+    }
+
+    .page-header-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #e7f0fd;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    .page-header h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1d23;
+        line-height: 1.2;
+    }
+
+    .page-header p {
+        margin: 0;
+        font-size: 0.78rem;
+        color: #6c757d;
+    }
+
+    /* ── Section dividers ── */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 2rem 0 0.65rem;
+    }
+
+    .section-header-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .section-header h6 {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #374151;
+    }
+
+    /* ── Card ── */
+    .data-card {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.04);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+        .data-card .card-body {
+            padding: 0;
+        }
+
+    /* ── Table ── */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.825rem;
+    }
+
+        .data-table thead tr {
+            background: #f8f9fc;
+        }
+
+        .data-table thead th {
+            padding: 10px 14px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #f1f3f7;
+            transition: background 0.12s;
+        }
+
+            .data-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .data-table tbody tr:hover {
+                background: #f8f9fc;
+            }
+
+        .data-table tbody td {
+            padding: 9px 14px;
+            vertical-align: middle;
+            color: #374151;
+        }
+
+        .data-table tfoot tr {
+            background: #f8f9fc;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .data-table tfoot th {
+            padding: 8px 14px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+
+    /* ── Row number ── */
+    .row-num {
+        color: #9ca3af;
+        font-size: 0.72rem;
+        font-weight: 600;
+        min-width: 24px;
+    }
+
+    /* ── Badges ── */
+    .badge-aktif {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-pasif {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .badge-uygun {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-uygun-degil {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .badge-onay {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-bekle {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #fef9c3;
+        color: #a16207;
+    }
+
+    .badge-nem {
+        display: inline-flex;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .badge-yabanci {
+        display: inline-flex;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #fef9c3;
+        color: #a16207;
+    }
+
+    /* ── Numeric cell ── */
+    .num-cell {
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+    }
+
+    /* ── Icon colors per section ── */
+    .ic-blue {
+        background: #e7f0fd;
+        color: #2563eb;
+    }
+
+    .ic-green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .ic-teal {
+        background: #ccfbf1;
+        color: #0f766e;
+    }
+
+    .ic-orange {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .ic-red {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .ic-sky {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+
+    .ic-violet {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .ic-amber {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .ic-indigo {
+        background: #e0e7ff;
+        color: #4338ca;
+    }
+
+    .ic-gray {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+</style>
 
 
+@* ── PAGE HEADER ── *@
+<div class="page-header">
+    <div class="page-header-icon">
+        <i class="bx bx-clipboard"></i>
+    </div>
+    <div>
+        <h4>Günlük Tüketim Raporu</h4>
+        <p>Tüm üretim ve tüketim verilerinin günlük özeti</p>
+    </div>
+</div>
 
+
+@* ══════════════════════════════════════════════
+   1. ATIK KAĞIT KONTROL
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-blue"><i class="bx bx-recycle"></i></div>
+    <h6>Atık Kağıt Kontrol</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-atik-kagit" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sıra No</th>
+                        <th>Tarih</th>
+                        <th>İrsaliye No</th>
+                        <th>Firma</th>
+                        <th>Plaka</th>
+                        <th>Balya</th>
+                        <th>Kağıt Türü</th>
+                        <th class="text-end">İrsaliye Kg</th>
+                        <th class="text-end">Brüt Giriş Kg</th>
+                        <th class="text-end">Net Fatura Kg</th>
+                        <th class="text-center">Nem Ort. %</th>
+                        <th class="text-center">Yabancı Madde %</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelleme</th>
+                        <th class="text-center">Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i1 = 1;
+                    }
+                    @foreach (var item in Model.WastePaperControls)
+                    {
+                        <tr>
+                            <td class="row-num">@i1</td>
+                            <td>@item.SequenceNumber</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@item.WaybillNumber</code></td>
+                            <td><strong style="font-weight:600;">@item.Company</strong></td>
+                            <td><span style="font-family:monospace;font-size:0.78rem;">@item.VehicleLicensePlate</span></td>
+                            <td class="num-cell">@item.NumberOfBales</td>
+                            <td>@item.ReceivedPaperType</td>
+                            <td class="num-cell">@item.WaybillQuantityKg</td>
+                            <td class="num-cell">@item.GrossEntryQuantityKg</td>
+                            <td class="num-cell">@item.NetInvoiceBaseKg</td>
+                            <td class="text-center"><span class="badge-nem">@item.AverageMoisturePercent %</span></td>
+                            <td class="text-center"><span class="badge-yabanci">@item.ForeignMaterialPercent %</span></td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                        </tr>
+                        i1++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Sıra No</th>
+                        <th>Tarih</th>
+                        <th>İrsaliye No</th>
+                        <th>Firma</th>
+                        <th>Plaka</th>
+                        <th>Balya</th>
+                        <th>Kağıt Türü</th>
+                        <th>İrsaliye Kg</th>
+                        <th>Brüt Giriş Kg</th>
+                        <th>Net Fatura Kg</th>
+                        <th>Nem Ort.</th>
+                        <th>Yabancı Madde</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelleme</th>
+                        <th>Durum</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   2. HAMUR HAZIRLAMA KAĞIT TÜKETİM
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-teal"><i class="bx bx-layer"></i></div>
+    <h6>Hamur Hazırlama Kağıt Tüketim</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-hamur" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Pulper No</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Sıra No</th>
+                        <th class="text-end">Kırpıntı</th>
+                        <th class="text-end">Balya</th>
+                        <th class="text-end">KG</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i2 = 1;
+                    }
+                    @foreach (var item in Model.DoughPreparations)
+                    {
+                        <tr>
+                            <td class="row-num">@i2</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td><span style="font-weight:600;color:#0f766e;">@item.PulperNo</span></td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@item.InventoryCode</code></td>
+                            <td>@item.InventoryName</td>
+                            <td>@item.QueueNo</td>
+                            <td class="num-cell">@item.Clippings</td>
+                            <td class="num-cell">@item.Bale</td>
+                            <td class="num-cell"><strong style="font-weight:600;">@item.KG</strong></td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                        </tr>
+                        i2++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Pulper No</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Sıra No</th>
+                        <th>Kırpıntı</th>
+                        <th>Balya</th>
+                        <th>KG</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Vardiya</th>
+                        <th>Güncelleme Tarihi</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   3. KAĞIT MAKİNESİ KİMYASALLARI
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-violet"><i class="bx bx-test-tube"></i></div>
+    <h6>Kağıt Makinesi Kimyasalları</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-km-kimya" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th class="text-end">Gelen</th>
+                        <th class="text-end">Tüketilen</th>
+                        <th class="text-end">Kalan</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th class="text-center">Durum</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i3 = 1;
+                    }
+                    @foreach (var item in Model.PapperMachineChemicals)
+                    {
+                        <tr>
+                            <td class="row-num">@i3</td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@(item.InventoryCode ?? "-")</code></td>
+                            <td>@(item.InventoryName ?? "-")</td>
+                            <td class="num-cell">@item.IncomingQuantity.ToString("N2")</td>
+                            <td class="num-cell" style="color:#b91c1c;">@item.ConsumedQuantity.ToString("N2")</td>
+                            <td class="num-cell" style="color:#15803d;font-weight:600;">@item.RemainingQuantity.ToString("N2")</td>
+                            <td>@(item.Date?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                        </tr>
+                        i3++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Gelen</th>
+                        <th>Tüketilen</th>
+                        <th>Kalan</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   4. SU HAZIRLAMA VE TÜKETİM
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-sky"><i class="bx bx-droplet"></i></div>
+    <h6>Su Hazırlama ve Tüketim</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-su-hazir" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Malzeme Adı</th>
+                        <th>Ay</th>
+                        <th class="text-end">Gelen</th>
+                        <th class="text-end">Tüketilen</th>
+                        <th class="text-end">Kalan</th>
+                        <th>Vardiya</th>
+                        <th class="text-center">Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i4 = 1;
+                    }
+                    @foreach (var item in Model.WaterPreparationAndConsumptions)
+                    {
+                        <tr>
+                            <td class="row-num">@i4</td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@(item.InventoryCode ?? "-")</code></td>
+                            <td>@(item.InventoryName ?? "-")</td>
+                            <td>@(item.RecId)</td>
+                            <td class="num-cell">@item.IncomingQuantity</td>
+                            <td class="num-cell" style="color:#b91c1c;">@item.ConsumedQuantity</td>
+                            <td class="num-cell" style="color:#15803d;font-weight:600;">@item.RemainingQuantity</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                        </tr>
+                        i4++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Malzeme Adı</th>
+                        <th>Ay</th>
+                        <th>Gelen</th>
+                        <th>Tüketilen</th>
+                        <th>Kalan</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   5. KAZAN KİMYASALLARI
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-orange"><i class="bx bx-flame"></i></div>
+    <h6>Kazan Kimyasalları</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-kazan-kimya" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Gün</th>
+                        <th class="text-end">Gelen</th>
+                        <th class="text-end">Sarfiyat</th>
+                        <th class="text-end">Kalan</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i5 = 1;
+                    }
+                    @foreach (var item in Model.KazanChemicalsForms)
+                    {
+                        <tr>
+                            <td class="row-num">@i5</td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@(item.InventoryCode ?? "-")</code></td>
+                            <td>@(item.InventoryName ?? "-")</td>
+                            <td>@item.Day</td>
+                            <td class="num-cell">@item.Incoming</td>
+                            <td class="num-cell" style="color:#b91c1c;">@item.Consumption</td>
+                            <td class="num-cell" style="color:#15803d;font-weight:600;">@item.Remaining</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate.HasValue? item.InsertDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                        </tr>
+                        i5++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Stok Kodu</th>
+                        <th>Stok Adı</th>
+                        <th>Gün</th>
+                        <th>Gelen</th>
+                        <th>Sarfiyat</th>
+                        <th>Kalan</th>
+                        <th>Tarih</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   6. BUHAR TÜKETİM
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-sky"><i class="bx bx-cloud"></i></div>
+    <h6>Buhar Tüketim</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-buhar" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th class="text-end">Buhar</th>
+                        <th class="text-end">Besi Suyu</th>
+                        <th class="text-end">KM2 Kodens</th>
+                        <th class="text-end">HVAC</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i6 = 1;
+                    }
+                    @foreach (var item in Model.BoilerSteamFeedWaterCondensateDatas)
+                    {
+                        <tr>
+                            <td class="row-num">@i6</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td class="num-cell"><strong style="font-weight:600;">@item.Boil</strong></td>
+                            <td class="num-cell">@item.FeedWater</td>
+                            <td class="num-cell">@item.KM2Kodens</td>
+                            <td class="num-cell">@item.Hvac</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate.HasValue? item.InsertDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                        </tr>
+                        i6++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Buhar</th>
+                        <th>Besi Suyu</th>
+                        <th>KM2 Kodens</th>
+                        <th>HVAC</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   7. ARITMA KİMYASALLARI
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-green"><i class="bx bx-filter-alt"></i></div>
+    <h6>Arıtma Kimyasalları</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-aritma-kimya" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Malzeme Adı</th>
+                        <th>Ay</th>
+                        <th class="text-end">Gelen</th>
+                        <th class="text-end">Tüketilen</th>
+                        <th class="text-end">Kalan</th>
+                        <th>Vardiya</th>
+                        <th class="text-center">Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i7 = 1;
+                    }
+                    @foreach (var item in Model.PurificationChemicalsConsumptions)
+                    {
+                        <tr>
+                            <td class="row-num">@i7</td>
+                            <td><code style="font-size:0.78rem;color:#4b5563;">@(item.InventoryCode ?? "-")</code></td>
+                            <td>@(item.InventoryName ?? "-")</td>
+                            <td>@(item.Month)</td>
+                            <td class="num-cell">@item.IncomingQuantity</td>
+                            <td class="num-cell" style="color:#b91c1c;">@item.ConsumedQuantity</td>
+                            <td class="num-cell" style="color:#15803d;font-weight:600;">@item.RemainingQuantity</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                        </tr>
+                        i7++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Malzeme Adı</th>
+                        <th>Ay</th>
+                        <th>Gelen</th>
+                        <th>Tüketilen</th>
+                        <th>Kalan</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   8. TAMPON ANALİZ RAPORU
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-indigo"><i class="bx bx-bar-chart-alt-2"></i></div>
+    <h6>Tampon Analiz Raporu</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-tampon" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Tampon No</th>
+                        <th>Ürün Tipi</th>
+                        <th class="text-end">Hedef g/m²</th>
+                        <th class="text-end">Lab Ort. g/m²</th>
+                        <th class="text-end">QCS g/m²</th>
+                        <th class="text-end">Kalınlık</th>
+                        <th class="text-end">Nem %</th>
+                        <th class="text-end">Patlama kPa</th>
+                        <th class="text-end">CMT (N)</th>
+                        <th class="text-end">Filler %</th>
+                        <th class="text-center">MONDİ</th>
+                        <th>Vardiya</th>
+                        <th class="text-center">Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelleme</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i8 = 1;
+                    }
+                    @foreach (var item in Model.BufferAnalysisReports)
+                    {
+                        <tr>
+                            <td class="row-num">@i8</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td><span style="font-weight:600;color:#4338ca;">@item.BufferNo</span></td>
+                            <td>@item.ProductType</td>
+                            <td class="num-cell">@item.TargetGrammage</td>
+                            <td class="num-cell">@item.LabAverageGrammage</td>
+                            <td class="num-cell">@item.QcsGrammage</td>
+                            <td class="num-cell">@item.ThicknessMicrons</td>
+                            <td class="num-cell"><span class="badge-nem">@item.AverageMoisture %</span></td>
+                            <td class="num-cell">@item.BurstStrengthKpa</td>
+                            <td class="num-cell">@item.CmtNewton</td>
+                            <td class="num-cell">@item.FillerPercent</td>
+                            <td class="text-center">
+                                @if (item.SuitableForMondi == true)
+                                {
+                                    <span class="badge-uygun"><i class="bx bx-check" style="font-size:12px;"></i>Uygun</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-uygun-degil"><i class="bx bx-x" style="font-size:12px;"></i>Uygun Değil</span>
+                                }
+                            </td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                        </tr>
+                        i8++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Tampon No</th>
+                        <th>Ürün Tipi</th>
+                        <th>Hedef g/m²</th>
+                        <th>Lab Ort.</th>
+                        <th>QCS</th>
+                        <th>Kalınlık</th>
+                        <th>Nem</th>
+                        <th>Patlama</th>
+                        <th>CMT</th>
+                        <th>Filler</th>
+                        <th>MONDİ</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt</th>
+                        <th>Güncelleme</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   9. DOĞAL GAZ TÜKETİM
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-amber"><i class="bx bx-gas-pump"></i></div>
+    <h6>Doğal Gaz Tüketim</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-dogalgaz" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th class="text-end">Günlük Tüketim</th>
+                        <th class="text-end">Basınç</th>
+                        <th class="text-end">Isı</th>
+                        <th class="text-end">Kalorifik Değer</th>
+                        <th class="text-end">Standart m³</th>
+                        <th class="text-end">Çevrim Fakt.</th>
+                        <th class="text-end">kW</th>
+                        <th>Açıklama</th>
+                        <th>Kontrol</th>
+                        <th class="text-center">Onay</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                        <th class="text-center">Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i9 = 1;
+                    }
+                    @foreach (var item in Model.NaturelGasMeterMonitorings)
+                    {
+                        <tr>
+                            <td class="row-num">@i9</td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td class="num-cell"><strong style="font-weight:600;">@item.DailyConsumption</strong></td>
+                            <td class="num-cell">@item.Pressure</td>
+                            <td class="num-cell">@item.Heat</td>
+                            <td class="num-cell">@item.CalorificValue</td>
+                            <td class="num-cell">@item.StandartCubicmeter</td>
+                            <td class="num-cell">@item.ConversionFactor</td>
+                            <td class="num-cell">@item.kW</td>
+                            <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@item.Explanation">@(item.Explanation ?? "-")</td>
+                            <td>@(item.Control)</td>
+                            <td class="text-center">
+                                @if (item.IsApproved == 1)
+                                {
+                                    <span class="badge-onay"><i class="bx bx-check-shield" style="font-size:12px;"></i>Onaylı</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-bekle"><i class="bx bx-time" style="font-size:12px;"></i>Beklemede</span>
+                                }
+                            </td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate.HasValue? item.InsertDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                            <td class="text-center">
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge-aktif"><i class="bx bx-check-circle" style="font-size:12px;"></i>Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge-pasif">Pasif</span>
+                                }
+                            </td>
+                        </tr>
+                        i9++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Günlük Tüketim</th>
+                        <th>Basınç</th>
+                        <th>Isı</th>
+                        <th>Kalorifik Değer</th>
+                        <th>Standart m³</th>
+                        <th>Çevrim Fakt.</th>
+                        <th>kW</th>
+                        <th>Açıklama</th>
+                        <th>Kontrol</th>
+                        <th>Onay</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@* ══════════════════════════════════════════════
+   10. ELEKTRİK TÜKETİM TAKİBİ
+   ══════════════════════════════════════════════ *@
+<div class="section-header">
+    <div class="section-header-icon ic-amber"><i class="bx bx-bolt-circle"></i></div>
+    <h6>Elektrik Tüketim Takibi</h6>
+</div>
+<div class="data-card card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tbl-elektrik" class="data-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Yıl</th>
+                        <th>Ay</th>
+                        <th>Lokasyon</th>
+                        <th class="text-end">Tüketim (kWh)</th>
+                        <th>Tarih</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i10 = 1;
+                    }
+                    @foreach (var item in Model.CumulativeElectricityConsumptions)
+                    {
+                        <tr>
+                            <td class="row-num">@i10</td>
+                            <td>@item.Year</td>
+                            <td>@item.Month</td>
+                            <td>
+                                <span style="display:inline-flex;align-items:center;gap:5px;">
+                                    <i class="bx bx-map-pin" style="color:#d97706;font-size:13px;"></i>
+                                    @(item.LocationName ?? "-")
+                                </span>
+                            </td>
+                            <td class="num-cell"><strong style="font-weight:600;color:#4338ca;">@item.Consumption.ToString("N0")</strong></td>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@(item.ShiftName ?? "-")</td>
+                            <td>@(item.CreatedByName ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertedDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                        </tr>
+                        i10++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Yıl</th>
+                        <th>Ay</th>
+                        <th>Lokasyon</th>
+                        <th>Tüketim (kWh)</th>
+                        <th>Tarih</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Eden</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,7 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
-using DTOLayer.Dtos.KazanChemicalsDtos.KazanChemicalsHeadDtos;
 using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
-using DTOLayer.Dtos.ResponseComboBoxDtos;
+using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -53,15 +52,9 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 var client = _httpClientFactory.CreateClient();
                 var headingResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}");
                 var headingJson = await headingResponse.Content.ReadAsStringAsync();
-                var dto = JsonConvert.DeserializeObject<KazanChemicalsFormDto>(headingJson);
-                var detailResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}/kazanDetail");
-                if (detailResponse.IsSuccessStatusCode)
-                {
-                    var detailJson = await detailResponse.Content.ReadAsStringAsync();
-                    var details = JsonConvert.DeserializeObject<List<KazanChemicalsDetaiFormDto>>(detailJson);
-                    dto.Detail = details?.FirstOrDefault() ?? new KazanChemicalsDetaiFormDto();
-                }
-                var model = new ModalViewModel<KazanChemicalsFormDto>
+                var dto = JsonConvert.DeserializeObject<KazanChemicalsHeadDto>(headingJson);
+
+                var model = new ModalViewModel<KazanChemicalsHeadDto>
                 {
                     Entity = dto,
                     IsEdit = true,
@@ -72,12 +65,8 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                var model = new ModalViewModel<KazanChemicalsFormDto>
+                var model = new ModalViewModel<KazanChemicalsHeadDto>
                 {
-                    Entity = new KazanChemicalsFormDto
-                    {
-                        Detail = new KazanChemicalsDetaiFormDto()
-                    },
                     IsEdit = false,
                     ModalTitle = "Kazan Kimyasal Analizi Ekle",
                     FormAction = "Edit"
@@ -86,7 +75,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(ModalViewModel<KazanChemicalsFormDto> model)
+        public async Task<IActionResult> Edit(ModalViewModel<KazanChemicalsHeadDto> model)
         {
             var dto = model.Entity;
             dto.DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
@@ -108,14 +97,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                     Console.WriteLine(error);
                     return PartialView("_Edit", model);
                 }
-                var detailContent = new StringContent(JsonConvert.SerializeObject(dto.Detail), Encoding.UTF8, "application/json");
-                var detailResult = await client.PutAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{dto.RecId}/kazanDetail", detailContent);
-                if (!detailResult.IsSuccessStatusCode)
-                {
-                    var error = await detailResult.Content.ReadAsStringAsync();
-                    Console.WriteLine(error);
-                    return PartialView("_Edit", model);
-                }
+
             }
             else
             {
@@ -131,18 +113,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                     var error = await headingResponse.Content.ReadAsStringAsync();
                     return PartialView("_Edit", model);
                 }
-                var headingResponseJson = await headingResponse.Content.ReadAsStringAsync();
-                var createdHeading = JsonConvert.DeserializeObject<KazanChemicalsFormDto>(headingResponseJson);
 
-                if (createdHeading == null)
-                    return PartialView("_Edit", model);
-                var detailContent = new StringContent(JsonConvert.SerializeObject(dto.Detail), Encoding.UTF8, "application/json");
-                var detailResponse = await client.PostAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{createdHeading.RecId}/kazanDetail", detailContent);
-                if (!detailResponse.IsSuccessStatusCode)
-                {
-                    var error = await detailResponse.Content.ReadAsStringAsync();
-                    return PartialView("_Edit", model);
-                }
             }
             return RedirectToAction("GetKazanChemicalsList");
         }
@@ -154,20 +125,6 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
             var client = _httpClientFactory.CreateClient();
-            var detailResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}/kazanDetail");
-            if (detailResponse.IsSuccessStatusCode)
-            {
-                var detailJson = await detailResponse.Content.ReadAsStringAsync();
-                var details = JsonConvert.DeserializeObject<List<KazanChemicalsDetaiFormDto>>(detailJson);
-                if (details != null)
-                {
-                    foreach (var detail in details)
-                    {
-
-                        await client.DeleteAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}/kazanDetail/{detail.RecId}");
-                    }
-                }
-            }
 
             var response = await client.DeleteAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}");
             if (response.IsSuccessStatusCode)
@@ -179,21 +136,19 @@ namespace AquaBusinessTrackingWebUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var sb = new StringBuilder();
-            sb.AppendLine("Select RecId [Id], ShiftCode [Name] from Db_Shift");
-            var queryObj = new { query = sb.ToString() };
-            var content = new StringContent(JsonConvert.SerializeObject(queryObj), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{_apiSettings.BaseUrl}/Query/execute", content);
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Shift/getall");
+
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResponseComboBoxDto>>(jsonData);
+                var values = JsonConvert.DeserializeObject<List<ShiftDto>>(jsonData);
                 if (values != null)
                 {
                     ViewBag.Shifts = values.Select(r => new SelectListItem
                     {
-                        Value = r.Id.ToString(),
-                        Text = r.Name.ToString()
+                        Value = r.RecId.ToString(),
+                        Text = r.ShiftName.ToString()
                     }).ToList();
                 }
             }

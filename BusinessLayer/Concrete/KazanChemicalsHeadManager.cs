@@ -15,6 +15,13 @@ namespace BusinessLayer.Concrete
             _repo = repo;
         }
 
+        public async Task<List<KazanChemicalsHeadDto>> GetPreviousDay()
+        {
+            var entities = await _repo.GetPreviousDay();
+            var dtos = _mapper.Map<List<KazanChemicalsHeadDto>>(entities);
+            return dtos;
+        }
+
         public async Task<List<KazanChemicalsHeadDto>> GetWithDetails()
         {
             var entities = await _repo.GetWithDetails();

@@ -6,5 +6,7 @@ namespace DataAccsessLayer.Abstract
     {
         Task<List<DB_Basin>> GetBasinsWithDetails();
 
+
+
     }
 }

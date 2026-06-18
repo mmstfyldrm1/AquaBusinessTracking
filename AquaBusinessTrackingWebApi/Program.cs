@@ -62,8 +62,6 @@ builder.Services.AddScoped<IWastePaperControlRepository, WastePaperControlReposi
 builder.Services.AddScoped<IWastePaperControlService, WastePaperControlManager>();
 builder.Services.AddScoped<IWastePaperCostRepository, WastePaperCostRepository>();
 builder.Services.AddScoped<IWastePaperCostService, WastePaperCostManager>();
-builder.Services.AddScoped<IKazanChemicalsDetailRepository, KazanChemicalsDetailRepository>();
-builder.Services.AddScoped<IKazanChemicalsDetailService, KazanChemicalsDetailManager>();
 builder.Services.AddScoped<IKazanChemicalsHeadRepository, KazanChemicalsHeadRepository>();
 builder.Services.AddScoped<IKazanChemicalsHeadService, KazanChemicalsHeadManager>();
 builder.Services.AddScoped<IBoilerSteamFeedWaterCondensateDataRepository, BoilerSteamFeedWaterCondensateDataRepository>();
@@ -129,7 +127,7 @@ builder.Services.AddScoped<IPlcMachineRepository, PlcMachineRepository>();
 builder.Services.AddScoped<IPlcMachineService, PlcMachineManager>();
 builder.Services.AddScoped<IPlcTagsRepository, PlcTagsRepository>();
 builder.Services.AddScoped<IPlcTagsService, PlcTagsManager>();
-builder.Services.AddSingleton<IPlcReader, S7PlcReader>();
+builder.Services.AddSingleton<IPlcReader, OpcUaPlcReader>();
 builder.Services.AddHostedService<PlcPollingService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

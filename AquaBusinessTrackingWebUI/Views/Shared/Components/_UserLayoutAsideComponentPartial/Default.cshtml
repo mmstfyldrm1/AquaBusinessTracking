@@ -11,13 +11,25 @@
     </div>
 
     <ul class="metismenu" id="menu">
-
-        <li>
-            <a href="~/UserDashboard/Index">
-                <div class="parent-icon"><ion-icon name="home-outline"></ion-icon></div>
-                <div class="menu-title">Dashboard</div>
-            </a>
-        </li>
+        @if (CurrentUser.HasPermission("Admin"))
+        {
+            <li>
+                <a href="~/AdminDashboard/Index">
+                    <div class="parent-icon"><ion-icon name="home-outline"></ion-icon></div>
+                    <div class="menu-title">Dashboard</div>
+                </a>
+            </li>
+        }
+        @if (!CurrentUser.HasPermission("Admin"))
+        {
+            <li>
+                <a href="~/UserDashboard/Index">
+                    <div class="parent-icon"><ion-icon name="home-outline"></ion-icon></div>
+                    <div class="menu-title">Dashboard</div>
+                </a>
+            </li>
+        }
+       
 
         <li class="menu-label">Departmanlar</li>
 
@@ -335,7 +347,7 @@
             </li>
         }
 
-       
+
 
 
         @if (CurrentUser.HasModulePermission("KAGITKANTAR"))

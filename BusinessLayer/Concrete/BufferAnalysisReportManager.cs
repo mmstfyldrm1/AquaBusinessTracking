@@ -15,6 +15,12 @@ namespace BusinessLayer.Concrete
             _repo = repo;
         }
 
+        public async Task<List<BufferAnalysisReportDto>> GetPreviousDay()
+        {
+            var entity = await _repo.GetPreviousDay();
+            return _mapper.Map<List<BufferAnalysisReportDto>>(entity);
+        }
+
         public async Task<BufferAnalysisReportDto> GetWithDetails()
         {
             var entity = await _repo.GetWithDetails();

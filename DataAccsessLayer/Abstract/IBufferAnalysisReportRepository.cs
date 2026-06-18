@@ -5,5 +5,7 @@ namespace DataAccsessLayer.Abstract
     public interface IBufferAnalysisReportRepository : IGenericRepository<DB_BufferAnalysisReport>
     {
         public Task<List<DB_BufferAnalysisReport>> GetWithDetails();
+
+        public Task<List<DB_BufferAnalysisReport>> GetPreviousDay();
     }
 }

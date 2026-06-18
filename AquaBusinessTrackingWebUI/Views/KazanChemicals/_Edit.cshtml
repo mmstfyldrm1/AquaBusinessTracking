@@ -1,6 +1,6 @@
 ﻿@using AquaBusinessTrackingWebUI.Models
-@using DTOLayer.Dtos.KazanChemicalsDtos.KazanChemicalsHeadDtos
-@model ModalViewModel<KazanChemicalsFormDto>
+@using DTOLayer.Dtos.KazanDtos.KazanHeadDtos
+@model ModalViewModel<KazanChemicalsHeadDto>
 
 <div class="modal fade" id="kazanChemicalsModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -27,11 +27,7 @@
 
 
 
-                    @if (Model.Entity.Detail != null)
-                    {
-                        <input type="hidden" asp-for="Entity.Detail.RecId" />
-                        <input type="hidden" asp-for="Entity.Detail.KazanChemicalsHeadId" />
-                    }
+
 
                     <!-- Genel Bilgiler -->
                     <h6 class="fw-bold text-muted mb-3">Kimyasal Bilgileri</h6>
@@ -101,7 +97,7 @@
                             <label class="form-label">Gelen Miktar</label>
                             <input type="number"
                                    step="0.01"
-                                   asp-for="Entity.Detail.Incoming"
+                                   asp-for="Entity.Incoming"
                                    class="form-control" />
                         </div>
 
@@ -109,7 +105,7 @@
                             <label class="form-label">Tüketim</label>
                             <input type="number"
                                    step="0.01"
-                                   asp-for="Entity.Detail.Consumption"
+                                   asp-for="Entity.Consumption"
                                    class="form-control" />
                         </div>
 
@@ -117,7 +113,7 @@
                             <label class="form-label">Kalan</label>
                             <input type="number"
                                    step="0.01"
-                                   asp-for="Entity.Detail.Remaining"
+                                   asp-for="Entity.Remaining"
                                    class="form-control" />
                         </div>
 

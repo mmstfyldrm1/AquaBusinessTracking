@@ -15,6 +15,13 @@ namespace BusinessLayer.Concrete
             _repo = repo;
         }
 
+        public async Task<List<NaturelGasMeterMonitoringDto>> GetPreviousDay()
+        {
+            var entities = await _repo.GetWithDetails();
+            var dtos = _mapper.Map<List<NaturelGasMeterMonitoringDto>>(entities);
+            return dtos;
+        }
+
         public async Task<List<NaturelGasMeterMonitoringDto>> GetWithDetails()
         {
             var entities = await _repo.GetWithDetails();

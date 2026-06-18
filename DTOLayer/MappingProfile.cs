@@ -14,7 +14,6 @@ using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
 using DTOLayer.Dtos.ElectricDtos.ElectricMeterLocationDtos;
 using DTOLayer.Dtos.ElectricDtos.ElectricMotorTrackingDto;
 using DTOLayer.Dtos.ElectricDtos.ElectricShiftDtos;
-using DTOLayer.Dtos.KazanDtos.KazanDetailDtos;
 using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
 using DTOLayer.Dtos.LabWork;
 using DTOLayer.Dtos.LabWorkDtos;
@@ -120,11 +119,6 @@ namespace DTOLayer
             CreateMap<DB_KazanChemicalsHead, UpdateKazanChemicalsHeadDto>().ReverseMap();
             CreateMap<DB_KazanChemicalsHead, KazanChemicalsHeadDto>().ReverseMap();
             CreateMap<DB_KazanChemicalsHead, KazanChemicalsHeadDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
-
-
-            CreateMap<DB_KazanChemicalsDetail, CreateKazanChemicalsDetailDto>().ReverseMap();
-            CreateMap<DB_KazanChemicalsDetail, UpdateKazanChemicalsDetailDto>().ReverseMap();
-            CreateMap<DB_KazanChemicalsDetail, KazanChemicalsDetailDto>().ReverseMap();
 
             CreateMap<DB_PapperMachineChemical, CreatePapperMachineChemicalDto>().ReverseMap();
             CreateMap<DB_PapperMachineChemical, UpdatePapperMachineChemicalDto>().ReverseMap();

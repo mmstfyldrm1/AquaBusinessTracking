@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.Abstract;
 using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AquaBusinessTrackingWebApi.Controllers
@@ -18,7 +17,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
             _shiftService = shiftService;
         }
 
-        [HttpGet]
+        [HttpGet("getall")]
         public async Task<IActionResult> GetList()
         {
             var result = await _shiftService.GetList();

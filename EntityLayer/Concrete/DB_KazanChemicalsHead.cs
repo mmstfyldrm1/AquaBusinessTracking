@@ -39,14 +39,17 @@ namespace EntityLayer.Concrete
         [JsonIgnore]
         public DB_Shift Shift { get; set; }
 
-        [JsonIgnore]
-        public ICollection<DB_KazanChemicalsDetail> KazanChemicalsDetails { get; set; }
-
         public Int16? InUse { get; set; }
 
         public int? DeletedBy { get; set; }
 
         public int? UpdatedBy { get; set; }
+
+        public decimal Incoming { get; set; }
+
+        public decimal Consumption { get; set; }
+
+        public decimal Remaining { get; set; }
 
 
     }

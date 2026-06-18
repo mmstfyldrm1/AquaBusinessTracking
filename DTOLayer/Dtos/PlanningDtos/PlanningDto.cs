@@ -2,7 +2,7 @@
 using DTOLayer.Dtos.BufferAnalysisReportDtos;
 using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos;
 using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
-using DTOLayer.Dtos.KazanChemicalsDtos.KazanChemicalsHeadDtos;
+using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
 using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
 using DTOLayer.Dtos.PurificationChemicalsConsumptionDtos;
@@ -19,7 +19,7 @@ namespace DTOLayer.Dtos.PlanningDto
 
         public List<WaterPreparationAndConsumptionDto> WaterPreparationAndConsumptions { get; set; }
 
-        public List<KazanChemicalsFormDto> KazanChemicalsForms { get; set; }
+        public List<KazanChemicalsHeadDto> KazanChemicalsForms { get; set; }
 
         public List<BoilerSteamFeedWaterCondensateDataDto> BoilerSteamFeedWaterCondensateDatas { get; set; }
 

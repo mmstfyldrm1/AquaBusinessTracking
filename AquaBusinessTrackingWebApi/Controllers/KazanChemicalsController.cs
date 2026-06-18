@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.Abstract;
-using DTOLayer.Dtos.KazanDtos.KazanDetailDtos;
 using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +11,11 @@ namespace AquaBusinessTrackingWebApi.Controllers
     public class KazanChemicalsController : ControllerBase
     {
         private readonly IKazanChemicalsHeadService _kazanHead;
-        private readonly IKazanChemicalsDetailService _kazanDetail;
 
-        public KazanChemicalsController(IKazanChemicalsHeadService kazanHead, IKazanChemicalsDetailService kazanDetail)
+
+        public KazanChemicalsController(IKazanChemicalsHeadService kazanHead)
         {
             _kazanHead = kazanHead;
-            _kazanDetail = kazanDetail;
         }
 
         [HttpGet]
@@ -60,34 +58,5 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
 
-        [HttpGet("{kazanHeadId}/kazanDetail")]
-        public async Task<IActionResult> GetKazanDetails(int kazanHeadId)
-        {
-            var all = await _kazanDetail.GetList();
-            var result = all.Where(x => x.KazanChemicalsHeadId == kazanHeadId).ToList();
-            return Ok(result);
-        }
-
-        [HttpPost("{kazanHeadId}/kazanDetail")]
-        public async Task<IActionResult> AddKazanDetail(int kazanHeadId, [FromBody] CreateKazanChemicalsDetailDto dto)
-        {
-            dto.KazanChemicalsHeadId = kazanHeadId;
-            await _kazanDetail.Add(dto);
-            return Ok();
-        }
-
-        [HttpPut("{kazanHeadId}/kazanDetail")]
-        public async Task<IActionResult> UpdateKazanDetail(int kazanHeadId, [FromBody] UpdateKazanChemicalsDetailDto dto)
-        {
-            await _kazanDetail.Update(dto);
-            return Ok();
-        }
-
-        [HttpDelete("{kazanHeadId}/kazanDetail/{kazanDetailId}")]
-        public async Task<IActionResult> DeleteKazanDetail(int kazanHeadId, int kazanDetailId)
-        {
-            await _kazanDetail.Delete(kazanDetailId);
-            return Ok();
-        }
     }
 }

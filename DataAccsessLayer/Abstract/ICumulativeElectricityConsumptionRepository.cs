@@ -6,6 +6,9 @@ namespace DataAccsessLayer.Abstract
     {
         Task<List<DB_CumulativeElectricityConsumption>> GetWithDetails();
 
+        Task<List<DB_CumulativeElectricityConsumption>> GetPreviousDay();
         Task<List<DB_ElectricMeterLocation>> GetLocationName();
+
+
     }
 }

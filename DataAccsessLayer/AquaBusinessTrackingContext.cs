@@ -254,11 +254,7 @@ namespace DataAccsessLayer
             .HasForeignKey(x => x.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<DB_KazanChemicalsDetail>()
-            .HasOne(x => x.KazanChemicalsHead)
-            .WithMany(x => x.KazanChemicalsDetails)
-            .HasForeignKey(x => x.KazanChemicalsHeadId)
-            .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<DB_DoughPreparation>()
             .HasOne(x => x.Department)
@@ -791,7 +787,6 @@ namespace DataAccsessLayer
         public DbSet<DB_WinderCoilTracking> Db_WinderCoilTracking { get; set; }
 
         public DbSet<DB_KazanChemicalsHead> Db_KazanChemicalsHead { get; set; }
-        public DbSet<DB_KazanChemicalsDetail> Db_KazanChemicalsDetail { get; set; }
         public DbSet<DB_SteamConsumption> Db_SteamConsumption { get; set; }
 
         public DbSet<DB_DoughPreparation> Db_DoughPreparation { get; set; }

@@ -12,6 +12,18 @@ namespace DataAccsessLayer.Concrete.Repository
             _context = context;
         }
 
+        public async Task<List<DB_WaterPreparationAndConsumption>> GetPreviousDay()
+        {
+            DateTime? startDate = DateTime.Now.AddDays(-1);
+            DateTime? endDate = DateTime.Today;
+
+            return await _context.Db_WaterPreparationAndConsumption
+              .Include(x => x.Shift)
+              .Include(x => x.AppUser)
+              .Where(x => x.InsertDate > startDate && x.InsertDate < endDate)
+              .ToListAsync();
+        }
+
         public async Task<List<DB_WaterPreparationAndConsumption>> GetWithDetails()
         {
             return await _context.Db_WaterPreparationAndConsumption

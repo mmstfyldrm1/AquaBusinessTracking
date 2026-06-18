@@ -1,7 +1,7 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.ElectricDtos.ElectricMeterLocationDtos;
-using DTOLayer.Dtos.ResponseComboBoxDtos;
+using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -145,29 +145,27 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             return Json(new { success = false, message = "Silme işlemi başarısız oldu." });
         }
-
         private async Task LoadShiftListAsync()
         {
             var client = _httpClientFactory.CreateClient();
             var sb = new StringBuilder();
-            sb.AppendLine("Select RecId [Id] , ShiftCode [Name] from Db_Shift");
-            var queryObj = new { query = sb.ToString() };
-            var content = new StringContent(JsonConvert.SerializeObject(queryObj), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{_apiSettings.BaseUrl}/Query/execute", content);
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Shift/getall");
+
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResponseComboBoxDto>>(jsonData);
+                var values = JsonConvert.DeserializeObject<List<ShiftDto>>(jsonData);
                 if (values != null)
                 {
                     ViewBag.Shifts = values.Select(r => new SelectListItem
                     {
-                        Value = r.Id.ToString(),
-                        Text = r.Name.ToString()
+                        Value = r.RecId.ToString(),
+                        Text = r.ShiftName.ToString()
                     }).ToList();
                 }
             }
         }
+
     }
 }
