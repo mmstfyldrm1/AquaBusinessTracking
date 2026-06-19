@@ -1,0 +1,106 @@
+﻿@model ShippingViewModel
+
+<div class="page-section" id="sevk">
+    <!-- KPI ROW -->
+    <div class="kpi-grid">
+
+        <div class="kpi">
+            <div class="kpi-label">Sevk Edilen</div>
+            <div class="kpi-val">@Model.TotalShipment</div>
+            <div class="kpi-unit">kg</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-label">Sevkiyat Sayısı</div>
+            <div class="kpi-val">@Model.TotalSales</div>
+            <div class="kpi-unit">Araç</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-label">Faturalanan</div>
+            <div class="kpi-val">—</div>
+            <div class="kpi-unit">Ton</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-label">Bekleyen Sevk</div>
+            <div class="kpi-val">—</div>
+            <div class="kpi-unit">Ton</div>
+        </div>
+
+    </div>
+
+    <br />
+
+    <!-- CHART -->
+    <div class="card chart-card">
+        <div class="card-title">Sevkiyat & Satış Trend</div>
+
+        <div class="chart-wrapper">
+            <canvas id="shippingChart"></canvas>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+        <div class="card-title">Son Sevkiyatlar</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tartım No</th>
+                    <th>Tarih</th>
+                    <th>Müşteri</th>
+                    <th>Ton</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Last10)
+                {
+                    <tr>
+                        <td>@item.ScaleNo</td>
+                        <td>@item.InsertDate</td>
+                        <td>@item.CurrentAccountName</td>
+                        <td>@item.DeliveryQuantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM.yyyy"))))
+        const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)))
+
+        // Varsa eskiyi yok et
+        const existing = Chart.getChart('shippingChart');
+        if (existing) existing.destroy();
+
+        new Chart(document.getElementById('shippingChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Ton',
+                    data: values,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                devicePixelRatio: window.devicePixelRatio || 1  // bulanıklık için
+            }
+        });
+    });
+
+
+</script>

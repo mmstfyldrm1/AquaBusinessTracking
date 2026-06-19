@@ -2,7 +2,7 @@
 {
     public class CreateWinderLengthControlDto
     {
-    
+
 
         public decimal CoilWidth { get; set; }
 

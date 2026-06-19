@@ -2,7 +2,7 @@
 
 namespace AquaBusinessTrackingWebUI.ViewComponents
 {
-    public class _UserLayoutScriptComponentPartial:ViewComponent
+    public class _UserLayoutScriptComponentPartial : ViewComponent
     {
         public IViewComponentResult Invoke()
         {

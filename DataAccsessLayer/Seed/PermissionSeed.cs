@@ -75,6 +75,8 @@ namespace DataAccsessLayer.Seed
                 // ================= ELEKTRIK =================
                 ("ELEKTRIK", "ElectricMotorTracking", "Motor Takip"),
                 ("ELEKTRIK", "ElectricShiftWorking", "Vardiya Takip"),
+                ("ELEKTRIK", "CumulativeElectricityConsumption", "Tüketim Takip"),
+                ("ELEKTRIK", "ElectricMeterLocation", "Sayaç Takip"),
             
                 // ================= OTOMASYON =================
                 ("OTOMASYON", "General", "Otomasyon"),

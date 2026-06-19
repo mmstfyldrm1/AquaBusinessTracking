@@ -24,7 +24,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<List<CumulativeElectricityConsumptionDto>> GetPreviousDay()
         {
-            var data = await _repo.GetWithDetails();
+            var data = await _repo.GetPreviousDay();
             return _mapper.Map<List<CumulativeElectricityConsumptionDto>>(data);
         }
 

@@ -11,13 +11,12 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
     public class OpcUaPlcReader : IPlcReader, IAsyncDisposable
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        // makine bazlı session dictionary — birden fazla makine olabilir
         private readonly Dictionary<int, Session> _sessions = new();
 
         public OpcUaPlcReader(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-            // config inject edilmiyor — endpoint DB'den geliyor
+
         }
 
         private async Task<Session> EnsureConnectedAsync(DB_PlcMachine machine)

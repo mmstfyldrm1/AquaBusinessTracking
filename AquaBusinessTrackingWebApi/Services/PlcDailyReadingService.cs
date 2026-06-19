@@ -29,7 +29,7 @@ namespace AquaBusinessTrackingWebApi.Services
                 var now = DateTime.Now;
                 var nextRun = DateTime.Today.AddHours(hour).AddMinutes(minute);
 
-                // 08:00 geçtiyse yarın çalıştır
+
                 if (now >= nextRun)
                     nextRun = nextRun.AddDays(1);
 

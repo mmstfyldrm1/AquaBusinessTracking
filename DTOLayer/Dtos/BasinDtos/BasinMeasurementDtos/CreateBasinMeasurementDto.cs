@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DTOLayer.Dtos.BasinDtos.BasinMeasurement
+﻿namespace DTOLayer.Dtos.BasinDtos.BasinMeasurement
 {
     public class CreateBasinMeasurementDto
     {
-        
+
         public int BasinId { get; set; }
         public decimal? EnteranceAKM { get; set; }
         public decimal? OutAKM { get; set; }

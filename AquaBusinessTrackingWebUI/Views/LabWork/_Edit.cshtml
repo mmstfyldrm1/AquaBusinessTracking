@@ -30,8 +30,12 @@
                     <div class="row g-3">
 
 
-                        <input type="hidden"
-                               asp-for="Entity.RecId" />
+                        <input type="hidden" asp-for="Entity.RecId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+
+
+                            
 
 
                         <!-- TEST ADI -->
@@ -126,34 +130,7 @@
 
                         </div>
 
-                        <!-- KAYIT TARİHİ -->
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Kayıt Tarihi
-                            </label>
-
-                            <input type="datetime-local"
-                                   asp-for="Entity.InsertDate"
-                                   class="form-control" />
-
-                        </div>
-
-                        <!-- GÜNCELLEME TARİHİ -->
-                        @if (Model.IsEdit)
-                        {
-                            <div class="col-md-6">
-
-                                <label class="form-label">
-                                    Güncelleme Tarihi
-                                </label>
-
-                                <input type="datetime-local"
-                                       asp-for="Entity.UpdateDate"
-                                       class="form-control" />
-
-                            </div>
-                        }
+                       
 
                     </div>
 

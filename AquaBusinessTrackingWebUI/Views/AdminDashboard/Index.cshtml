@@ -3,122 +3,51 @@
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
 
-<!-- ================= GLOBAL STYLE FEEL (sade) ================= -->
-@await Component.InvokeAsync("_AdminLayoutHeadComponentPartial")
+<!DOCTYPE html>
+<html lang="tr">
 
-<!-- ================= KPI ROW ================= -->
-@await Component.InvokeAsync("_AdminLayoutStatisticComponentPartial")
+    @await Component.InvokeAsync("_AdminLayoutHeadComponentPartial")
+<body>
+
+    @await Component.InvokeAsync("_AdminLayoutStatisticComponentPartial")
 
 
-<!-- ================= PRODUCTION + MACHINES ================= -->
-<div class="row mt-3">
-
-    <div class="col-lg-8">
-        <div class="card kpi-card">
-            <div class="card-body">
-                <h6 class="mb-3">Üretim & Verimlilik</h6>
-                <div id="productionChart"></div>
-            </div>
-        </div>
+    <!-- TOP NAV -->
+    <div class="topnav">
+        <a href="#ozet">Genel Özet</a>
+        <a href="#hammadde">Hammadde & Kimyasal</a>
+        <a href="#enerji">Enerji & Su</a>
+        <a href="#durus">Duruş Analizi</a>
+        <a href="#stok">Stok & Üretim</a>
+        <a href="#sevk">Sevkiyat & Satış</a>
     </div>
 
-    <div class="col-lg-4">
-        <div class="card kpi-card">
-            <div class="card-body">
-                <h6 class="mb-3">Makine Durumu</h6>
+    <div class="content">
 
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between">
-                        <span>KM-1</span><span class="soft-green">Çalışıyor</span>
-                    </div>
-                    <div class="progress" style="height:5px">
-                        <div class="progress-bar bg-success" style="width:92%"></div>
-                    </div>
-                </div>
+        <!-- ÖZET -->
+        @await Component.InvokeAsync("_AdminLayoutSummaryComponentPartial")
 
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between">
-                        <span>KM-2</span><span class="soft-orange">Bakım</span>
-                    </div>
-                    <div class="progress" style="height:5px">
-                        <div class="progress-bar bg-warning" style="width:65%"></div>
-                    </div>
-                </div>
+        <!-- HAMMADDE -->
+        @await Component.InvokeAsync("_AdminLayoutRawmaterialsComponentPartial")
 
-                <div>
-                    <div class="d-flex justify-content-between">
-                        <span>KM-3</span><span class="soft-red">Arıza</span>
-                    </div>
-                    <div class="progress" style="height:5px">
-                        <div class="progress-bar bg-danger" style="width:30%"></div>
-                    </div>
-                </div>
+        <!-- ENERJİ -->
+        @await Component.InvokeAsync("_AdminLayoutEnergyComponentPartial")
 
-            </div>
-        </div>
-    </div>
 
-</div>
+        <!-- DURUŞ -->
+        @await Component.InvokeAsync("_AdminLayoutStanceComponentPartial")
+       
 
-<!-- ================= OPERATIONS ================= -->
-<div class="row mt-3 row-cols-1 row-cols-lg-3 g-3">
+        <!-- STOK -->
+        @await Component.InvokeAsync("_AdminLayoutStockComponentPartial")
+    
 
-    <div class="col">
-        <div class="card kpi-card">
-            <div class="card-body">
-                <div class="kpi-title">Su Tüketimi</div>
-                <div class="kpi-value">124 m³/saat</div>
-                <small class="soft-green">stabil</small>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card kpi-card">
-            <div class="card-body">
-                <div class="kpi-title">CO₂ Emisyon</div>
-                <div class="kpi-value">3.2 ton/gün</div>
-                <small class="soft-red">limit yaklaşımı</small>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card kpi-card">
-            <div class="card-body">
-                <div class="kpi-title">Sipariş Sevkiyat</div>
-                <div class="kpi-value">42 yük</div>
-                <small class="soft-blue">aktif</small>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- ================= EVENTS ================= -->
-<div class="card kpi-card mt-3">
-    <div class="card-body">
-        <h6 class="mb-3">Son Operasyon Olayları</h6>
-
-        <table class="table table-sm mb-0">
-            <tbody>
-                <tr>
-                    <td>KM-2 duruş</td>
-                    <td>12:45</td>
-                    <td class="soft-red">Arıza</td>
-                </tr>
-                <tr>
-                    <td>Sevkiyat tamamlandı</td>
-                    <td>11:20</td>
-                    <td class="soft-green">Tamam</td>
-                </tr>
-                <tr>
-                    <td>Hammadde giriş</td>
-                    <td>10:05</td>
-                    <td class="soft-blue">Giriş</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- SEVKİYAT & SATIŞ -->
+        @await Component.InvokeAsync("_AdminLayoutShippingSalesComponentPartial")
 
     </div>
-</div>
+
+
+    @await Component.InvokeAsync("_AdminLayoutScriptComponentPartial")
+</body>
+</html>

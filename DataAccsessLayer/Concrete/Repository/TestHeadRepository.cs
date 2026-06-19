@@ -17,6 +17,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_TestHeader
                 .Include(x => x.Department)
                 .Include(x => x.AppUser)
+                .Include(x => x.Shift)
                 .ToListAsync();
         }
     }

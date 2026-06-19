@@ -1,6 +1,6 @@
 ﻿namespace DTOLayer.Dtos.WinderCoilLengthControlDto
 {
-    public  class UpdateWinderCoilLengthControlDto
+    public class UpdateWinderCoilLengthControlDto
     {
         public int RecId { get; set; }
 

@@ -19,5 +19,19 @@ namespace DataAccsessLayer.Concrete.Repository
                 .Include(x => x.AppUser)
                 .ToListAsync();
         }
+
+        public async Task<decimal> GetPreviousTodaySales()
+        {
+            DateTime startDate = DateTime.Today;
+            DateTime endDate = DateTime.Today.AddDays(1);
+
+            return await _context.Db_SalesScale
+             .Where(x => x.InsertDate >= startDate && x.InsertDate < endDate)
+            .SumAsync(x => x.DeliveryQuantity);
+
+
+        }
+
+
     }
 }

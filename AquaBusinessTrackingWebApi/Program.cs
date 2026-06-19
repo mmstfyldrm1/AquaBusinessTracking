@@ -128,7 +128,7 @@ builder.Services.AddScoped<IPlcMachineService, PlcMachineManager>();
 builder.Services.AddScoped<IPlcTagsRepository, PlcTagsRepository>();
 builder.Services.AddScoped<IPlcTagsService, PlcTagsManager>();
 builder.Services.AddSingleton<IPlcReader, OpcUaPlcReader>();
-builder.Services.AddHostedService<PlcPollingService>();
+builder.Services.AddHostedService<PlcDailyReadingService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -215,11 +215,18 @@ using (var scope = app.Services.CreateScope())
 }
 app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = "swagger";
+});
 app.MapHub<PlcHub>("/hubs/plc");
 app.UseHttpsRedirection();
 app.UseAuthentication();

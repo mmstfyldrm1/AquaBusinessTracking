@@ -1132,3 +1132,135 @@
         </div>
     </div>
 </div>
+<script>
+    // ── Kolon gizleme utility ──────────────────────────────
+    (function () {
+      // Kaydedilmiş tercihleri localStorage'dan yükle
+      function loadPrefs(tableId) {
+        try { return JSON.parse(localStorage.getItem('colprefs_' + tableId) || '{}'); }
+        catch { return {}; }
+      }
+      function savePrefs(tableId, prefs) {
+        localStorage.setItem('colprefs_' + tableId, JSON.stringify(prefs));
+      }
+
+      function buildToggle(table) {
+        const id = table.id;
+        const headers = Array.from(table.querySelectorAll('thead tr:first-child th'));
+        const prefs = loadPrefs(id);
+
+        // Buton + dropdown wrapper
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'position:relative;display:inline-block;margin-bottom:8px;';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = '<i class="bx bx-columns"></i> Kolonlar <i class="bx bx-chevron-down"></i>';
+        btn.style.cssText = `
+          display:inline-flex;align-items:center;gap:6px;
+          padding:5px 13px;font-size:0.78rem;font-weight:500;
+          border:1px solid #e5e7eb;border-radius:7px;
+          background:#fff;color:#374151;cursor:pointer;
+          box-shadow:0 1px 2px rgba(0,0,0,.04);
+        `;
+
+        const dropdown = document.createElement('div');
+        dropdown.style.cssText = `
+          display:none;position:absolute;top:calc(100% + 4px);left:0;
+          background:#fff;border:1px solid #e5e7eb;border-radius:10px;
+          box-shadow:0 4px 16px rgba(0,0,0,.10);padding:8px 0;
+          z-index:999;min-width:200px;max-height:360px;overflow-y:auto;
+        `;
+
+        headers.forEach((th, idx) => {
+          const label = th.textContent.trim() || `Kolon ${idx + 1}`;
+          const hidden = prefs[idx] === false;
+
+          // Başlangıçta gizle
+          if (hidden) setColVisibility(table, idx, false);
+
+          const item = document.createElement('label');
+          item.style.cssText = `
+            display:flex;align-items:center;gap:10px;
+            padding:6px 16px;font-size:0.8rem;color:#374151;
+            cursor:pointer;user-select:none;
+          `;
+          item.onmouseover = () => item.style.background = '#f8f9fc';
+          item.onmouseout  = () => item.style.background = '';
+
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = !hidden;
+          cb.style.cssText = 'width:15px;height:15px;accent-color:#2563eb;cursor:pointer;';
+
+          cb.addEventListener('change', () => {
+            setColVisibility(table, idx, cb.checked);
+            const p = loadPrefs(id);
+            p[idx] = cb.checked;
+            savePrefs(id, p);
+          });
+
+          item.appendChild(cb);
+          item.appendChild(document.createTextNode(label));
+          dropdown.appendChild(item);
+        });
+
+        // Tümünü seç / kaldır
+        const divider = document.createElement('div');
+        divider.style.cssText = 'border-top:1px solid #f1f3f7;margin:6px 0;';
+        dropdown.appendChild(divider);
+
+        const allRow = document.createElement('div');
+        allRow.style.cssText = 'display:flex;gap:8px;padding:4px 16px;';
+
+        ['Tümünü Göster','Tümünü Gizle'].forEach((text, isHide) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = text;
+          b.style.cssText = `
+            flex:1;font-size:0.72rem;padding:4px 0;border-radius:5px;cursor:pointer;
+            border:1px solid #e5e7eb;background:${isHide ? '#fff' : '#2563eb'};
+            color:${isHide ? '#374151' : '#fff'};font-weight:500;
+          `;
+          b.addEventListener('click', () => {
+            const prefs = {};
+            dropdown.querySelectorAll('input[type=checkbox]').forEach((cb2, i) => {
+              cb2.checked = !isHide;
+              setColVisibility(table, i, !isHide);
+              prefs[i] = !isHide;
+            });
+            savePrefs(id, prefs);
+          });
+          allRow.appendChild(b);
+        });
+        dropdown.appendChild(allRow);
+
+        // Aç/kapat
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const open = dropdown.style.display === 'block';
+          document.querySelectorAll('.col-toggle-dropdown').forEach(d => d.style.display = 'none');
+          dropdown.style.display = open ? 'none' : 'block';
+        });
+        document.addEventListener('click', () => dropdown.style.display = 'none');
+        dropdown.classList.add('col-toggle-dropdown');
+
+        wrapper.appendChild(btn);
+        wrapper.appendChild(dropdown);
+        table.closest('.data-card').insertAdjacentElement('beforebegin', wrapper);
+      }
+
+      function setColVisibility(table, colIdx, visible) {
+        const rows = table.querySelectorAll('tr');
+        rows.forEach(row => {
+          const cells = row.children;
+          if (cells[colIdx]) cells[colIdx].style.display = visible ? '' : 'none';
+        });
+      }
+
+      // Sayfadaki tüm data-table'lara uygula
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.data-table[id]').forEach(buildToggle);
+      });
+    })();
+</script>

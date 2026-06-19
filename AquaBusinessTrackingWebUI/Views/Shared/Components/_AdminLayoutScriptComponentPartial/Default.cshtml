@@ -1,0 +1,56 @@
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+    new Chart(document.getElementById('trendChart'), {
+      type:'line',
+      data:{
+        labels:['1','2','3','4','5'],
+        datasets:[{
+          data:[0,0,0,0,0],
+          borderColor:'#185FA5',
+          fill:true
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('durusChart'), {
+      type:'doughnut',
+      data:{
+        labels:['Bakım','Otomasyon'],
+        datasets:[{data:[0,0],backgroundColor:['#BA7517','#c0392b']}]
+      }
+    });
+
+    new Chart(document.getElementById('enerjiChart'), {
+      type:'bar',
+      data:{
+        labels:['PM2','HH'],
+        datasets:[{data:[0,0],backgroundColor:'#185FA5'}]
+      }
+    });
+
+        new Chart(document.getElementById('shippingChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Pzt', 'Salı', 'Çrş', 'Perş', 'Cuma'],
+            datasets: [
+                {
+                    label: 'Sevkiyat',
+                    data: [0, 0, 0, 0, 0],
+                    backgroundColor: '#185FA5'
+                },
+                {
+                    label: 'Satış',
+                    data: [0, 0, 0, 0, 0],
+                    backgroundColor: '#2d7a3a'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+
+</script>

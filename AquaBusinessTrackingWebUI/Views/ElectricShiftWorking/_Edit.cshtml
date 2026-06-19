@@ -22,7 +22,10 @@
                         @if (Model.IsEdit)
                         {
                             <input type="hidden" asp-for="Entity.RecId" />
+
+                            <input type="hidden" asp-for="Entity.UpdateDate" />
                         }
+                        <input type="hidden" asp-for="Entity.InsertDate" />
 
                         <!-- VARDIYA -->
                         <div class="col-md-6">
@@ -49,26 +52,7 @@
                         </div>
 
 
-                        <!-- KAYIT TARİHİ -->
-                        <div class="col-md-6">
-                            <label class="form-label">Kayıt Tarihi</label>
 
-                            <input type="datetime-local"
-                                   asp-for="Entity.InsertDate"
-                                   class="form-control" />
-                        </div>
-
-                        <!-- GÜNCELLEME TARİHİ -->
-                        @if (Model.IsEdit)
-                        {
-                            <div class="col-md-6">
-                                <label class="form-label">Güncelleme Tarihi</label>
-
-                                <input type="datetime-local"
-                                       asp-for="Entity.UpdateDate"
-                                       class="form-control" />
-                            </div>
-                        }
 
                     </div>
                 </div>

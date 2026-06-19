@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
 using BusinessLayer.Abstract;
-using DataAccsessLayer.Abstract;
 using DataAccsessLayer.Concrete.UoW;
 using DTOLayer.Dtos.DepartmentDtos;
 using EntityLayer.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
 {

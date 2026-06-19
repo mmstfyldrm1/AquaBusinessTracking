@@ -2,7 +2,7 @@
 
 namespace AquaBusinessTrackingWebUI.ViewComponents
 {
-    public class _UserLayoutBreadCrumpComponentPartial: ViewComponent
+    public class _UserLayoutBreadCrumpComponentPartial : ViewComponent
     {
 
         public IViewComponentResult Invoke()

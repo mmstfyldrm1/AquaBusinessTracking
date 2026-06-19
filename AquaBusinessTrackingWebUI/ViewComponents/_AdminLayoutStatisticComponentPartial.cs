@@ -24,7 +24,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             {
                 var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync(
-                    $"{_apiSettings.BaseUrl}/api/Plc/lastreadings/{machineId}");
+                    $"{_apiSettings.BaseUrl}/Plc/readings/{machineId}");
 
                 if (!response.IsSuccessStatusCode)
                     return View(new List<PlcReadingDto>());

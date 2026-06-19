@@ -6,5 +6,9 @@ namespace DataAccsessLayer.Abstract
     {
         public Task<List<DB_SalesScale>> GetWithDetails();
 
+        public Task<decimal> GetPreviousTodaySales();
+
+
+
     }
 }

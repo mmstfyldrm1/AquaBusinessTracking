@@ -1,0 +1,38 @@
+﻿@using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos
+@model List<DoughPreparationDto>
+
+<div class="page-section" id="hammadde">
+    <div class="section-header">
+        <div>
+            <div class="section-title">Hammadde & Kimyasal</div>
+            <div class="section-sub">Stok ve tüketim</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Hurda Kağıt Tüketim</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Malzeme</th>
+                    <th>Balya Adedi</th>
+                    <th>Kg</th>
+                    <th>Pulper No</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.InventoryName</td>
+                        <td>@item.Bale</td>
+                        <td>@item.KG</td>
+                        <td>@item.PulperNo</td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+</div>

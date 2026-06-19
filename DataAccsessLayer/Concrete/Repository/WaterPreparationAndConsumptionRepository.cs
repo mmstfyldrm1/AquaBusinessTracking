@@ -14,7 +14,7 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<DB_WaterPreparationAndConsumption>> GetPreviousDay()
         {
-            DateTime? startDate = DateTime.Now.AddDays(-1);
+            DateTime? startDate = DateTime.Today.AddDays(-1);
             DateTime? endDate = DateTime.Today;
 
             return await _context.Db_WaterPreparationAndConsumption

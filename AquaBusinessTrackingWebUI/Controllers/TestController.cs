@@ -35,7 +35,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Test");
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Test/details");
             if (!response.IsSuccessStatusCode)
                 return View(new List<TestHeadDto>());
             var json = await response.Content.ReadAsStringAsync();

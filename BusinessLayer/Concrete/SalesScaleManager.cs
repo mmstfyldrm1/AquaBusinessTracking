@@ -21,5 +21,7 @@ namespace BusinessLayer.Concrete
             var dtos = _mapper.Map<List<SalesScaleDto>>(entities);
             return dtos;
         }
+
+
     }
 }

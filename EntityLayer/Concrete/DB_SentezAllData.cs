@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace EntityLayer.Concrete
 {
-    public class DB_SentezAllData: BaseEntity
+    public class DB_SentezAllData : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RecId { get; set; }
 
         // Basic Production Information
-        public DateTime Date { get; set; }= DateTime.Now;              // Tarih
+        public DateTime Date { get; set; } = DateTime.Now;              // Tarih
         public string BufferNo { get; set; }                    // Tampon No
         public string ProductType { get; set; }                 // Ürün Cinsi
         public decimal? Grammage { get; set; }                  // Gramaj

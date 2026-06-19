@@ -1,11 +1,8 @@
 ﻿using AquaBusinessTrackingWebApi.Services;
 using DTOLayer.Dtos.AuthDtos;
 using EntityLayer.Concrete;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Common;
 
 namespace AquaBusinessTrackingWebApi.Controllers
 {
