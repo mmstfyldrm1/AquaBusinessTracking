@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace EntityLayer.Concrete
 {
@@ -9,22 +8,6 @@ namespace EntityLayer.Concrete
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RecId { get; set; }
-
-        public int ShiftId { get; set; } //FK
-
-        [JsonIgnore]
-        public DB_Shift Shift { get; set; }
-
-        public int AppUserId { get; set; }
-
-        [JsonIgnore]
-        public DB_AppUser AppUser { get; set; }
-
-        public int DepartmentId { get; set; }
-
-        [JsonIgnore]
-        public DB_Department Department { get; set; }
-
 
         public DateTime? InsertDate { get; set; }
 

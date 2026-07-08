@@ -25,6 +25,7 @@ namespace DataAccsessLayer.Seed
                 ("KAZAN", "KazanChemicals", "Kazan Kimyasal Takip Sistemi"),
                 ("KAZAN", "CondensateTracking", "Kazan Kondens Takip Sistemi"),
                 ("KAZAN", "NaturalGasTracking", "Kazan Doğalgaz Takip Sistemi"),
+                ("KAZAN", "BoilerRoomDailyShiftMonitoring", "Kazan Vardiya Takip Sistemi"),
             
                 // ================= MEKANIK BAKIM =================
                 ("MEKANIKBAKIM", "Maintenance", "Mekanik Bakım"),
@@ -43,10 +44,10 @@ namespace DataAccsessLayer.Seed
                 ("MALZEMEDEPO", "VehicleFuelLogs", "Araç Yakıt Takip Raporu"),
             
                 // ================= YAŞ KISIM =================
-                ("YASKISIM", "General", "Yaş Kısım"),
+                ("YASKISIM", "MachineStop", "Yaş Kısım"),
             
                 // ================= KURU KISIM =================
-                ("KURUKISIM", "General", "Kuru Kısım"),
+                ("KURUKISIM", "BufferProduction", "Kuru Kısım"),
             
                 // ================= KALITE =================
                 ("KALITE", "DoughPreparationAnalysis", "Hamur Analiz Sonucu"),

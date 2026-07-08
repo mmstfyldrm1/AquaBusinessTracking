@@ -21,7 +21,10 @@
                             <input type="hidden" asp-for="Entity.DepartmentId" />
                         }
 
-
+                        <div class="col-md-8">
+                            <label class="form-label">Fiş Tarihi</label>
+                            <input type="date" asp-for="Entity.ReceiptDate" class="form-control" />
+                        </div>
                         <!-- Lokasyon -->
                         <div class="col-md-8">
                             <label class="form-label">Lokasyon (Numune Alınan Yer)</label>
@@ -37,7 +40,7 @@
                         <!-- Tarih -->
                         <div class="col-md-4">
                             <label class="form-label">Tarih</label>
-                            <input type="date" asp-for="Entity.Date" class="form-control" />
+                            <input type="date" asp-for="Entity.ReceiptDate" class="form-control" />
                         </div>
 
                         <!-- Vardiya -->

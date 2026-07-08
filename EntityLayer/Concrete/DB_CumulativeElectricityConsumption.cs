@@ -10,20 +10,11 @@ namespace EntityLayer.Concrete
         public int Month { get; set; } = DateTime.Now.Month;
 
         public decimal Consumption { get; set; }
-        public DateTime Date { get; set; } = DateTime.Now;
 
-        public DateTime? InsertedDate { get; set; }
 
-        public DateTime? DeleteDate { get; set; }
 
-        public DateTime? UpdateDate { get; set; }
         public int ElectricMeterLocationId { get; set; }
         public DB_ElectricMeterLocation ElectricMeterLocation { get; set; }
-
-        public int DepartmanId { get; set; }
-
-        public DB_Department Department { get; set; }
-
 
     }
 }

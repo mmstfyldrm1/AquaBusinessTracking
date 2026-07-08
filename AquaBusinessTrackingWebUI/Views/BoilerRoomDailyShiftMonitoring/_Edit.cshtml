@@ -1,0 +1,143 @@
+﻿@using DTOLayer.Dtos.BoilerRoomDailyShiftMonitoringDtos
+@model ModalViewModel<BoilerRoomDailyShiftMonitoringDto>
+
+<div class="modal fade" id="boilerRoomDailyShiftMonitoring" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/BoilerRoomDailyShiftMonitoring/Edit">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- Tarih -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tarih</label>
+                            <input type="date"
+                                   asp-for="Entity.ReceiptDate"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Vardiya -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Vardiya</label>
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <!-- Personel -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">
+                                İşi Yapan Personel
+                            </label>
+                            <input type="text"
+                                   asp-for="Entity.PersonelToWork"
+                                   class="form-control"
+                                   placeholder="Personel adını giriniz" />
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">
+                                Yapılan İş / Açıklama
+                            </label>
+                            <textarea asp-for="Entity.Explanation"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Yapılan işle ilgili açıklama giriniz"></textarea>
+                        </div>
+
+                        <!-- Sonraki Vardiya -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">
+                                Sonraki Vardiyaya Devredilecek İşler
+                            </label>
+                            <textarea asp-for="Entity.NextShiftWork"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Sonraki vardiyanın yapması gereken işleri giriniz"></textarea>
+                        </div>
+
+                        <!-- Durumlar -->
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body py-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               asp-for="Entity.WorkIsDone" />
+
+                                        <label class="form-check-label fw-semibold">
+                                            İş Tamamlandı
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body py-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               asp-for="Entity.WorkPermit" />
+
+                                        <label class="form-check-label fw-semibold">
+                                            Çalışma İzni Mevcut
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Alanlar -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.InUse" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+

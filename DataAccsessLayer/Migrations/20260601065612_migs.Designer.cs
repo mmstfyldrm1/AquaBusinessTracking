@@ -2894,7 +2894,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("InsertedDate")
+                    b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")

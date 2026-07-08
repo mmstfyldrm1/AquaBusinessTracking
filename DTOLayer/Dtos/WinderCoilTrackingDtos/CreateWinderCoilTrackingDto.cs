@@ -4,7 +4,7 @@
     {
 
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; }
         public int AppUserId { get; set; }
 
         public string BufferNo { get; set; }

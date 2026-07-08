@@ -13,7 +13,7 @@
         public string WasteCode { get; set; }
 
         public int DepartmentId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public DateTime? InsertDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }

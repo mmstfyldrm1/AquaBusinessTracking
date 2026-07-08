@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using DTOLayer.Dtos.BasinDtos.BasinDto;
 using DTOLayer.Dtos.BasinDtos.BasinMeasurement;
+using DTOLayer.Dtos.BoilerRoomDailyShiftMonitoringDtos;
 using DTOLayer.Dtos.BoilerSteamFeedWaterCondensateDataDtos;
 using DTOLayer.Dtos.BufferAnalysisReportDtos;
 using DTOLayer.Dtos.BufferGramajProfile;
 using DTOLayer.Dtos.BufferGramajProfileDtos;
+using DTOLayer.Dtos.BufferProductionDtos;
 using DTOLayer.Dtos.CirculationTankAirPressureMeasurementTurbidity;
 using DTOLayer.Dtos.CirculationTankAirPressureMeasurementTurbidityDtos;
 using DTOLayer.Dtos.DepartmentDtos;
@@ -18,11 +20,14 @@ using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
 using DTOLayer.Dtos.LabWork;
 using DTOLayer.Dtos.LabWorkDtos;
 using DTOLayer.Dtos.LogisticsTrackingReportDtos;
+using DTOLayer.Dtos.MachineStopDtos;
 using DTOLayer.Dtos.MassWasteDtos.MassWasteBalanceDtos;
 using DTOLayer.Dtos.MassWasteDtos.MassWasteSupplierDtos;
 using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos;
 using DTOLayer.Dtos.OilAnalysisReportDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
+using DTOLayer.Dtos.PlanningScorBoardViewDto;
+using DTOLayer.Dtos.PlanningScorBoardViewDtos;
 using DTOLayer.Dtos.PlcDtos.PlcMachineDtos;
 using DTOLayer.Dtos.PlcDtos.PlcTagsDtos;
 using DTOLayer.Dtos.PurificationChemicalsConsumptionDtos;
@@ -36,6 +41,8 @@ using DTOLayer.Dtos.StarchAnalysis.StarchAnalysisHeadingDetail;
 using DTOLayer.Dtos.StarchAnalysis.StarchAnalysisHeadingDtos;
 using DTOLayer.Dtos.TestDtos.TestDetailDtos;
 using DTOLayer.Dtos.TestDtos.TestHeadDtos;
+using DTOLayer.Dtos.UserDashboardDtos;
+using DTOLayer.Dtos.UserDtos;
 using DTOLayer.Dtos.VechileFuelLogsDtos;
 using DTOLayer.Dtos.WarehouseRequestWaitDtos;
 using DTOLayer.Dtos.WastePaperControlDtos;
@@ -55,8 +62,23 @@ namespace DTOLayer
             CreateMap<DB_ElectricShiftWork, CreateElectricShiftWorkDto>().ReverseMap();
             CreateMap<DB_ElectricShiftWork, UpdateElectiricShiftWorkDto>().ReverseMap();
             CreateMap<DB_ElectricShiftWork, ElectricShiftWorkDto>().ReverseMap();
-            CreateMap<DB_ElectricShiftWork, ElectricShiftWorkDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+            CreateMap<DB_ElectricShiftWork, ElectricShiftWorkDto>()
+                .ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
+            CreateMap<DB_BufferProduction, CreateBufferProductionDto>().ReverseMap();
+            CreateMap<DB_BufferProduction, UpdateBufferProductionDto>().ReverseMap();
+            CreateMap<DB_BufferProduction, BufferProductionDto>().ReverseMap();
+            CreateMap<DB_BufferProduction, BufferProductionDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                .ForMember(x => x.ShiftSupervisorUser, x => x.MapFrom(s => s.ShiftSupervisorUser != null ? s.ShiftSupervisorUser.UserName : null));
+
+
+            CreateMap<DB_PlanningScorBoardView, CreatePlanningScorBoardViewDto>().ReverseMap();
+            CreateMap<DB_PlanningScorBoardView, UpdatePlanningScorBoardViewDto>().ReverseMap();
+            CreateMap<DB_PlanningScorBoardView, PlanningScorBoardViewDto>().ReverseMap();
+            CreateMap<DB_PlanningScorBoardView, PlanningScorBoardViewDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
 
             CreateMap<DB_Department, CreateDepartmentDto>().ReverseMap();
@@ -71,12 +93,20 @@ namespace DTOLayer
             CreateMap<DB_ElectricMotorTracking, CreateElectricMotorDto>().ReverseMap();
             CreateMap<DB_ElectricMotorTracking, UpdateElectricMotorDto>().ReverseMap();
             CreateMap<DB_ElectricMotorTracking, ElectricMotorDto>().ReverseMap();
-            CreateMap<DB_ElectricMotorTracking, ElectricMotorDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+            CreateMap<DB_ElectricMotorTracking, ElectricMotorDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+
+            CreateMap<DB_MachineStop, CreateMachineStopDto>().ReverseMap();
+            CreateMap<DB_MachineStop, UpdateMachineStopDto>().ReverseMap();
+            CreateMap<DB_MachineStop, MachineStopDto>().ReverseMap();
+            CreateMap<DB_MachineStop, MachineStopDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
             CreateMap<DB_SalesScale, CreateSalesScaleDto>().ReverseMap();
             CreateMap<DB_SalesScale, UpdateSalesScaleDto>().ReverseMap();
             CreateMap<DB_SalesScale, SalesScaleDto>().ReverseMap();
-            CreateMap<DB_SalesScale, SalesScaleDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+            CreateMap<DB_SalesScale, SalesScaleDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
 
 
@@ -84,7 +114,8 @@ namespace DTOLayer
             CreateMap<DB_Basin, CreateBasinDto>().ReverseMap();
             CreateMap<DB_Basin, UpdateBasinDto>().ReverseMap();
             CreateMap<DB_Basin, BasinDto>().ReverseMap();
-            CreateMap<DB_Basin, BasinDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+            CreateMap<DB_Basin, BasinDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
 
             CreateMap<DB_BasinMeasurement, CreateBasinMeasurementDto>().ReverseMap();
@@ -96,7 +127,10 @@ namespace DTOLayer
             CreateMap<DB_WinderCoilTracking, WinderCoilTrackingDto>().ReverseMap();
             CreateMap<DB_WinderCoilTracking, WinderCoilTrackingDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
-
+            CreateMap<DB_BoilerRoomDailyShiftMonitoring, CreateBoilerRoomDailyShiftMonitoringDto>().ReverseMap();
+            CreateMap<DB_BoilerRoomDailyShiftMonitoring, UpdateBoilerRoomDailyShiftMonitoringDto>().ReverseMap();
+            CreateMap<DB_BoilerRoomDailyShiftMonitoring, BoilerRoomDailyShiftMonitoringDto>().ReverseMap();
+            CreateMap<DB_BoilerRoomDailyShiftMonitoring, BoilerRoomDailyShiftMonitoringDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
             CreateMap<DB_WinderCoilLengthControl, CreateWinderLengthControlDto>().ReverseMap();
             CreateMap<DB_WinderCoilLengthControl, UpdateWinderCoilLengthControlDto>().ReverseMap();
@@ -285,14 +319,18 @@ namespace DTOLayer
 
 
             CreateMap<DB_CumulativeElectricityConsumption, CumulativeElectricityConsumptionDto>().ReverseMap();
-            CreateMap<DB_CumulativeElectricityConsumption, CreateCumulativeElectricityConsumptionDto>().ReverseMap();
-            CreateMap<DB_CumulativeElectricityConsumption, UpdateCumulativeElectricityConsumptionDto>().ReverseMap().ForMember(x => x.ElectricMeterLocation, opt => opt.Ignore());
+            CreateMap<DB_CumulativeElectricityConsumption, CreateCumulativeElectricityConsumptionDto>().ReverseMap().ForMember(x => x.ElectricMeterLocation, opt => opt.Ignore());
+            CreateMap<DB_CumulativeElectricityConsumption, UpdateCumulativeElectricityConsumptionDto>().ReverseMap().ForMember(x => x.ElectricMeterLocation, opt => opt.Ignore()).ForMember(x => x.Department, opt => opt.Ignore());
             CreateMap<DB_CumulativeElectricityConsumption, CumulativeElectricityConsumptionDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
                 .ForMember(x => x.LocationName, x => x.MapFrom(s => s.ElectricMeterLocation != null ? s.ElectricMeterLocation.LocationName : null));
 
 
 
+            CreateMap<DB_FavoriteMenuItem, UserDashboardFavoriteMenuDto>().ReverseMap();
+            CreateMap<DB_FavoriteMenuItem, UserDashboardAddFavoriteModuleDto>().ReverseMap();
+
+            CreateMap<DB_AppUser, UpdateUserDto>().ForMember(x => x.DepartmentName, x => x.MapFrom(s => s.Department != null ? s.Department.DepartmentName : null)).ReverseMap();
 
 
 

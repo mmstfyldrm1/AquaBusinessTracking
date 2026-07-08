@@ -26,7 +26,7 @@ namespace DataAccsessLayer.Concrete.Repository
             DateTime endDate = DateTime.Today.AddDays(1);
 
             return await _context.Db_SalesScale
-             .Where(x => x.InsertDate >= startDate && x.InsertDate < endDate)
+             .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
             .SumAsync(x => x.DeliveryQuantity);
 
 

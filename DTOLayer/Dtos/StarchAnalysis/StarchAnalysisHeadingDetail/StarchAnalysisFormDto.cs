@@ -4,6 +4,8 @@
     public class StarchAnalysisFormDto
     {
         public int RecId { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
         public int SampleCollectionTime { get; set; }
         public int SampleResultDeliveryTime { get; set; }
         public string? Explanation { get; set; }
@@ -23,7 +25,8 @@
     public class StarchAnalysisDetailFormDto
     {
         public int RecId { get; set; }
-        public DateTime Date { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
         public TimeSpan? Time { get; set; }
         public decimal? MachineSpeed { get; set; }
         public string ProductionType { get; set; }

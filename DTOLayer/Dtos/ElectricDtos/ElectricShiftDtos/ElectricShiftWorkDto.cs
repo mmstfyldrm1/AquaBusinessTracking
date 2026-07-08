@@ -5,7 +5,7 @@
         public int RecId { get; set; }
         public int ShiftId { get; set; }
         public int AppUserId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string CreatedByName { get; set; }
         public string ShiftName { get; set; }
         public int DepartmentId { get; set; }

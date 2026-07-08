@@ -114,7 +114,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             var dto = model.Entity;
             var client = _httpClientFactory.CreateClient();
-            dto.DepartmanId = int.Parse(User.FindFirst("DepartmentId")?.Value);
+            dto.DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
             dto.AppUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var json = JsonConvert.SerializeObject(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

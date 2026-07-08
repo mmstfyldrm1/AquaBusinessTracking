@@ -3,6 +3,7 @@
     public class CreateWarehouseRequestWaitDto
     {
         public string WaybillNo { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public string WaybillInvoiceNo { get; set; }
         public string IncomingCurrentAccountName { get; set; }
         public string SentezInventoryCode { get; set; }

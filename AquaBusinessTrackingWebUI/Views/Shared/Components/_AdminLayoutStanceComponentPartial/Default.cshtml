@@ -1,4 +1,7 @@
-﻿<div class="page-section" id="durus">
+﻿@using DTOLayer.Dtos.MachineStopDtos
+@model List<MachineStopDto>
+
+<div class="page-section" id="durus">
     <div class="section-header">
         <div>
             <div class="section-title">Duruş Analizi</div>
@@ -9,9 +12,29 @@
     <div class="card">
         <div class="card-title">Duruş Detay</div>
         <table>
-            <tr><th>Tip</th><th>Süre</th></tr>
-            <tr><td>Bakım</td><td>0</td></tr>
-            <tr><td>Otomasyon</td><td>0</td></tr>
+            <tr>
+                <th>
+                   Lokasyon
+                </th>
+                <th>
+                   Duruş Nedeni
+                </th>
+
+                <th>
+                   Süre (dk)
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BreakLocation</td>
+                    <td>@item.DowntimeReason</td>
+                    <td>@item.DowntimeDuration</td>
+                </tr>
+               
+            }
+            
+            
         </table>
     </div>
 </div>

@@ -4,6 +4,8 @@ namespace DTOLayer.Dtos.BasinDtos.BasinDto
     public class BasinFormDto
     {
         public int RecId { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public int DepartmentId { get; set; }

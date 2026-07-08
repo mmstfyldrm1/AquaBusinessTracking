@@ -40,6 +40,18 @@
                         {
                             <input type="hidden" asp-for="Entity.RecId" />
                         }
+                        <div class="col-md-4">
+
+                            <label class="form-label fw-semibold">
+                                Tarih
+                            </label>
+
+                            <input type="date"
+                                   asp-for="Entity.ReceiptDate"
+                                   class="form-control shadow-sm"
+                                   placeholder="Örn: 120" />
+
+                        </div>
 
                         <!-- Numune Alım Süresi -->
                         <div class="col-md-4">

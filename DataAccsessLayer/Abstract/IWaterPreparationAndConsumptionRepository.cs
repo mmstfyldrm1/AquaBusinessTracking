@@ -7,5 +7,7 @@ namespace DataAccsessLayer.Abstract
         public Task<List<DB_WaterPreparationAndConsumption>> GetWithDetails();
 
         public Task<List<DB_WaterPreparationAndConsumption>> GetPreviousDay();
+
+
     }
 }

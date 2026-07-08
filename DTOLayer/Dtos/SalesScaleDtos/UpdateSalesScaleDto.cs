@@ -3,7 +3,7 @@
     public class UpdateSalesScaleDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; }
         public DateTime ScaleDate { get; set; } = DateTime.Now;
 
         public DateTime ScaleHours { get; set; } = DateTime.Now;

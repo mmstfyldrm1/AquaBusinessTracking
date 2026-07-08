@@ -3,6 +3,7 @@
     public class DoughPreparationAnalysisResultsDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public int SampleCollectionTime { get; set; }
 

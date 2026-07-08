@@ -4,5 +4,5 @@
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
 
-
+@await Component.InvokeAsync("_UserDashboardFavoriteMenuComponentPartial", new { appUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value })
 

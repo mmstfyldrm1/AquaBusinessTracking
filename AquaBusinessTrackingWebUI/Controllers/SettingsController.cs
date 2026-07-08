@@ -302,12 +302,21 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             var content = new StringContent(JsonConvert.SerializeObject(model.Entity), Encoding.UTF8, "application/json");
             var roleResponse = await client.PostAsync($"{_apiSettings.BaseUrl}/Role/create", content);
+            if (!roleResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = roleResponse.Content.ReadAsStringAsync();
+                return PartialView("_AddRoles", model);
+            }
             var returnData = await roleResponse.Content.ReadAsStringAsync();
             var roleData = JsonConvert.DeserializeObject<CreateRoleResponseDto>(returnData);
 
 
             if (!roleResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = roleResponse.Content.ReadAsStringAsync();
                 return View();
+            }
+
 
 
             var permDto = new RolePermissionDto

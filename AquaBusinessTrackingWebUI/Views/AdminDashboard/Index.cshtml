@@ -11,7 +11,7 @@
 
     @await Component.InvokeAsync("_AdminLayoutStatisticComponentPartial")
 
-
+    @*
     <!-- TOP NAV -->
     <div class="topnav">
         <a href="#ozet">Genel Özet</a>
@@ -21,11 +21,19 @@
         <a href="#stok">Stok & Üretim</a>
         <a href="#sevk">Sevkiyat & Satış</a>
     </div>
+    *@
 
     <div class="content">
 
+
+        <!-- SEVKİYAT & SATIŞ -->
+        @await Component.InvokeAsync("_AdminLayoutShippingSalesComponentPartial")
+       
         <!-- ÖZET -->
         @await Component.InvokeAsync("_AdminLayoutSummaryComponentPartial")
+
+        <!-- STOK -->
+        @await Component.InvokeAsync("_AdminLayoutStockComponentPartial")
 
         <!-- HAMMADDE -->
         @await Component.InvokeAsync("_AdminLayoutRawmaterialsComponentPartial")
@@ -33,17 +41,14 @@
         <!-- ENERJİ -->
         @await Component.InvokeAsync("_AdminLayoutEnergyComponentPartial")
 
+        <!-- Gaz -->
+        @await Component.InvokeAsync("_AdminLayoutNaturelGasTrackingComponentPartial")
 
         <!-- DURUŞ -->
         @await Component.InvokeAsync("_AdminLayoutStanceComponentPartial")
+
+        @await Component.InvokeAsync("_AdminDashboardPulperLevelComponentPartial")
        
-
-        <!-- STOK -->
-        @await Component.InvokeAsync("_AdminLayoutStockComponentPartial")
-    
-
-        <!-- SEVKİYAT & SATIŞ -->
-        @await Component.InvokeAsync("_AdminLayoutShippingSalesComponentPartial")
 
     </div>
 

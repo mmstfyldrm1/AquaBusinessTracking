@@ -21,7 +21,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_DoughPreparation
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
-                .Where(x => x.InsertDate > startdate && x.InsertDate < endDate)
+                .Where(x => x.ReceiptDate >= startdate && x.ReceiptDate < endDate)
                 .ToListAsync();
         }
 

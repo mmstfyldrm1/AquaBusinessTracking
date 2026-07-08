@@ -1,0 +1,180 @@
+﻿
+@{
+    ViewData["Title"] = "GetBufferProductionList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+    int counter = 0;
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tampon No</th>
+                        <th>Ürün</th>
+                        <th>Gr/m²</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
+                        <th>Toplam Süre (dk)</th>
+                        <th>Duruş Süresi (dk)</th>
+                        <th>Hız (m/dk)</th>
+                        <th>Genişlik (cm)</th>
+                        <th>Set Sayısı</th>
+                        <th>Teorik Kg</th>
+                        <th>Ölçülen Kg</th>
+                        <th>Açıklama</th>
+                        <th>Vardiya Amiri</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+
+                            <td>@item.BufferNo</td>
+
+                            <td>@item.Product</td>
+
+                            <td>@item.GrPerM2</td>
+
+                            <td>
+                                @(item.BufferStart?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.BufferEnd?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>@item.TotalDurationMinutes</td>
+
+                            <td>@item.DowntimeMinutes</td>
+
+                            <td>@item.BufferSpeed</td>
+
+                            <td>@item.BufferWidthCm</td>
+
+                            <td>@item.BufferSetCount</td>
+
+                            <td>@item.TheoreticalBufferKg</td>
+
+                            <td>@item.MeasuredKg</td>
+
+                            <td>@item.Description</td>
+
+                            <td>@item.ShiftSupervisorUser</td>
+
+                            <td>@item.ShiftName</td>
+
+                            <td>
+                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>@item.CreatedByName</td>
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning"
+                                        onclick="openModal(@item.RecId)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <form method="post"
+                                      asp-action="Delete"
+                                      asp-route-id="@item.RecId"
+                                      onsubmit="return confirm('Silinsin mi?');">
+
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </button>
+
+                                </form>
+                            </td>
+                        </tr>
+
+                        counter++;
+                    }
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Tampon No</th>
+                        <th>Ürün</th>
+                        <th>Gr/m²</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
+                        <th>Toplam Süre (dk)</th>
+                        <th>Duruş Süresi (dk)</th>
+                        <th>Hız (m/dk)</th>
+                        <th>Genişlik (cm)</th>
+                        <th>Set Sayısı</th>
+                        <th>Teorik Kg</th>
+                        <th>Ölçülen Kg</th>
+                        <th>Açıklama</th>
+                        <th>Vardiya Amiri</th>
+                        <th>Vardiya</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>Güncelle</th>
+                        <th>Sil</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+
+        </div>
+
+        <button class="btn btn-primary shadow-sm" onclick="openModal()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Yeni Kayıt Ekle
+        </button>
+
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+           function openModal(id = null) {
+        const url = id
+            ? `/BufferProduction/Edit/${id}`
+            : `/BufferProduction/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('bufferProductionModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/BufferProduction/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+</script>

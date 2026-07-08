@@ -20,7 +20,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_WaterPreparationAndConsumption
               .Include(x => x.Shift)
               .Include(x => x.AppUser)
-              .Where(x => x.InsertDate > startDate && x.InsertDate < endDate)
+              .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
               .ToListAsync();
         }
 
@@ -31,5 +31,7 @@ namespace DataAccsessLayer.Concrete.Repository
                 .Include(x => x.AppUser)
                 .ToListAsync();
         }
+
+
     }
 }

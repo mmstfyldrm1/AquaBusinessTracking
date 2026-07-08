@@ -45,14 +45,14 @@ namespace DataAccsessLayer.Migrations
                 newName: "IX_Db_ElectricMeterLocation_AppUserId");
 
             migrationBuilder.AddColumn<int>(
-                name: "DepartmanId",
+                name: "DepartmentId",
                 table: "Db_CumulativeElectricityConsumption",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "DepartmanId",
+                name: "DepartmentId",
                 table: "Db_ElectricMeterLocation",
                 type: "int",
                 nullable: false,
@@ -64,14 +64,14 @@ namespace DataAccsessLayer.Migrations
                 column: "RecId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Db_CumulativeElectricityConsumption_DepartmanId",
+                name: "IX_Db_CumulativeElectricityConsumption_DepartmentId",
                 table: "Db_CumulativeElectricityConsumption",
-                column: "DepartmanId");
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Db_ElectricMeterLocation_DepartmanId",
+                name: "IX_Db_ElectricMeterLocation_DepartmentId",
                 table: "Db_ElectricMeterLocation",
-                column: "DepartmanId");
+                column: "DepartmentId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Db_CumulativeElectricityConsumption_AspNetUsers_AppUserId",
@@ -82,9 +82,9 @@ namespace DataAccsessLayer.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Db_CumulativeElectricityConsumption_Db_Department_DepartmanId",
+                name: "FK_Db_CumulativeElectricityConsumption_Db_Department_DepartmentId",
                 table: "Db_CumulativeElectricityConsumption",
-                column: "DepartmanId",
+                column: "DepartmentId",
                 principalTable: "Db_Department",
                 principalColumn: "RecId",
                 onDelete: ReferentialAction.Restrict);
@@ -106,9 +106,9 @@ namespace DataAccsessLayer.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Db_ElectricMeterLocation_Db_Department_DepartmanId",
+                name: "FK_Db_ElectricMeterLocation_Db_Department_DepartmentId",
                 table: "Db_ElectricMeterLocation",
-                column: "DepartmanId",
+                column: "DepartmentId",
                 principalTable: "Db_Department",
                 principalColumn: "RecId",
                 onDelete: ReferentialAction.Restrict);
@@ -130,7 +130,7 @@ namespace DataAccsessLayer.Migrations
                 table: "Db_CumulativeElectricityConsumption");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Db_CumulativeElectricityConsumption_Db_Department_DepartmanId",
+                name: "FK_Db_CumulativeElectricityConsumption_Db_Department_DepartmentId",
                 table: "Db_CumulativeElectricityConsumption");
 
             migrationBuilder.DropForeignKey(
@@ -142,7 +142,7 @@ namespace DataAccsessLayer.Migrations
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Db_ElectricMeterLocation_Db_Department_DepartmanId",
+                name: "FK_Db_ElectricMeterLocation_Db_Department_DepartmentId",
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.DropForeignKey(
@@ -150,7 +150,7 @@ namespace DataAccsessLayer.Migrations
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.DropIndex(
-                name: "IX_Db_CumulativeElectricityConsumption_DepartmanId",
+                name: "IX_Db_CumulativeElectricityConsumption_DepartmentId",
                 table: "Db_CumulativeElectricityConsumption");
 
             migrationBuilder.DropPrimaryKey(
@@ -158,15 +158,15 @@ namespace DataAccsessLayer.Migrations
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.DropIndex(
-                name: "IX_Db_ElectricMeterLocation_DepartmanId",
+                name: "IX_Db_ElectricMeterLocation_DepartmentId",
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.DropColumn(
-                name: "DepartmanId",
+                name: "DepartmentId",
                 table: "Db_CumulativeElectricityConsumption");
 
             migrationBuilder.DropColumn(
-                name: "DepartmanId",
+                name: "DepartmentId",
                 table: "Db_ElectricMeterLocation");
 
             migrationBuilder.RenameTable(

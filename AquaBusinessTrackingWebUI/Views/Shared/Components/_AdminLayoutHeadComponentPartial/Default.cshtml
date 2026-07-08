@@ -2,10 +2,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KM-2 Üretim Raporu</title>
-
-
-
     <style>
+        .card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.08);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .table th {
+            background: #f8fafc;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
 
         .kpi-card {
             border: 1px solid #eee;
@@ -52,7 +68,7 @@
             color: #1a1a2e;
         }
 
-        /* TOP MENU (SIDEBAR REPLACEMENT) */
+
         .topnav {
             position: sticky;
             top: 0;
@@ -228,6 +244,119 @@
             height: 350px !important;
             display: block;
         }
+
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stock-card {
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .stock-table th {
+                background: #f5f7fa;
+                padding: 12px;
+                font-weight: 600;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .stock-table td {
+                padding: 12px;
+                border-bottom: 1px solid #f1f1f1;
+            }
+
+            .stock-table tbody tr:hover {
+                background: #fafafa;
+            }
+
+        @@media(max-width: 992px) {
+            .stock-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stock-row {
+            display: flex;
+            gap: 20px;
+        }
+
+            .stock-row .card {
+                flex: 1;
+            }
+
+
+
+        .sevk-layout {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* Grafik kartı */
+        .chart-card {
+            flex: 1;
+        }
+
+        /* Tablo kartı */
+        .table-card {
+            flex: 1.5;
+        }
+
+        /* Grafik yüksekliğini gerçekten sabitle */
+        .chart-wrapper-small {
+            height: 260px;
+            position: relative;
+        }
+
+            /* canvas zorla dolsun */
+            .chart-wrapper-small canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+
+        .ozet-layout {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+            /* Kartlar eşit dağılsın */
+            .ozet-layout .chart-card {
+                flex: 1;
+            }
+
+        /* Grafik yüksekliği SABİT */
+        .chart-wrap-small {
+            height: 260px;
+            position: relative;
+        }
+
+            /* Canvas tam dolsun */
+            .chart-wrap-small canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+        @@media (max-width: 768px) {
+            .ozet-layout {
+                flex-direction: column;
+            }
+
+            .chart-wrap-small {
+                height: 200px;
+            }
+        }
+
 
     </style>
 </head>

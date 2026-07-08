@@ -3,6 +3,7 @@
     public class CreateBufferGramajProfileDto
     {
         public decimal BufferNo { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public int SampleNo { get; set; }
 

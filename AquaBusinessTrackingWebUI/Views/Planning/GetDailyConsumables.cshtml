@@ -353,7 +353,7 @@
                         <tr>
                             <td class="row-num">@i1</td>
                             <td>@item.SequenceNumber</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td><code style="font-size:0.78rem;color:#4b5563;">@item.WaybillNumber</code></td>
                             <td><strong style="font-weight:600;">@item.Company</strong></td>
                             <td><span style="font-family:monospace;font-size:0.78rem;">@item.VehicleLicensePlate</span></td>
@@ -447,7 +447,7 @@
                     {
                         <tr>
                             <td class="row-num">@i2</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td><span style="font-weight:600;color:#0f766e;">@item.PulperNo</span></td>
                             <td><code style="font-size:0.78rem;color:#4b5563;">@item.InventoryCode</code></td>
                             <td>@item.InventoryName</td>
@@ -525,7 +525,7 @@
                             <td class="num-cell">@item.IncomingQuantity.ToString("N2")</td>
                             <td class="num-cell" style="color:#b91c1c;">@item.ConsumedQuantity.ToString("N2")</td>
                             <td class="num-cell" style="color:#15803d;font-weight:600;">@item.RemainingQuantity.ToString("N2")</td>
-                            <td>@(item.Date?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td>@(item.ReceiptDate.ToString("dd.MM.yyyy") ?? "-")</td>
                             <td>@(item.CreatedByName ?? "-")</td>
                             <td>@(item.ShiftName ?? "-")</td>
                             <td class="text-center">
@@ -684,7 +684,7 @@
                             <td class="num-cell">@item.Incoming</td>
                             <td class="num-cell" style="color:#b91c1c;">@item.Consumption</td>
                             <td class="num-cell" style="color:#15803d;font-weight:600;">@item.Remaining</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@(item.CreatedByName ?? "-")</td>
                             <td>@(item.ShiftName ?? "-")</td>
                             <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate.HasValue? item.InsertDate.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
@@ -745,7 +745,7 @@
                     {
                         <tr>
                             <td class="row-num">@i6</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td class="num-cell"><strong style="font-weight:600;">@item.Boil</strong></td>
                             <td class="num-cell">@item.FeedWater</td>
                             <td class="num-cell">@item.KM2Kodens</td>
@@ -895,7 +895,7 @@
                     {
                         <tr>
                             <td class="row-num">@i8</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td><span style="font-weight:600;color:#4338ca;">@item.BufferNo</span></td>
                             <td>@item.ProductType</td>
                             <td class="num-cell">@item.TargetGrammage</td>
@@ -1001,7 +1001,7 @@
                     {
                         <tr>
                             <td class="row-num">@i9</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td class="num-cell"><strong style="font-weight:600;">@item.DailyConsumption</strong></td>
                             <td class="num-cell">@item.Pressure</td>
                             <td class="num-cell">@item.Heat</td>
@@ -1107,10 +1107,10 @@
                                 </span>
                             </td>
                             <td class="num-cell"><strong style="font-weight:600;color:#4338ca;">@item.Consumption.ToString("N0")</strong></td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@(item.ShiftName ?? "-")</td>
                             <td>@(item.CreatedByName ?? "-")</td>
-                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertedDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td style="color:#6b7280;font-size:0.78rem;">@(item.InsertDate?.ToString("dd.MM.yyyy") ?? "-")</td>
                         </tr>
                         i10++;
                     }

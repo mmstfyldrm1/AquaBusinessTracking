@@ -20,7 +20,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_NaturelGasMeterMonitoring
               .Include(x => x.Shift)
               .Include(x => x.AppUser)
-              .Where(x => x.InsertDate > startDate && x.InsertDate < endDate)
+              .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
               .ToListAsync();
         }
 
@@ -29,6 +29,24 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_NaturelGasMeterMonitoring
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
+                .ToListAsync();
+        }
+
+        public async Task<List<DB_NaturelGasMeterMonitoring>> GetLast7DaysNaturelGas()
+        {
+            DateTime startDate = DateTime.Today.AddDays(-7);
+            DateTime endDate = DateTime.Today.AddDays(1);
+            return await _context.Db_NaturelGasMeterMonitoring
+                .AsNoTracking()
+                .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
+                .GroupBy(x => x.ReceiptDate!.Value.Date)
+                .Select(g => new DB_NaturelGasMeterMonitoring
+                {
+                    ReceiptDate = g.Key,
+                    DailyConsumption = g.Sum(x => x.DailyConsumption),
+                    kW = g.Sum(x => x.kW)
+                })
+                .OrderBy(x => x.ReceiptDate)
                 .ToListAsync();
         }
     }

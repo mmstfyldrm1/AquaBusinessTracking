@@ -3,6 +3,7 @@
     public class UpdateDoughPreparationAnalysisResultsDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public int SampleCollectionTime { get; set; }
 

@@ -29,7 +29,7 @@
 
                         <th>#</th>
                         <th>Numune Süresi</th>
-   
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Aktif</th>
                         <th>Güncelle</th>
@@ -50,7 +50,7 @@
                         <tr>
 
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>
                                 @item.SampleCollectionTime
                             </td>

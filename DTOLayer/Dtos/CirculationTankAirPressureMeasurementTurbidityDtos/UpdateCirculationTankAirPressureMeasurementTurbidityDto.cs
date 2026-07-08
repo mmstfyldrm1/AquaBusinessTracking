@@ -3,7 +3,8 @@
     public class UpdateCirculationTankAirPressureMeasurementTurbidityDto
     {
         public int RecId { get; set; }
-        public DateTime Date { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
         public TimeSpan Time { get; set; }
         public decimal MachineSpeed { get; set; }
         public string ProductionType { get; set; }

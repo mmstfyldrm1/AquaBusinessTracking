@@ -3,12 +3,12 @@
     public class WaterPreparationAndConsumptionDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string InventoryCode { get; set; }
 
         public string InventoryName { get; set; }
 
-        public DateTime InsertedDate { get; set; }
+
 
         public decimal IncomingQuantity { get; set; }
 

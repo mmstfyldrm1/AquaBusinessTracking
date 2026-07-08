@@ -1,22 +1,111 @@
-﻿<div class="page-section" id="ozet">
+﻿@model AdminDashboardSummaryViewModel
+
+<div class="page-section" id="ozet">
+
     <div class="section-header">
         <div>
             <div class="section-title">Genel Özet</div>
-            <div class="section-sub">PM-2 üretim göstergeleri</div>
+            <div class="section-sub">KM-2 üretim göstergeleri</div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Üretim Trend</div>
-        <div class="chart-wrap">
-            <canvas id="trendChart"></canvas>
+    <div class="ozet-layout">
+
+        <!-- ÜRETİM TREND -->
+        <div class="card chart-card">
+            <div class="card-title">Üretim Trend</div>
+            <div class="chart-wrap-small">
+                <canvas id="trendChart"></canvas>
+            </div>
         </div>
+
+        <!-- DURUŞ -->
+        <div class="card chart-card">
+            <div  class="card-title">Duruş Dağılımı</div>
+            <div style="height:250px" class="chart-wrap-small">
+                <canvas id="durusChart"></canvas>
+            </div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="card-title">Duruş Dağılımı</div>
-        <div class="chart-wrap">
-            <canvas id="durusChart"></canvas>
-        </div>
-    </div>
 </div>
+
+
+<script>
+
+       document.addEventListener("DOMContentLoaded", function () {
+
+        // Duruş grafiği verileri
+        const duruslabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.DurusDagilim.Select(x => x.Reason)
+                ));
+
+        const durusdata = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.DurusDagilim.Select(x => x.TotalDuration)
+                ));
+
+        new Chart(document.getElementById('durusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: duruslabels,
+                datasets: [{
+                    data: durusdata,   // FIX: data -> durusdata
+                    backgroundColor: ['#BA7517', '#c0392b', '#3498db']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+
+        // Trend grafiği verileri
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.GetLast7Days.Data.Select(x =>
+                                Convert.ToDateTime(x.Date).ToString("dd.MM")
+                        )
+                ));
+
+        const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.GetLast7Days.Data.Select(x => x.Production)
+                ));
+
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Üretim',
+                    data: values,
+                    borderColor: '#185FA5',
+                    backgroundColor: 'rgba(24,95,165,0.15)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    });
+</script>

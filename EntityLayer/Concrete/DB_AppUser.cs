@@ -19,6 +19,20 @@ namespace EntityLayer.Concrete
         [JsonIgnore]
         public ICollection<DB_SteamConsumption> SteamConsumptions { get; set; }
 
+
+        [JsonIgnore]
+        public ICollection<DB_FavoriteMenuItem> FavoriteMenuItems { get; set; }
+
+
+        [JsonIgnore]
+        public ICollection<DB_PlanningScorBoardView> PlanningScorBoardView { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_MachineStop> MachineStop { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_BufferProduction> BufferProduction { get; set; }
+
         [JsonIgnore]
         public ICollection<DB_DoughPreparation> DoughPreparations { get; set; }
 
@@ -128,6 +142,9 @@ namespace EntityLayer.Concrete
 
         [JsonIgnore]
         public ICollection<DB_ElectricMeterLocation> ElectricMeterLocation { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_BoilerRoomDailyShiftMonitoring> BoilerRoomDailyShiftMonitoring { get; set; }
 
         public DateTime? InsertDate { get; set; }
 

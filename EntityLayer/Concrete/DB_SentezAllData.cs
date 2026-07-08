@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace EntityLayer.Concrete
 {
@@ -11,7 +10,7 @@ namespace EntityLayer.Concrete
         public int RecId { get; set; }
 
         // Basic Production Information
-        public DateTime Date { get; set; } = DateTime.Now;              // Tarih
+
         public string BufferNo { get; set; }                    // Tampon No
         public string ProductType { get; set; }                 // Ürün Cinsi
         public decimal? Grammage { get; set; }                  // Gramaj
@@ -173,33 +172,9 @@ namespace EntityLayer.Concrete
         [Display(Name = "Pulp Chest SR")]
         public decimal? PulpChestSr { get; set; }               // HamurKasasıSR
 
-        public DateTime? InsertDate { get; set; }
-
-        public DateTime? UpdateDate { get; set; }
 
 
-        public DateTime? DeleteDate { get; set; }
 
-        public int DepartmentId { get; set; }
-
-        [JsonIgnore]
-        public DB_Department Department { get; set; }
-
-        public int AppUserId { get; set; }
-
-        [JsonIgnore]
-        public DB_AppUser AppUser { get; set; }
-
-        public int ShiftId { get; set; }
-
-        [JsonIgnore]
-        public DB_Shift Shift { get; set; }
-
-        public Int16? InUse { get; set; }
-
-        public int? DeletedBy { get; set; }
-
-        public int? UpdatedBy { get; set; }
 
 
 

@@ -1,0 +1,28 @@
+﻿@using System.Globalization
+
+@{
+    var userName = User.Identity?.Name ?? "Kullanıcı";
+    var culture = new CultureInfo("tr-TR");
+    var now = DateTime.Now.ToString("dddd, dd MMMM yyyy - HH:mm", culture);
+}
+
+<div class="text-center py-5">
+    <h2 class="fw-bold mb-2">
+        👋 Hoş Geldiniz, @userName
+    </h2>
+
+    <p class="text-muted mb-4">
+        📅 @now
+    </p>
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width:700px;">
+        <div class="card-body py-4">
+            <h5 class="card-title">MES Yönetim Paneli</h5>
+
+            <p class="card-text text-muted mb-0">
+                Sisteme başarıyla giriş yaptınız. Sol menüden istediğiniz modüle geçiş yapabilirsiniz.
+                Yakında bu alan; grafikler, KPI kartları, son işlemler ve hızlı erişim panelleriyle zenginleştirilmiş bir dashboard olarak kullanılacaktır.
+            </p>
+        </div>
+    </div>
+</div>

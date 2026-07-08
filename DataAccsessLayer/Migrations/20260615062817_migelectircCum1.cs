@@ -19,7 +19,7 @@ namespace DataAccsessLayer.Migrations
                 oldType: "datetime2");
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "InsertedDate",
+                name: "InsertDate",
                 table: "Dd_ElectricMeterLocation",
                 type: "datetime2",
                 nullable: true,
@@ -43,7 +43,7 @@ namespace DataAccsessLayer.Migrations
                 oldType: "datetime2");
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "InsertedDate",
+                name: "InsertDate",
                 table: "Db_CumulativeElectricityConsumption",
                 type: "datetime2",
                 nullable: true,
@@ -73,7 +73,7 @@ namespace DataAccsessLayer.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "InsertedDate",
+                name: "InsertDate",
                 table: "Dd_ElectricMeterLocation",
                 type: "datetime2",
                 nullable: false,
@@ -103,7 +103,7 @@ namespace DataAccsessLayer.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "InsertedDate",
+                name: "InsertDate",
                 table: "Db_CumulativeElectricityConsumption",
                 type: "datetime2",
                 nullable: false,

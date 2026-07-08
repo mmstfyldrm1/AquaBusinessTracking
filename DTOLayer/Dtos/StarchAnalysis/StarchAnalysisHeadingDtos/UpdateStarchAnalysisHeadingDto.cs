@@ -3,6 +3,7 @@
     public class UpdateStarchAnalysisHeadingDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public int SampleCollectionTime { get; set; }
 
         public int SampleResultDeliveryTime { get; set; }

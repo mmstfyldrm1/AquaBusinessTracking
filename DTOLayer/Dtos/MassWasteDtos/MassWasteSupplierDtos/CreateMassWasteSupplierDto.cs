@@ -10,6 +10,8 @@
         public decimal NetWeight { get; set; }
         public string WasteCode { get; set; }
 
+
+        public DateTime ReceiptDate { get; set; }
         public int DepartmentId { get; set; }
 
         public DateTime? InsertDate { get; set; }

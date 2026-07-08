@@ -1,16 +1,81 @@
-﻿<div class="page-section" id="stok">
-    <div class="section-header">
-        <div>
-            <div class="section-title">Stok & Üretim</div>
-            <div class="section-sub">Bobin stokları</div>
+﻿
+<div class="section-header">
+    <div>
+        <div class="section-title">Üretim  & Stok</div>
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100">
+            <div class="card-title p-3">
+                Bobin Üretim (Dün)
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Üretilen</th>
+                            <th>Sarf Edilen</th>
+                            <th>Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PreviousDay.Data)
+                        {
+                            var net = item.Production - item.Consumable;
+
+                            <tr>
+                                <td>@item.PapperType</td>
+                                <td>@item.Production.ToString("N2")</td>
+                                <td>@item.Consumable.ToString("N2")</td>
+                                <td class="@(net >= 0 ? "text-success" : "text-danger")">
+                                    @net.ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Bobin Stok</div>
-        <table>
-            <tr><th>Ürün</th><th>Stok</th></tr>
-            <tr><td>Aqua Fluting</td><td>0</td></tr>
-        </table>
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100">
+            <div class="card-title p-3">
+                Stok
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Stok</th>
+                            <th>Sarf Edilen</th>
+                            <th>Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Stock.Data)
+                        {
+                            var net = item.Production - item.Consumable;
+
+                            <tr>
+                                <td>@item.PapperType</td>
+                                <td>@item.Production.ToString("N2")</td>
+                                <td>@item.Consumable.ToString("N2")</td>
+                                <td class="@(net >= 0 ? "text-success" : "text-danger")">
+                                    @net.ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
 </div>

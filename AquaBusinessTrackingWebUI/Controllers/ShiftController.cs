@@ -33,7 +33,11 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Shift");
             if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
                 return View(new List<ShiftDto>());
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ShiftDto>>(json);
             if (values == null || !values.Any())

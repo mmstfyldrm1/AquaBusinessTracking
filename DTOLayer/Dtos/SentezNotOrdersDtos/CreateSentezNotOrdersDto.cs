@@ -2,6 +2,7 @@
 {
     public class CreateSentezNotOrdersDto
     {
+        public DateTime ReceiptDate { get; set; }
         public string Description { get; set; }                     // AÇIKLAMA
 
         public DateTime? InvoiceDate { get; set; }                  // irs.Tarih

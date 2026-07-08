@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Tampon No</th>
                         <th>Kağıt Tipi</th>
                         <th>Set No</th>
@@ -45,7 +46,7 @@
                     {
                         <tr>
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.BufferNo</td>
 
                             <td>@item.PaperType</td>
@@ -122,6 +123,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Tampon No</th>
                         <th>Kağıt Tipi</th>
                         <th>Set No</th>

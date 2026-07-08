@@ -4,7 +4,8 @@
     {
         public int RecId { get; set; }
 
-        public DateTime Date { get; set; }
+
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public string PulperNo { get; set; }
 

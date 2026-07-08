@@ -20,7 +20,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_WastePaperControl
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
-                .Where(x => x.InsertDate >= start && x.InsertDate < end)
+                .Where(x => x.ReceiptDate >= start && x.ReceiptDate < end)
                 .AsNoTracking()
                 .ToListAsync();
         }

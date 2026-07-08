@@ -9,6 +9,8 @@ namespace AquaBusinessTrackingWebApi.Services
         private readonly IPlcReader _plcReader;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _config;
+        private const int MaxHeartbeatValue = 10000;
+        private readonly TimeSpan _interval = TimeSpan.FromSeconds(5);
 
         public PlcDailyReadingService(
             IPlcReader plcReader,
@@ -47,8 +49,19 @@ namespace AquaBusinessTrackingWebApi.Services
                     foreach (var machine in machines)
                     {
                         await _plcReader.ReadAndSaveAsync(machine.RecId, ct);
+                        try
+                        {
+                            await _plcReader.WriteHeartbeatAsync(machine.RecId, MaxHeartbeatValue, ct);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Heartbeat loop hatası [{machine.Name}]: {ex.Message}");
+
+                        }
                         Console.WriteLine($"{machine.Name} okundu: {DateTime.Now:HH:mm:ss}");
                     }
+
+                    await Task.Delay(_interval, ct);
 
                     Console.WriteLine($"Günlük PLC okuma tamamlandı: {DateTime.Now:dd.MM.yyyy HH:mm}");
                 }

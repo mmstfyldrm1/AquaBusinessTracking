@@ -19,7 +19,13 @@
                         {
                             <input type="hidden" asp-for="Entity.RecId" />
                         }
-
+                        <div class="col-12">
+                            <label class="form-label">Tarih</label>
+                            <input type="text"
+                                   asp-for="Entity.ReceiptDate"
+                                   class="form-control"
+                                   placeholder="Örn: PM-2 Elektrik Odası" />
+                        </div>
                         <div class="col-12">
                             <label class="form-label">Lokasyon Adı</label>
                             <input type="text"
@@ -56,9 +62,9 @@
                             </div>
                         </div>
 
-                        <input type="hidden" asp-for="Entity.DepartmanId" />
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
                         <input type="hidden" asp-for="Entity.AppUserId" />
-                        <input type="hidden" asp-for="Entity.InsertedDate" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
 
                     </div>
                 </div>

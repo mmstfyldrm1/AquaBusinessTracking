@@ -5,7 +5,7 @@
         public int RecId { get; set; }
 
 
-        public DateTime Date { get; set; }                          // TARİH
+        public DateTime ReceiptDate { get; set; }                          // TARİH
 
 
         public TimeSpan? BufferExitTime { get; set; }               // TAMPON ÇIKIŞ SAATİ
@@ -18,6 +18,7 @@
 
 
         public string BufferNo { get; set; }                        // TAMPON NO
+
 
 
         public string ProductType { get; set; }                     // ÜRÜN CİNSİ

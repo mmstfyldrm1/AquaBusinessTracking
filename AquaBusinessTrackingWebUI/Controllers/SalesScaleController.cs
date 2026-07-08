@@ -109,6 +109,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             else
             {
                 dto.InsertDate = DateTime.Now;
+                dto.ScaleDate = DateTime.Now;
                 await client.PostAsync($"{_apiSettings.BaseUrl}/SalesScale", content);
             }
 

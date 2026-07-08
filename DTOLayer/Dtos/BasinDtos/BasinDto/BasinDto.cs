@@ -7,6 +7,8 @@
         public string Name { get; set; }
         public string Category { get; set; }
         public int DepartmentId { get; set; }
+
+
         public int AppUserId { get; set; }
 
         public string? CreatedByName { get; set; }
@@ -15,6 +17,8 @@
 
 
         public DateTime InsertDate { get; set; } = DateTime.Now;
+
+        public DateTime ReceiptDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }
 

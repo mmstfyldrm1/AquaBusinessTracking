@@ -2,7 +2,8 @@
 {
     public class CreateNaturelGasMeterMonitoringDto
     {
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; }
+
 
         public int DailyConsumption { get; set; }
         public float Pressure { get; set; }

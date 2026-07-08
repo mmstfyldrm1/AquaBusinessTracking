@@ -9,7 +9,7 @@
         public int AppUserId { get; set; }
 
 
-
+        public DateTime ReceiptDate { get; set; }
         public int DepartmentId { get; set; }
 
 

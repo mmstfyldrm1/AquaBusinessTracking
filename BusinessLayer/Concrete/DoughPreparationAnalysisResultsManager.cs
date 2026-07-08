@@ -17,7 +17,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<List<DoughPreparationAnalysisResultsDto>> GetWithDetails()
         {
-            var entities = _repo.GetWithDetails();
+            var entities = await _repo.GetWithDetails();
             var dtos = _mapper.Map<List<DoughPreparationAnalysisResultsDto>>(entities);
             return dtos;
         }

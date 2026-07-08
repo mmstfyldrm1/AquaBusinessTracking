@@ -49,7 +49,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] CreateCumulativeElectricityConsumptionDto dto)
         {
-            dto.InsertedDate = DateTime.Now;
+            dto.InsertDate = DateTime.Now;
             var result = await _service.Add(dto);
             return Ok(result);
 

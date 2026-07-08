@@ -1,0 +1,35 @@
+﻿@using DTOLayer.Dtos.PlanningScorBoardViewDtos
+@model PlanningScorBoardViewDto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Plan Görüntüle</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe src="/Uploads/@Model.UploadPdf"></iframe>
+
+</body>
+</html>

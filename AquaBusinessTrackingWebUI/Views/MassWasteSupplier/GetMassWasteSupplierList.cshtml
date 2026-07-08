@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Ay</th>
                         <th>Yıl</th>
                         <th>Firma</th>
@@ -38,6 +39,7 @@
                     {
                         <tr>
                             <td>@counter</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>@item.Month</td>
                             <td>@item.Year</td>
@@ -87,6 +89,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Ay</th>
                         <th>Yıl</th>
                         <th>Firma</th>

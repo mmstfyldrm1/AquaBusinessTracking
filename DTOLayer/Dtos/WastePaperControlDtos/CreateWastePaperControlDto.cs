@@ -2,11 +2,8 @@
 {
     public class CreateWastePaperControlDto
     {
-        public int? SequenceNumber { get; set; }                     // Sıra No
-
-
-        public DateTime Date { get; set; }                           // Tarih
-
+        public int? SequenceNumber { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public string WaybillNumber { get; set; }                    // İrsaliye No
 

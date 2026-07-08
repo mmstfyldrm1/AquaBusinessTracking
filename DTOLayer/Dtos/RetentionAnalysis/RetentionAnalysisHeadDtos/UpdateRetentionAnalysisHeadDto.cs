@@ -3,8 +3,8 @@
     public class UpdateRetentionAnalysisHeadDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
-        public DateTime Date { get; set; }
 
         public TimeSpan? SampleCollectionTime { get; set; }
 

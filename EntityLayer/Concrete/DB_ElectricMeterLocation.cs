@@ -11,20 +11,7 @@ namespace EntityLayer.Concrete
 
         public string? Explanation { get; set; }
 
-        public DateTime? InsertedDate { get; set; }
-
-        public DateTime? UpdateDate { get; set; }
-
-        public DateTime? DeleteDate { get; set; }
-
         public ICollection<DB_CumulativeElectricityConsumption> CumulativeElectricityConsumption { get; set; }
-
-        public int DepartmanId { get; set; }
-
-        public DB_Department Department { get; set; }
-
-
-
 
     }
 }

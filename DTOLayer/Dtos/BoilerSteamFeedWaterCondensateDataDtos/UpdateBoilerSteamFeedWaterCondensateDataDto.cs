@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public decimal Boil { get; set; }
         public decimal FeedWater { get; set; }
 
@@ -15,6 +15,7 @@
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
         public Int16? InUse { get; set; }
+
 
         public int? DeletedBy { get; set; }
 

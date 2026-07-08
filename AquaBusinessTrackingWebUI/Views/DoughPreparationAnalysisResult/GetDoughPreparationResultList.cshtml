@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Numune Alım Süresi</th>
                         <th>Sonuç Teslim Süresi</th>
                         <th>Numune Lokasyonu</th>
@@ -52,6 +53,10 @@
                         <tr>
 
                             <td>@counter</td>
+
+                            <td>
+                                @item.ReceiptDate.ToString("dd.MM.yyyy")
+                            </td>
 
                             <td>
                                 @item.SampleCollectionTime dk
@@ -154,6 +159,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Numune Alım Süresi</th>
                         <th>Sonuç Teslim Süresi</th>
                         <th>Numune Lokasyonu</th>

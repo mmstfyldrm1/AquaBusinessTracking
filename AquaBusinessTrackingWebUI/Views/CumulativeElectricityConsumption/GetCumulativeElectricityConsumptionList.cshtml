@@ -21,6 +21,7 @@
                         <th>#</th>
                         <th>Yıl</th>
                         <th>Ay</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Tüketim (kWh)</th>
                         <th>Tarih</th>
@@ -39,13 +40,14 @@
                             <td>@counter</td>
                             <td>@item.Year</td>
                             <td>@item.Month</td>
+                            <td>@item.ReceiptDate</td>
                             <td>@item.LocationName</td>
                             <td>@item.Consumption</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.ShiftName</td>
                             <td>@item.CreatedByName</td>
                             <td>
-                                @(item.InsertedDate?.ToString("dd.MM.yyyy") ?? "-")
+                                @(item.InsertDate?.ToString("dd.MM.yyyy") ?? "-")
                             </td>
 
                             <td class="text-center">
@@ -78,6 +80,7 @@
                         <th>#</th>
                         <th>Yıl</th>
                         <th>Ay</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Tüketim (kWh)</th>
                         <th>Tarih</th>

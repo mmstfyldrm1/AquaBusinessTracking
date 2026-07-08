@@ -3,6 +3,7 @@
     public class UpdateBufferGramajProfileDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public decimal BufferNo { get; set; }
 

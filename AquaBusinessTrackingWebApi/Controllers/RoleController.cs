@@ -49,7 +49,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequestDto dto)
         {
-            if (await _roleManager.RoleExistsAsync(dto.RoleName))
+            if (await _roleManager.RoleExistsAsync(dto.Name))
                 return BadRequest("Bu rol zaten mevcut.");
 
             var role = new DB_AppRole

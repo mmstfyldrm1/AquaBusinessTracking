@@ -671,7 +671,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int>("ElectricMeterLocationId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Month")
@@ -913,7 +913,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LocationName")
@@ -1713,7 +1713,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Module")
+                    b.Property<string>("Controller")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -3234,7 +3234,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("InsertedDate")
+                    b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")

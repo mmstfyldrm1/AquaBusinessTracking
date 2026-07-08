@@ -3,6 +3,7 @@
     public class UpdateElectricMotorDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public string ElectricMotorOrderNo { get; set; }
 

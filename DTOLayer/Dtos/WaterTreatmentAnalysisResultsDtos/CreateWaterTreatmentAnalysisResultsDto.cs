@@ -3,7 +3,7 @@
     public class CreateWaterTreatmentAnalysisResultsDto
     {
 
-
+        public DateTime ReceiptDate { get; set; }
         public int SampleCollectionTime { get; set; }
 
         public int SampleResultDeliveryTime { get; set; }

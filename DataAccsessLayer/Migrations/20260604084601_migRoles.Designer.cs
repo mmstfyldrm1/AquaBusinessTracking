@@ -1625,7 +1625,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Module")
+                    b.Property<string>("Controller")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -3041,7 +3041,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("InsertedDate")
+                    b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")

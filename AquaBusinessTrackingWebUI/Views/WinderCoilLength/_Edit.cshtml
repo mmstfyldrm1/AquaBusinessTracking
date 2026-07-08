@@ -28,7 +28,16 @@
                     }
 
                     <div class="row g-3">
+                        
+                        <div class="col-md-4">
+                            <label class="form-label">Fiş Tarihi</label>
 
+                            <div class="input-group">
+                                <input type="date"
+                                       asp-for="Entity.ReceiptDate"
+                                       class="form-control" /> 
+                            </div>
+                        </div>
                         <!-- Bobin Genişliği -->
                         <div class="col-md-4">
                             <label class="form-label">Bobin Genişliği</label>

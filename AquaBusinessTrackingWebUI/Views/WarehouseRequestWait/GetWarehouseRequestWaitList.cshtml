@@ -24,6 +24,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>İrsaliye No</th>
                         <th>Fatura No</th>
                         <th>Cari Hesap</th>
@@ -57,7 +58,7 @@
                         <tr>
 
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>
                                 @(item.WaybillNo ?? "-")
                             </td>
@@ -173,6 +174,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>İrsaliye No</th>
                         <th>Fatura No</th>
                         <th>Cari Hesap</th>

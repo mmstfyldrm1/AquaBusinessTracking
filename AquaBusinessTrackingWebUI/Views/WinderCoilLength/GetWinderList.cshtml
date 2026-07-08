@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Bobin Genişliği</th>
                         <th>Sarıcı Bobin Boyu</th>
                         <th>Gramaj</th>
@@ -38,7 +39,7 @@
                     {
                         <tr>
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.CoilWidth</td>
 
                             <td>@item.WinderCoilLength</td>
@@ -131,6 +132,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Bobin Genişliği</th>
                         <th>Sarıcı Bobin Boyu</th>
                         <th>Gramaj</th>

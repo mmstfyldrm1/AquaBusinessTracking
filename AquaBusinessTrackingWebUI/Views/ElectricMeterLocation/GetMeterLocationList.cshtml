@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Kullanıcı Adı</th>
                         <th>Vardiya</th>
@@ -33,6 +34,7 @@
                     {
                         <tr>
                             <td>@counter</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.LocationName</td>
                             <td>@item.CreatedByName</td>
                             <td>@item.ShiftName</td>
@@ -41,8 +43,8 @@
 
 
                             <td>
-                                @(item.InsertedDate.HasValue
-                                                            ? item.InsertedDate.Value.ToString("dd.MM.yyyy")
+                                @(item.InsertDate.HasValue
+                                                            ? item.InsertDate.Value.ToString("dd.MM.yyyy")
                                                             : "-")
                                                               </td>
 
@@ -86,6 +88,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Kullanıcı Adı</th>
                         <th>Açıklama</th>

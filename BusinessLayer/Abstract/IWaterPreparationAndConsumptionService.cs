@@ -7,5 +7,7 @@ namespace BusinessLayer.Abstract
         public Task<List<WaterPreparationAndConsumptionDto>> GetWithDetails();
 
         public Task<List<WaterPreparationAndConsumptionDto>> GetPreviousDay();
+
+
     }
 }

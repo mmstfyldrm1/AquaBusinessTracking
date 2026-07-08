@@ -17,6 +17,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Vardiya</th>
                         <th>Kullanıcı</th>
                          <th>Kayıt Tarihi</th>
@@ -33,6 +34,8 @@
                     {
                         <tr>
                             <td>@counter</td>
+
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>
                                 @item.ShiftName
@@ -81,6 +84,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Vardiya</th>
                         <th>Kullanıcı</th>
                         <th>Kayıt Tarihi</th>

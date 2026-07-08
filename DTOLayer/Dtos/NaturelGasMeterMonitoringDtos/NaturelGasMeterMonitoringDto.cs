@@ -3,7 +3,8 @@
     public class NaturelGasMeterMonitoringDto
     {
         public int RecId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
+
 
         public int DailyConsumption { get; set; }
         public float Pressure { get; set; }

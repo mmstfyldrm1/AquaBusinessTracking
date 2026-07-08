@@ -4,7 +4,7 @@
     {
 
         public DateTime ScaleDate { get; set; } = DateTime.Now;
-
+        public DateTime ReceiptDate { get; set; }
         public DateTime ScaleHours { get; set; } = DateTime.Now;
 
         public decimal ScaleNo { get; set; }

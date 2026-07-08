@@ -1,0 +1,107 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.PlanningScorBoardViewDtos
+@model ModalViewModel<PlanningScorBoardViewDto>
+
+<div class="modal fade" id="planningScoreModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/PlanningScorBoardView/Edit" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- PLAN NO -->
+                        <div class="col-md-6">
+                            <label class="form-label">Plan No</label>
+                            <input type="text" asp-for="Entity.PlanNo" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Plan Tarihi</label>
+                            <input type="Date" asp-for="Entity.ReceiptDate" class="form-control" />
+                        </div>
+                        <!-- SHIFT -->
+                        <div class="col-md-6">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <!-- USER -->
+                        <div class="col-md-6">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+                            </div>
+                        </div>
+
+                        <!-- PDF UPLOAD -->
+                        <div class="col-md-12">
+                            <label class="form-label">PDF Yükle</label>
+                            <input type="file"
+                                   asp-for="Entity.UploadPdfs"
+                                   accept="application/pdf"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- PDF VIEW (edit mode) -->
+                        @if (Model.IsEdit && !string.IsNullOrEmpty(Model.Entity.UploadPdf))
+                        {
+                            <div class="col-md-12 mt-2">
+                                <label class="form-label">Mevcut PDF</label>
+                                <iframe src="/Uploads/@Model.Entity.UploadPdf"
+                                        width="100%"
+                                        height="500px"
+                                        style="border:1px solid #ddd;"></iframe>
+                            </div>
+                        }
+
+                        <!-- HIDDEN -->
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.InUse" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

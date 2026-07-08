@@ -4,7 +4,7 @@
     {
 
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public int AppUserId { get; set; }
 
         public string CreatedByName { get; set; }

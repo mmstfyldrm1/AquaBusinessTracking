@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
         public int SampleCollectionTime { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public int SampleResultDeliveryTime { get; set; }
 
         public string SampleTakenLocation { get; set; }

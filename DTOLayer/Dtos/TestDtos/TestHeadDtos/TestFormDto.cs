@@ -3,7 +3,7 @@
     public class TestFormDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string TestDepartmentName { get; set; }
 
         public int AppUserId { get; set; }

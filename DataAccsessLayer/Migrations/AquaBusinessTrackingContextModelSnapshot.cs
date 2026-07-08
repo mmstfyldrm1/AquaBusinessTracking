@@ -163,7 +163,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -189,7 +189,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -265,6 +268,73 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_BasinMeasurement");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Explanation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NextShiftWork")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PersonelToWork")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("WorkIsDone")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("WorkPermit")
+                        .HasColumnType("bit");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_BoilerRoomDailyShiftMonitoring");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerSteamFeedWaterCondensateData", b =>
                 {
                     b.Property<int>("RecId")
@@ -273,14 +343,11 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Boil")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -306,7 +373,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("KM2Kodens")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -334,7 +404,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("AquaEcoFL16")
@@ -391,9 +461,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal?>("ColorLStar")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -457,6 +524,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("RctKnM")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan?>("SampleCollectionTime")
                         .HasColumnType("time");
 
@@ -469,7 +539,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("SctIndexCd")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Silica")
@@ -524,7 +594,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("BufferNo")
@@ -548,10 +618,13 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SampleNo")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<int>("Thickness")
@@ -574,6 +647,101 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_BufferGramajProfile");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BufferProduction", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("BufferEnd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("BufferNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BufferSetCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("BufferSpeed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("BufferStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("BufferWidthCm")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DowntimeMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("GrPerM2")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("MeasuredKg")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Product")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShiftSupervisorUserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TheoreticalBufferKg")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TotalDurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("ShiftSupervisorUserId");
+
+                    b.ToTable("Db_BufferProduction");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_CirculationTankAirPressureMeasurementTurbidity", b =>
                 {
                     b.Property<int>("RecId")
@@ -582,11 +750,8 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -619,7 +784,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("Time")
@@ -659,29 +827,38 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("Consumption")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmanId")
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("ElectricMeterLocationId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Month")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -690,7 +867,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("DepartmanId");
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ElectricMeterLocationId");
 
@@ -749,7 +926,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Bale")
@@ -757,9 +934,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal>("Clippings")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -794,7 +968,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("QueueNo")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -822,7 +999,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<int>("Blur")
@@ -862,6 +1039,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<float>("KM")
                         .HasColumnType("real");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SR")
                         .HasColumnType("int");
 
@@ -875,7 +1055,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -912,18 +1092,27 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmanId")
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("ShiftId")
                         .HasColumnType("int");
@@ -931,11 +1120,14 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
                     b.HasKey("RecId");
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("DepartmanId");
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ShiftId");
 
@@ -950,7 +1142,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -979,7 +1171,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1014,7 +1209,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -1032,7 +1227,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1052,6 +1250,67 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_ElectricShiftWork");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_FavoriteMenuItem", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModuleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_FavoriteMenuItem");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_KazanChemicalsHead", b =>
                 {
                     b.Property<int>("RecId")
@@ -1060,14 +1319,11 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Consumption")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Day")
                         .HasColumnType("nvarchar(max)");
@@ -1098,10 +1354,13 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Remaining")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1129,7 +1388,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -1161,15 +1420,15 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int>("Permission")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("ShiftUserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ShihtId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -1185,8 +1444,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.HasIndex("ShihtId");
-
                     b.ToTable("Db_KazanDailyShiftMonitoring");
                 });
 
@@ -1198,7 +1455,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -1232,7 +1489,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1260,7 +1520,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ArrivalLocation")
@@ -1270,9 +1530,6 @@ namespace DataAccsessLayer.Migrations
                     b.Property<string>("CarrierCompany")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1312,7 +1569,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -1340,6 +1600,73 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_LogisticsTrackingReport");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_MachineStop", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BreakLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("DowntimeDuration")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DowntimeReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Explanation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_MachineStop");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_MassWasteBalance", b =>
                 {
                     b.Property<int>("RecId")
@@ -1348,7 +1675,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -1375,7 +1702,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("PreviousMonthCarryover")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1402,7 +1732,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("DB_MassWasteBalance");
+                    b.ToTable("Db_MassWasteBalance");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_MassWasteSupplier", b =>
@@ -1413,7 +1743,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
@@ -1444,7 +1774,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("NetWeight")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1468,7 +1801,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("DB_MassWasteSupplier");
+                    b.ToTable("Db_MassWasteSupplier");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_NaturelGasMeterMonitoring", b =>
@@ -1479,7 +1812,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<float>("CalorificValue")
@@ -1493,9 +1826,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<int>("DailyConsumption")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1525,7 +1855,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<float>("Pressure")
                         .HasColumnType("real");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("StandartCubicmeter")
@@ -1559,11 +1892,8 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1587,7 +1917,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1615,14 +1948,11 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ConsumedQuantity")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1650,10 +1980,13 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("RemainingQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1693,13 +2026,69 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Module")
+                    b.Property<string>("Controller")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RecId");
 
                     b.ToTable("Db_Permission");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_PlanningScorBoardView", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PlanNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UploadPdf")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_PlanningScorBoardView");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_PlcMachine", b =>
@@ -1815,7 +2204,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ConsumedQuantity")
@@ -1850,10 +2239,13 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int>("Month")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("RemainingQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -1918,7 +2310,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("AtcFeedLtHour")
@@ -1926,9 +2318,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal?>("BasisWeightGrM2")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1970,6 +2359,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("PulpFlowLtMin")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("RetentionFeedLtMin")
                         .HasColumnType("decimal(18,2)");
 
@@ -1982,7 +2374,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<TimeSpan?>("SampleResultTime")
                         .HasColumnType("time");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SilicaLtHour")
@@ -2031,7 +2423,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("CurrentAccountName")
@@ -2068,6 +2460,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("ScaleDate")
                         .HasColumnType("datetime2");
 
@@ -2083,7 +2478,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("ScaleQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("TruckPlate")
@@ -2118,7 +2513,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("ActualMachineSpeed")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Ash")
@@ -2170,9 +2565,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<bool?>("ComplaintReceived")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal?>("DefectiveQuantityKg")
                         .HasColumnType("decimal(18,2)");
@@ -2267,6 +2659,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("RctKgf")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("RetentionDosageLtMin")
                         .HasColumnType("decimal(18,2)");
 
@@ -2282,7 +2677,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("SctIndex")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("SilicaAdded")
@@ -2332,7 +2727,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -2341,7 +2736,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -2376,7 +2771,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("SupplierCompany")
@@ -2467,7 +2865,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -2493,13 +2891,16 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SampleCollectionTime")
                         .HasColumnType("int");
 
                     b.Property<int>("SampleResultDeliveryTime")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -2527,9 +2928,6 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal?>("DryMatterOven")
                         .HasColumnType("decimal(18,2)");
 
@@ -2551,6 +2949,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<string>("ProductionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReceiptDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StarchAnalysisHeadingId")
                         .HasColumnType("int");
@@ -2585,14 +2986,11 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ConsumptionQuantity")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<TimeSpan>("Date")
-                        .HasColumnType("time");
 
                     b.Property<string>("Day")
                         .IsRequired()
@@ -2617,7 +3015,10 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -2717,7 +3118,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -2735,7 +3136,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("TestDepartmentName")
@@ -2767,11 +3171,8 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -2798,6 +3199,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Recipient")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2806,7 +3210,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalAmount")
@@ -2845,7 +3249,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -2874,6 +3278,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("Quanity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan>("ReturnDate")
                         .HasColumnType("time");
 
@@ -2889,7 +3296,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("Unit")
@@ -2936,7 +3343,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("AverageBaleWeightKg")
@@ -2951,9 +3358,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal?>("CorrugatedPercent")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -3009,6 +3413,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("OvenMoisturePercent")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ReceivedPaperType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -3016,7 +3423,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("SequenceNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3058,7 +3465,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("AgreedPrice")
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("AverageBaleWeightKg")
@@ -3074,9 +3481,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal?>("CorrugatedPercent")
                         .HasColumnType("decimal(5,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -3141,6 +3545,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("OvenMoisturePercent")
                         .HasColumnType("decimal(5,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ReceivedPaperType")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -3149,7 +3556,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("SequenceNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3190,7 +3597,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ConsumedQuantity")
@@ -3211,10 +3618,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("IncomingQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("InsertDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("InsertedDate")
+                    b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")
@@ -3225,10 +3629,13 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("RemainingQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3256,7 +3663,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -3284,6 +3691,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SampleCollectionTime")
                         .HasColumnType("int");
 
@@ -3294,7 +3704,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3322,7 +3732,7 @@ namespace DataAccsessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("CoilLengthDeflection")
@@ -3352,7 +3762,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TheoreticCoilLength")
@@ -3392,7 +3805,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int>("AdditionalNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("BufferNo")
@@ -3460,6 +3873,9 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("SetCutterEndDate")
                         .HasColumnType("datetime2");
 
@@ -3469,7 +3885,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int>("SetNo")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShiftId")
+                    b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3608,8 +4024,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("Basins")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("Basins")
@@ -3620,8 +4035,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("Basins")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3641,13 +4055,37 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Basin");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerSteamFeedWaterCondensateData", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("BoilerSteamFeedWaterCondensateData")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("BoilerSteamFeedWaterCondensateData")
@@ -3658,8 +4096,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("BoilerSteamFeedWaterCondensateData")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3673,8 +4110,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("BufferAnalysisReports")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("BufferAnalysisReports")
@@ -3685,8 +4121,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("BufferAnalysisReports")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3700,8 +4135,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("BufferGramajProfiles")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("BufferGramajProfiles")
@@ -3712,8 +4146,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("BufferGramajProfiles")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3722,13 +4155,45 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BufferProduction", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("BufferProduction")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("BufferProduction")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("BufferProduction")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "ShiftSupervisorUser")
+                        .WithMany()
+                        .HasForeignKey("ShiftSupervisorUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+
+                    b.Navigation("ShiftSupervisorUser");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_CirculationTankAirPressureMeasurementTurbidity", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("CirculationTankAirPressureMeasurementTurbidities")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("CirculationTankAirPressureMeasurementTurbidities")
@@ -3739,8 +4204,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("CirculationTankAirPressureMeasurementTurbidities")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3758,7 +4222,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("CumulativeElectricityConsumption")
-                        .HasForeignKey("DepartmanId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -3787,8 +4251,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("DoughPreparations")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("DoughPreparations")
@@ -3799,8 +4262,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("DoughPreparations")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3814,8 +4276,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("DoughPreparationAnalysisResults")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("DoughPreparationAnalysisResults")
@@ -3826,8 +4287,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("DoughPreparationAnalysisResults")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3845,7 +4305,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("ElectricMeterLocation")
-                        .HasForeignKey("DepartmanId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -3866,8 +4326,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("ElectricMotorTrackings")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("ElectricMotorTrackings")
@@ -3878,8 +4337,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("ElectricMotorTrackings")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3893,8 +4351,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("ElectricShiftWork")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("ElectricShiftWork")
@@ -3905,12 +4362,43 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("ElectricShiftWork")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
                     b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_FavoriteMenuItem", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("FavoriteMenuItems")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Permission", "Permission")
+                        .WithMany("FavoriteMenuItems")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Permission");
 
                     b.Navigation("Shift");
                 });
@@ -3920,8 +4408,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("KazanChemicalsHead")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("KazanChemicalsHead")
@@ -3932,8 +4419,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("KazanChemicalsHead")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -3947,8 +4433,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("KazanDailyShiftMonitoring")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("KazanDailyShiftMonitoring")
@@ -3959,22 +4444,13 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("KazanDailyShiftMonitoring")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shiht")
-                        .WithMany()
-                        .HasForeignKey("ShihtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
                     b.Navigation("Department");
 
                     b.Navigation("Shift");
-
-                    b.Navigation("Shiht");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_LabWork", b =>
@@ -3982,8 +4458,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("LabWorks")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("LabWorks")
@@ -3994,8 +4469,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("LabWorks")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4009,8 +4483,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("LogisticsTrackingReports")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("LogisticsTrackingReports")
@@ -4021,8 +4494,32 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("LogisticsTrackingReports")
                         .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_MachineStop", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("MachineStop")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("MachineStop")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("MachineStop")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4036,8 +4533,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("MassWasteBalance")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("MassWasteBalance")
@@ -4048,8 +4544,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("MassWasteBalance")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4063,8 +4558,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("MassWasteSupplier")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("MassWasteSupplier")
@@ -4075,8 +4569,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("MassWasteSupplier")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4090,8 +4583,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("NaturelGasMeterMonitorings")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("NaturelGasMeterMonitorings")
@@ -4102,8 +4594,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("NaturelGasMeterMonitorings")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4117,8 +4608,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("OilAnalysisReport")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("OilAnalysisReport")
@@ -4129,8 +4619,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("OilAnalysisReport")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4144,8 +4633,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("PapperMachineChemicals")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("PapperMachineChemicals")
@@ -4156,8 +4644,32 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("PapperMachineChemicals")
                         .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_PlanningScorBoardView", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("PlanningScorBoardView")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("PlanningScorBoardView")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("PlanningScorBoardView")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4192,21 +4704,18 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("PurificationChemicalsConsumptions")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("PurificationChemicalsConsumptions")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("PurificationChemicalsConsumptions")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4230,9 +4739,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany()
@@ -4242,9 +4749,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShiftId");
 
                     b.Navigation("AppUser");
 
@@ -4277,8 +4782,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("SalesScales")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("SalesScales")
@@ -4289,8 +4793,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("SalesScales")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4303,9 +4806,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("SentezAllData")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("SentezAllData")
@@ -4315,9 +4816,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("SentezAllData")
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ShiftId");
 
                     b.Navigation("AppUser");
 
@@ -4330,19 +4829,17 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShiftId");
 
                     b.Navigation("AppUser");
 
@@ -4356,8 +4853,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("StarchAnalysisHeadings")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("StarchAnalysisHeadings")
@@ -4368,8 +4864,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("StarchAnalysisHeadings")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4394,8 +4889,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("SteamConsumptions")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("SteamConsumptions")
@@ -4406,8 +4900,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("SteamConsumptions")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4432,8 +4925,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("TestHeader")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("TestHeaders")
@@ -4444,8 +4936,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("TestHeaders")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4459,8 +4950,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("VechileFuelLogs")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("VechileFuelLogs")
@@ -4471,8 +4961,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("VechileFuelLogs")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4486,8 +4975,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WarehouseRequestWaits")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WarehouseRequestWaits")
@@ -4498,8 +4986,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WarehouseRequestWaits")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4513,8 +5000,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WastePaperControls")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WastePaperControls")
@@ -4525,8 +5011,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WastePaperControls")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4540,8 +5025,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WastePaperCosts")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WastePaperCosts")
@@ -4552,8 +5036,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WastePaperCosts")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4567,8 +5050,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WaterPreparationAndConsumption")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WaterPreparationAndConsumption")
@@ -4579,8 +5061,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WaterPreparationAndConsumption")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4594,8 +5075,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WaterTreatmentAnalysisResults")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WaterTreatmentAnalysisResults")
@@ -4606,8 +5086,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WaterTreatmentAnalysisResults")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4621,8 +5100,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WinderCoilLengthControl")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WinderCoilLengthControl")
@@ -4633,8 +5111,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WinderCoilLengthControl")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4648,8 +5125,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
                         .WithMany("WinderCoilTrackings")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("WinderCoilTrackings")
@@ -4660,8 +5136,7 @@ namespace DataAccsessLayer.Migrations
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("WinderCoilTrackings")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
@@ -4730,11 +5205,15 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
+                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
                     b.Navigation("BufferAnalysisReports");
 
                     b.Navigation("BufferGramajProfiles");
+
+                    b.Navigation("BufferProduction");
 
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
@@ -4750,6 +5229,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("ElectricShiftWork");
 
+                    b.Navigation("FavoriteMenuItems");
+
                     b.Navigation("KazanChemicalsHead");
 
                     b.Navigation("KazanDailyShiftMonitoring");
@@ -4757,6 +5238,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("LabWorks");
 
                     b.Navigation("LogisticsTrackingReports");
+
+                    b.Navigation("MachineStop");
 
                     b.Navigation("MassWasteBalance");
 
@@ -4767,6 +5250,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("OilAnalysisReport");
 
                     b.Navigation("PapperMachineChemicals");
+
+                    b.Navigation("PlanningScorBoardView");
 
                     b.Navigation("PurificationChemicalsConsumptions");
 
@@ -4808,11 +5293,15 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("Basins");
 
+                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
                     b.Navigation("BufferAnalysisReports");
 
                     b.Navigation("BufferGramajProfiles");
+
+                    b.Navigation("BufferProduction");
 
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
@@ -4836,6 +5325,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("LogisticsTrackingReports");
 
+                    b.Navigation("MachineStop");
+
                     b.Navigation("MassWasteBalance");
 
                     b.Navigation("MassWasteSupplier");
@@ -4845,6 +5336,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("OilAnalysisReport");
 
                     b.Navigation("PapperMachineChemicals");
+
+                    b.Navigation("PlanningScorBoardView");
 
                     b.Navigation("PurificationChemicalsConsumptions");
 
@@ -4882,6 +5375,8 @@ namespace DataAccsessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_Permission", b =>
                 {
+                    b.Navigation("FavoriteMenuItems");
+
                     b.Navigation("RolePermissions");
                 });
 
@@ -4904,11 +5399,15 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
+                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
                     b.Navigation("BufferAnalysisReports");
 
                     b.Navigation("BufferGramajProfiles");
+
+                    b.Navigation("BufferProduction");
 
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
@@ -4932,6 +5431,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("LogisticsTrackingReports");
 
+                    b.Navigation("MachineStop");
+
                     b.Navigation("MassWasteBalance");
 
                     b.Navigation("MassWasteSupplier");
@@ -4941,6 +5442,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("OilAnalysisReport");
 
                     b.Navigation("PapperMachineChemicals");
+
+                    b.Navigation("PlanningScorBoardView");
 
                     b.Navigation("PurificationChemicalsConsumptions");
 

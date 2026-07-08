@@ -8,7 +8,7 @@
         public int? SequenceNumber { get; set; }
 
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
 
         public string WaybillNumber { get; set; }

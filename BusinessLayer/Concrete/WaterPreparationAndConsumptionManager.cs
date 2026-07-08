@@ -28,5 +28,7 @@ namespace BusinessLayer.Concrete
             var dtos = _mapper.Map<List<WaterPreparationAndConsumptionDto>>(entities);
             return dtos;
         }
+
+
     }
 }

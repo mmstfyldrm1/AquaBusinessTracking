@@ -668,13 +668,13 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmanId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("ElectricMeterLocationId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Month")
@@ -693,7 +693,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("DepartmanId");
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ElectricMeterLocationId");
 
@@ -915,13 +915,13 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmanId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("InsertedDate")
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LocationName")
@@ -938,7 +938,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("DepartmanId");
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("ShiftId");
 
@@ -1696,7 +1696,7 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Module")
+                    b.Property<string>("Controller")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -3217,7 +3217,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("InsertedDate")
+                    b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")
@@ -3761,7 +3761,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("CumulativeElectricityConsumption")
-                        .HasForeignKey("DepartmanId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -3848,7 +3848,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("ElectricMeterLocation")
-                        .HasForeignKey("DepartmanId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

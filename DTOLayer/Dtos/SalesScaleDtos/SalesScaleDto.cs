@@ -4,7 +4,7 @@
     {
 
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public DateTime ScaleDate { get; set; } = DateTime.Now;
 
         public DateTime ScaleHours { get; set; } = DateTime.Now;

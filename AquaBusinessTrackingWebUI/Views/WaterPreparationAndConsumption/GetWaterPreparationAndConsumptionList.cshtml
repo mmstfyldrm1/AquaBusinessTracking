@@ -24,6 +24,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Stok Kodu</th>
                         <th>Stok Adı</th>
                         <th>Tarih</th>
@@ -52,6 +53,7 @@
                         <tr>
 
                             <td>@counter</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>
                                 @(item.InventoryCode ?? "-")
@@ -62,7 +64,7 @@
                             </td>
 
                             <td>
-                                @(item.InsertedDate.ToString("dd.MM.yyyy") ?? "-")
+                                @(item.InsertDate?.ToString("dd.MM.yyyy") ?? "-")
                             </td>
 
                             <td>
@@ -150,6 +152,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Stok Kodu</th>
                         <th>Stok Adı</th>
                         <th>Tarih</th>

@@ -76,7 +76,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            Response.Cookies.Append("AuthToken", result.Token, new CookieOptions { HttpOnly = true, Secure = true });
+            Response.Cookies.Append("AuthToken", result.Token, new CookieOptions { HttpOnly = true, Secure = false });
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
             {

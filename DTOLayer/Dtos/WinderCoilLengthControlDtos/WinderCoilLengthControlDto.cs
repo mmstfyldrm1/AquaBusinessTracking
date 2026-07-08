@@ -3,7 +3,7 @@
     public class WinderCoilLengthControlDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public decimal CoilWidth { get; set; }
 
         public decimal WinderCoilLength { get; set; }

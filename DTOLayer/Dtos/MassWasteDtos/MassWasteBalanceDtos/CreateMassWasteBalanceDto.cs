@@ -4,6 +4,7 @@
     {
 
         public int Month { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public int Year { get; set; }
         public string WasteCode { get; set; }
         public decimal PreviousMonthCarryover { get; set; }

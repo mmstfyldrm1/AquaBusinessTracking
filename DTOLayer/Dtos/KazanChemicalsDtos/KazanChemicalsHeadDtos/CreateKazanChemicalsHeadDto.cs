@@ -5,11 +5,12 @@
 
 
         public string InventoryCode { get; set; }
+
         public string InventoryName { get; set; }
 
         public string? Day { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public int DepartmentId { get; set; }
 

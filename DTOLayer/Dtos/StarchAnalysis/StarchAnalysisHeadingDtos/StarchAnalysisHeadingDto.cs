@@ -3,6 +3,7 @@
     public class StarchAnalysisHeadingDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public int SampleCollectionTime { get; set; }
 
         public int SampleResultDeliveryTime { get; set; }

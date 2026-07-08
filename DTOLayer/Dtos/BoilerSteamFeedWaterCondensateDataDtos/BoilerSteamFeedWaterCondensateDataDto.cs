@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public decimal Boil { get; set; }
         public decimal FeedWater { get; set; }
 
@@ -27,6 +27,7 @@
         public int DepartmentId { get; set; }
 
         public int AppUserId { get; set; }
+
 
         public int ShiftId { get; set; }
 

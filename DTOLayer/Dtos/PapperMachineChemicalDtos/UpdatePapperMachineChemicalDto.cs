@@ -3,6 +3,7 @@
     public class UpdatePapperMachineChemicalDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public string InventoryCode { get; set; }
 
@@ -14,7 +15,6 @@
 
         public decimal RemainingQuantity { get; set; }
 
-        public DateTime? Date { get; set; }
 
         public int DepartmentId { get; set; }
 

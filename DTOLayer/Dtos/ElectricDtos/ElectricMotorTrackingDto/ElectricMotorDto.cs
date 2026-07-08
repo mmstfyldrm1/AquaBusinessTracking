@@ -3,6 +3,7 @@
     public class ElectricMotorDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string ElectricMotorOrderNo { get; set; }
         public string ElectricMotorBrand { get; set; }
         public float kW { get; set; }

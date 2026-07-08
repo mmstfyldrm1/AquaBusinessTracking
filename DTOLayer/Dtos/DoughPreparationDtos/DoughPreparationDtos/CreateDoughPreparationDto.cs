@@ -4,6 +4,8 @@
     {
         public int RecId { get; set; }
 
+
+
         public DateTime Date { get; set; }
 
         public string PulperNo { get; set; }

@@ -6,6 +6,8 @@ namespace BusinessLayer.Abstract
     {
 
         Task<List<PermissionDto>> GetAll();
+
+        Task<List<PermissionDto>> GetByName();
         Task<PermissionDto> GetById(int id);
         Task Add(AddPermissionsDto dto);
         Task Update(UpdatePermissionsDto dto);

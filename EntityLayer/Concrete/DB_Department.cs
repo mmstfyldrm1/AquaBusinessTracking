@@ -23,6 +23,15 @@ namespace EntityLayer.Concrete
         public ICollection<DB_BufferGramajProfile> BufferGramajProfiles { get; set; }
 
         [JsonIgnore]
+        public ICollection<DB_PlanningScorBoardView> PlanningScorBoardView { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_MachineStop> MachineStop { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_BufferProduction> BufferProduction { get; set; }
+
+        [JsonIgnore]
         public ICollection<DB_WaterPreparationAndConsumption> WaterPreparationAndConsumption { get; set; }
 
         [JsonIgnore]
@@ -129,6 +138,9 @@ namespace EntityLayer.Concrete
 
         [JsonIgnore]
         public ICollection<DB_DoughPreparation> DoughPreparations { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_BoilerRoomDailyShiftMonitoring> BoilerRoomDailyShiftMonitoring { get; set; }
         public DateTime? InsertDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }

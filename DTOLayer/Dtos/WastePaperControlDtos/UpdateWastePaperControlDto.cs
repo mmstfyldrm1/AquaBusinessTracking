@@ -3,10 +3,11 @@
     public class UpdateWastePaperControlDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public int? SequenceNumber { get; set; }                     // Sıra No
 
 
-        public DateTime Date { get; set; }                           // Tarih
+
 
 
         public string WaybillNumber { get; set; }                    // İrsaliye No

@@ -34,7 +34,11 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/DoughPreparationAnalysisResults/details");
             if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = response.Content.ReadAsStringAsync();
                 return View(new List<DoughPreparationAnalysisResultsDto>());
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<DoughPreparationAnalysisResultsDto>>(json);
             if (values == null || !values.Any())
@@ -79,6 +83,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
+
                 var model = new ModalViewModel<DoughPreparationAnalysisResultsDto>
                 {
                     Entity = new DoughPreparationAnalysisResultsDto(),

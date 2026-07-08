@@ -1,38 +1,104 @@
-﻿@using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos
-@model List<DoughPreparationDto>
+﻿@using DTOLayer.Dtos.AdminDashboardDtos
+@model RawMaterialsDto
 
 <div class="page-section" id="hammadde">
+
     <div class="section-header">
         <div>
-            <div class="section-title">Hammadde & Kimyasal</div>
-            <div class="section-sub">Stok ve tüketim</div>
+            <div class="section-title">🧪 Hammadde & Kimyasal</div>
+            <div class="section-sub">
+                Günlük tüketim ve stok hareketleri
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Hurda Kağıt Tüketim</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Malzeme</th>
-                    <th>Balya Adedi</th>
-                    <th>Kg</th>
-                    <th>Pulper No</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.InventoryName</td>
-                        <td>@item.Bale</td>
-                        <td>@item.KG</td>
-                        <td>@item.PulperNo</td>
-                    </tr>
-                }
+    <div class="row">
 
+        <!-- Hurda Kağıt -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    Hurda Kağıt Tüketim
+                </div>
 
-            </tbody>
-        </table>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Malzeme</th>
+                                <th>Balya</th>
+                                <th>Kg</th>
+                                <th>Pulper</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.DoughPreparation)
+                            {
+                                <tr>
+                                    <td>@item.InventoryName</td>
+                                    <td>@item.Bale</td>
+                                    <td class="fw-bold text-primary">
+                                        @item.KG.ToString("N2")
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @item.PulperNo
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Kimyasal -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    Kimyasal Tüketim
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Malzeme</th>
+                                <th>Gelen</th>
+                                <th>Tüketilen</th>
+                                <th>Kalan</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.PapperMachineChemical)
+                            {
+                                <tr>
+                                    <td>@item.InventoryName</td>
+
+                                    <td class="text-success fw-bold">
+                                        @item.IncomingQuantity.ToString("N2")
+                                    </td>
+
+                                    <td class="text-danger fw-bold">
+                                        @item.ConsumedQuantity.ToString("N2")
+                                    </td>
+
+                                    <td class="text-primary fw-bold">
+                                        @item.RemainingQuantity.ToString("N2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
     </div>
+
 </div>

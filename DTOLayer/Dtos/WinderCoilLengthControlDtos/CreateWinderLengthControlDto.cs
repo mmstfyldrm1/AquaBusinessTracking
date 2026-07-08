@@ -5,6 +5,7 @@
 
 
         public decimal CoilWidth { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public decimal WinderCoilLength { get; set; }
 

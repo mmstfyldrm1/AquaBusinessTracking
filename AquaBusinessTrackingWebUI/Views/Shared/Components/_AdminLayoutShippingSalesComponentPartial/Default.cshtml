@@ -1,4 +1,4 @@
-﻿@model ShippingViewModel
+﻿@model AdminDashboardSalesShippingViewModel
 
 <div class="page-section" id="sevk">
     <!-- KPI ROW -->
@@ -17,66 +17,150 @@
         </div>
 
         <div class="kpi">
-            <div class="kpi-label">Faturalanan</div>
-            <div class="kpi-val">—</div>
-            <div class="kpi-unit">Ton</div>
+            <div class="kpi-label">Satış (Dün)</div>
+            <div class="kpi-val">@Model.PreviousTotal.ToString("N2")</div>
+            <div class="kpi-unit">Kg</div>
         </div>
 
         <div class="kpi">
-            <div class="kpi-label">Bekleyen Sevk</div>
-            <div class="kpi-val">—</div>
-            <div class="kpi-unit">Ton</div>
+            <div class="kpi-label">Satış Tüm</div>
+            <div class="kpi-val">@Model.AllTotal.ToString("N2")</div>
+            <div class="kpi-unit">Kg</div>
         </div>
 
     </div>
 
     <br />
 
-    <!-- CHART -->
-    <div class="card chart-card">
-        <div class="card-title">Sevkiyat & Satış Trend</div>
+    <div class="row">
 
-        <div class="chart-wrapper">
-            <canvas id="shippingChart"></canvas>
+
+        <!-- CHART -->
+        <div class="card chart-card">
+            <div class="card-title">Sevkiyat & Satış Trend</div>
+
+            <div class="chart-wrapper-small">
+                <canvas id="shippingChart"></canvas>
+            </div>
         </div>
-    </div>
 
-    <!-- TABLE -->
-    <div class="card">
-        <div class="card-title">Son Sevkiyatlar</div>
+        <!-- TABLO -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title">
+                    Satış Dün
+                </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Tartım No</th>
-                    <th>Tarih</th>
-                    <th>Müşteri</th>
-                    <th>Ton</th>
-                   
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Last10)
-                {
-                    <tr>
-                        <td>@item.ScaleNo</td>
-                        <td>@item.InsertDate</td>
-                        <td>@item.CurrentAccountName</td>
-                        <td>@item.DeliveryQuantity</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Kağıt Türü</th>
+                                <th>Satış</th>
+                                <th>İade</th>
+                                <th>Kalan</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.PreviousDay.Data)
+                            {
+                                <tr>
+                                    <td>@item.PapperType</td>
+                                    <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
+                                    <td class="fw-bold text-warning">@item.Consumable.ToString("N2")</td>
+                                    <td>@item.Remaning.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title">
+                    Son 10 Sevkiyat
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tarih</th>
+                                <th>Müşteri</th>
+                                <th>Miktar (Kg)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int counter = 1;
+                            }
+                            @foreach (var item in Model.Last10)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@item.InsertDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>@item.CurrentAccountName</td>
+                                    <td class="fw-bold text-success">
+                                        @item.DeliveryQuantity.ToString("N0")
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLO 2 -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title">
+                    Satış Tüm
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Kağıt Türü</th>
+                                <th>Satış</th>
+                                <th>İade</th>
+                                <th>Kalan</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.Sales.Data)
+                            {
+                                <tr>
+                                    <td>@item.PapperType</td>
+                                    <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
+                                    <td class="fw-bold text-warning">@item.Consumable.ToString("N2")</td>
+                                    <td>@item.Remaning.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
         const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM.yyyy"))))
         const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)))
 
-        // Varsa eskiyi yok et
         const existing = Chart.getChart('shippingChart');
         if (existing) existing.destroy();
 
@@ -91,13 +175,16 @@
                     backgroundColor: 'rgba(54, 162, 235, 0.1)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.3
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                devicePixelRatio: window.devicePixelRatio || 1  // bulanıklık için
+                devicePixelRatio: Math.max(window.devicePixelRatio || 1, 2)
             }
         });
     });

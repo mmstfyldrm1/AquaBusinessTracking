@@ -99,7 +99,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> Edit(ModalViewModel<ElectricMeterLocationDto> model)
         {
             var dto = model.Entity;
-            dto.DepartmanId = int.Parse(User.FindFirst("DepartmentId")?.Value);
+            dto.DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
             dto.AppUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             var client = _httpClientFactory.CreateClient();
@@ -118,7 +118,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                dto.InsertedDate = DateTime.Now;
+                dto.InsertDate = DateTime.Now;
                 var result = await client.PostAsync($"{_apiSettings.BaseUrl}/ElectricMeterLocation", content);
                 if (!result.IsSuccessStatusCode)
                 {

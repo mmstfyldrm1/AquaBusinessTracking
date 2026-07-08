@@ -54,7 +54,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             if (dtomachine == null || !responseMachineList.IsSuccessStatusCode)
             {
                 var errorMessage = await responseMachineList.Content.ReadAsStringAsync();
-                return RedirectToAction("GetMachineTagsList");
+                return Json("Önce Makine Girişi Yapmanız Gerekmekedir");
             }
             var machines = dtomachine?
                  .Select(x => new SelectListItem

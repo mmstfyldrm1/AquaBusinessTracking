@@ -29,6 +29,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(await _service.GetById(id));
         }
 
+        [HttpGet("getPermisionsName")]
+        public async Task<IActionResult> GetByName(string permisionsName)
+        {
+            var result = await _service.GetByName();
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(AddPermissionsDto dto)
         {

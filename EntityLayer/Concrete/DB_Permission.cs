@@ -19,5 +19,8 @@ namespace EntityLayer.Concrete
 
         [JsonIgnore]
         public ICollection<DB_RolePermission> RolePermissions { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_FavoriteMenuItem> FavoriteMenuItems { get; set; }
     }
 }

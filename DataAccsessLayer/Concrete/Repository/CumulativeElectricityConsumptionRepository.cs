@@ -1,4 +1,5 @@
 ﻿using DataAccsessLayer.Abstract;
+using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,7 @@ namespace DataAccsessLayer.Concrete.Repository
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
                 .Include(x => x.ElectricMeterLocation)
-                .Where(x => x.InsertedDate > startdate && x.InsertedDate < endDate)
+                .Where(x => x.ReceiptDate >= startdate && x.ReceiptDate < endDate)
                 .ToListAsync();
         }
 
@@ -41,6 +42,31 @@ namespace DataAccsessLayer.Concrete.Repository
                  .Include(x => x.ElectricMeterLocation)
                 .AsNoTracking()
                  .ToListAsync();
+        }
+
+        public async Task<List<CumulativeElectricityConsumptionDto>> GetLast7DaysGet()
+        {
+            DateTime startDate = DateTime.Today.AddDays(-7);
+            DateTime endDate = DateTime.Today.AddDays(1);
+            var data = await _context.Db_CumulativeElectricityConsumption
+                .AsNoTracking()
+                .Include(x => x.ElectricMeterLocation)
+                .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
+                .GroupBy(x => new
+                {
+                    Date = x.ReceiptDate!.Value.Date,
+                    LocationName = x.ElectricMeterLocation != null
+                        ? x.ElectricMeterLocation.LocationName
+                        : "Bilinmeyen"
+                })
+                .Select(g => new CumulativeElectricityConsumptionDto
+                {
+                    ReceiptDate = g.Key.Date,
+                    LocationName = g.Key.LocationName,
+                    Consumption = g.Sum(x => x.Consumption)
+                })
+                .ToListAsync();
+            return data;
         }
 
     }

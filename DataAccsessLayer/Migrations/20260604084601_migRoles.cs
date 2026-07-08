@@ -13,7 +13,7 @@ namespace DataAccsessLayer.Migrations
             migrationBuilder.RenameColumn(
                 name: "Name",
                 table: "Db_Permission",
-                newName: "Module");
+                newName: "Controller");
 
             migrationBuilder.AddColumn<string>(
                 name: "Action",
@@ -149,7 +149,7 @@ namespace DataAccsessLayer.Migrations
                 table: "Db_Permission");
 
             migrationBuilder.RenameColumn(
-                name: "Module",
+                name: "Controller",
                 table: "Db_Permission",
                 newName: "Name");
         }

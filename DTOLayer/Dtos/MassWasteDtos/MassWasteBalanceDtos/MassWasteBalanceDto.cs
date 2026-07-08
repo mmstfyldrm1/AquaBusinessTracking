@@ -3,6 +3,7 @@
     public class MassWasteBalanceDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public int Month { get; set; } = DateTime.Now.Month;
         public int Year { get; set; } = DateTime.Now.Year;
         public string WasteCode { get; set; }

@@ -4,7 +4,7 @@
     {
 
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public decimal Boil { get; set; }
         public decimal FeedWater { get; set; }
 
@@ -23,6 +23,7 @@
         public int DepartmentId { get; set; }
 
         public int AppUserId { get; set; }
+
 
         public int ShiftId { get; set; }
     }

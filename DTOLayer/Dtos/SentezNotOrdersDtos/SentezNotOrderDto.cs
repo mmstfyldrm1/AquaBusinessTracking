@@ -3,6 +3,7 @@
     public class SentezNotOrderDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string Description { get; set; }                     // AÇIKLAMA
 
         public DateTime? InvoiceDate { get; set; }                  // irs.Tarih

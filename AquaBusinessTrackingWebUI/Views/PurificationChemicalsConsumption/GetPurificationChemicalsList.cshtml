@@ -1,8 +1,9 @@
-﻿@{
+﻿@using DTOLayer.Dtos.PurificationChemicalsConsumptionDtos
+@{
     ViewData["Title"] = "GetPurificationChemicalsList";
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
-
+@model List<PurificationChemicalsConsumptionDto>
 <h6 class="mb-0 text-uppercase">Arıtma Kimyasal Tüketim(Kg)</h6>
 <hr />
 
@@ -19,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Malzeme Kodu</th>
                         <th>Malzeme Adı</th>
                         <th>Ay</th>
@@ -39,7 +41,7 @@
                     {
                         <tr>
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.InventoryCode</td>
                             <td>@item.InventoryName</td>
                             <td>@item.Month</td>
@@ -90,6 +92,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Malzeme Kodu</th>
                         <th>Malzeme Adı</th>
                         <th>Ay</th>

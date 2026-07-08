@@ -9,7 +9,7 @@
 
         public string? Day { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public int DepartmentId { get; set; }
 

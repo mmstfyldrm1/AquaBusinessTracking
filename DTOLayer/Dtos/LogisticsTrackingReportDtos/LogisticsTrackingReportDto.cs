@@ -3,7 +3,8 @@
     public class LogisticsTrackingReportDto
     {
         public int RecId { get; set; }
-        public DateTime Date { get; set; }                          // TARİH
+
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;                     // TARİH
         public string CarrierCompany { get; set; }                  // NAKLİYE FİRMASI
         public string DepartureLocation { get; set; }               // ÇIKIŞ YERİ
         public string ArrivalLocation { get; set; }                 // VARIŞ YERİ

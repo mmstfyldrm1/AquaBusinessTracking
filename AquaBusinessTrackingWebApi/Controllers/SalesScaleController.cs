@@ -45,6 +45,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         public async Task<IActionResult> Add(CreateSalesScaleDto dto)
         {
             dto.InsertDate = DateTime.Now;
+            dto.ScaleDate = DateTime.Now;
             await _salesScaleService.Add(dto);
             return Ok();
         }

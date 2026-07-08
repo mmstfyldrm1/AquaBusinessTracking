@@ -3,6 +3,7 @@
     public class UpdateSentezNotOrdersDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; }
         public string Description { get; set; }                     // AÇIKLAMA
 
         public DateTime? InvoiceDate { get; set; }                  // irs.Tarih

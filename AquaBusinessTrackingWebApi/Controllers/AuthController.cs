@@ -1,8 +1,10 @@
 ﻿using AquaBusinessTrackingWebApi.Services;
 using DTOLayer.Dtos.AuthDtos;
+using DTOLayer.Dtos.UserDtos;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AquaBusinessTrackingWebApi.Controllers
 {
@@ -77,6 +79,21 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 Role = roles,
             });
 
+        }
+
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userManager.Users
+                .Select(x => new GetListUserDto
+                {
+                    Id = x.Id,
+                    UserName = x.UserName
+
+                })
+                .ToListAsync();
+
+            return Ok(users);
         }
 
         private string ConvertToEnglishCharacter(string text)

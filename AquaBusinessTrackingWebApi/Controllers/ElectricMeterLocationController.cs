@@ -45,7 +45,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateElectricMeterLocationDto dto)
         {
-            dto.InsertedDate = DateTime.Now;
+            dto.InsertDate = DateTime.Now;
             await _service.Add(dto);
             return Ok();
         }

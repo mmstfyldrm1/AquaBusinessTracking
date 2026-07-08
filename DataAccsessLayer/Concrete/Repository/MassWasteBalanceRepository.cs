@@ -14,7 +14,7 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<DB_MassWasteBalance>> GetWithDetails()
         {
-            return await _context.DB_MassWasteBalance
+            return await _context.Db_MassWasteBalance
                  .Include(x => x.Shift)
                  .Include(x => x.AppUser)
                  .ToListAsync();

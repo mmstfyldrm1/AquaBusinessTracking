@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>İrsaliye Tarihi</th>
                         <th>İrsaliye/Fatura No</th>
                         <th>Gelen Firma</th>
@@ -51,6 +52,7 @@
                         <tr>
 
                             <td>@counter</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>
                                 @(item.InvoiceDate?.ToString("dd.MM.yyyy") ?? "-")
@@ -157,6 +159,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>İrs. Tarih</th>
                         <th>İrs/Fatura No</th>
                         <th>Firma</th>

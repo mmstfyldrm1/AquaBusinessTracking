@@ -5,7 +5,7 @@
         public int RecId { get; set; }
 
 
-        public DateTime Date { get; set; }                          // TARİH
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
 
         public TimeSpan? BufferExitTime { get; set; }               // TAMPON ÇIKIŞ SAATİ
@@ -15,6 +15,8 @@
 
 
         public TimeSpan? SampleResultTime { get; set; }             // NUMUNE SONUÇ VERME SAATİ
+
+
 
 
         public string BufferNo { get; set; }                        // TAMPON NO

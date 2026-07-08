@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
         public string LabTestName { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string LabTestRequest { get; set; }
         public string LabTestCount { get; set; }
         public string LabTestUserNames { get; set; }

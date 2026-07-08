@@ -10,6 +10,7 @@ namespace DTOLayer.Dtos.UserDtos
 
         public string SurName { get; set; }
 
+        public string DepartmentName { get; set; }
         public string UserName { get; set; }
 
         public int DepartmentId { get; set; }
@@ -24,8 +25,6 @@ namespace DTOLayer.Dtos.UserDtos
         public DateTime? UpdateDate { get; set; }
 
         public string Email { get; set; }
-
-        public int MyProperty { get; set; }
 
         public List<string>? RoleName { get; set; } = new();
 

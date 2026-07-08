@@ -24,6 +24,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Test Adı</th>
                         <th>Test Talebi</th>
                         <th>Test Sayısı</th>
@@ -50,6 +51,7 @@
                         <tr>
 
                             <td>@counter</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>
                                 @(item.LabTestName ?? "-")
@@ -137,6 +139,7 @@
                     <tr>
 
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Test Adı</th>
                         <th>Test Talebi</th>
                         <th>Test Sayısı</th>

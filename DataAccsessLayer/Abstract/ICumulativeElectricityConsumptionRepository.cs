@@ -1,4 +1,5 @@
-﻿using EntityLayer.Concrete;
+﻿using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
+using EntityLayer.Concrete;
 
 namespace DataAccsessLayer.Abstract
 {
@@ -8,6 +9,8 @@ namespace DataAccsessLayer.Abstract
 
         Task<List<DB_CumulativeElectricityConsumption>> GetPreviousDay();
         Task<List<DB_ElectricMeterLocation>> GetLocationName();
+
+        Task<List<CumulativeElectricityConsumptionDto>> GetLast7DaysGet();
 
 
     }

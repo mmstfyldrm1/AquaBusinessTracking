@@ -29,7 +29,7 @@
                 </a>
             </li>
         }
-       
+
 
         <li class="menu-label">Departmanlar</li>
 
@@ -43,7 +43,12 @@
                 <ul>
                     @if (CurrentUser.HasPermission("ARITMA.AATLabAnalysis.View"))
                     {
-                        <li><a href="~/Basin/GetBasinList"><ion-icon name="ellipse-outline"></ion-icon>AAT Lab. Analiz Defteri</a></li>
+                        <li class="d-flex justify-content-between align-items-center">
+                            <a href="~/Basin/GetBasinList" class="flex-grow-1">
+                                <ion-icon name="flask-outline"></ion-icon>
+                                AAT Lab. Analiz Defteri
+                            </a>
+                        </li>
                     }
                     @if (CurrentUser.HasPermission("ARITMA.PurificationChemicalConsumption.View"))
                     {
@@ -85,6 +90,7 @@
             </li>
         }
 
+
         @if (CurrentUser.HasModulePermission("KAZAN"))
         {
             <li>
@@ -104,6 +110,10 @@
                     @if (CurrentUser.HasPermission("KAZAN.NaturalGasTracking.View"))
                     {
                         <li><a href="~/NaturelGasMeterMonitoring/GetNaturelGasMeterList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Doğal Gaz Tkp. Sis.</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KAZAN.BoilerRoomDailyShiftMonitoring.View"))
+                    {
+                        <li><a href="~/BoilerRoomDailyShiftMonitoring/GetBoilerRoomDailyShiftData"><ion-icon name="ellipse-outline"></ion-icon>Kazan Vardiya Yapılan İş Tkp.</a></li>
                     }
 
 
@@ -217,7 +227,7 @@
                     <div class="menu-title">Yaş Kısım</div>
                 </a>
                 <ul>
-                    <li><a href="#"><ion-icon name="ellipse-outline"></ion-icon>İşlem 1</a></li>
+                    <li><a href="~/MachineStop/GetMachineStopList"><ion-icon name="ellipse-outline"></ion-icon>Duruş Kayıtları</a></li>
                 </ul>
             </li>
         }
@@ -231,107 +241,107 @@
                     <div class="menu-title">Kuru Kısım</div>
                 </a>
                 <ul>
-                    <li><a href="#"><ion-icon name="ellipse-outline"></ion-icon>İşlem 1</a></li>
+                    <li><a href="~/BufferProduction/GetBufferProductionList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Takip</a></li>
                 </ul>
             </li>
         }
 
 
 
-        @if (CurrentUser.HasModulePermission("M2KANTAR"))
+        @if (CurrentUser.HasModulePermission("KIMYASAL"))
         {
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><ion-icon name="checkmark-done-outline"></ion-icon></div>
+                    <div class="menu-title">Kalite</div>
+                </a>
+                <ul>
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/DoughPreparationAnalysisResult/GetDoughPreparationResultList"><ion-icon name="ellipse-outline"></ion-icon>Hamur Analiz Sonucu</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/CirculationTankAirPressureMeasurementTurbidity/CirculationTankList"><ion-icon name="ellipse-outline"></ion-icon>Devir D. Tankı Snç.</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/StarchAnalysis/GetStarchAnalysisList"><ion-icon name="ellipse-outline"></ion-icon>Nişasta Analiz Snç.</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/LabWork/GetLabWorkList"><ion-icon name="ellipse-outline"></ion-icon>Laboratuvar İş. Takip Sis.</a></li>
+                    }
 
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/WaterTreatmentAnalysisResults/GetWaterAnalysisResults"><ion-icon name="ellipse-outline"></ion-icon>Su Arıtma Analiz Snç.</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/BufferAnalysisReport/GetBufferAnalysisReportList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Analiz Raporu</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    {
+                        <li><a href="~/OilAnalysisReport/GetOilAnalysisReport"><ion-icon name="ellipse-outline"></ion-icon>Yağ Analiz Raporu</a></li>
+                    }
+                </ul>
+            </li>
         }
 
 
 
-        <li>
-            <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><ion-icon name="checkmark-done-outline"></ion-icon></div>
-                <div class="menu-title">Kalite</div>
-            </a>
-            <ul>
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/DoughPreparationAnalysisResult/GetDoughPreparationResultList"><ion-icon name="ellipse-outline"></ion-icon>Hamur Analiz Sonucu</a></li>
-                }
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/CirculationTankAirPressureMeasurementTurbidity/CirculationTankList"><ion-icon name="ellipse-outline"></ion-icon>Devir D. Tankı Snç.</a></li>
-                }
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/StarchAnalysis/GetStarchAnalysisList"><ion-icon name="ellipse-outline"></ion-icon>Nişasta Analiz Snç.</a></li>
-                }
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/LabWork/GetLabWorkList"><ion-icon name="ellipse-outline"></ion-icon>Laboratuvar İş. Takip Sis.</a></li>
-                }
 
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/WaterTreatmentAnalysisResults/GetWaterAnalysisResults"><ion-icon name="ellipse-outline"></ion-icon>Su Arıtma Analiz Snç.</a></li>
-                }
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/BufferAnalysisReport/GetBufferAnalysisReportList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Analiz Raporu</a></li>
-                }
-                @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
-                {
-                    <li><a href="~/OilAnalysisReport/GetOilAnalysisReport"><ion-icon name="ellipse-outline"></ion-icon>Yağ Analiz Raporu</a></li>
-                }
-            </ul>
-        </li>
 
-        @if (CurrentUser.HasModulePermission("M2KANTAR"))
+        @if (CurrentUser.HasModulePermission("BOBINKESME"))
         {
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><ion-icon name="layers-outline"></ion-icon></div>
+                    <div class="menu-title">Bobin Kesme (Winder)</div>
+                </a>
+                <ul>
+                    @if (CurrentUser.HasPermission("BOBINKESME.WinderCoilLength.View"))
+                    {
+                        <li><a href="~/WinderCoilLength/GetWinderList"><ion-icon name="ellipse-outline"></ion-icon>Bobin Takip</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("BOBINKESME.WinderCoilTracking.View"))
+                    {
+                        <li><a href="~/WinderCoilTracking/WinderCoilTrackingList"><ion-icon name="ellipse-outline"></ion-icon>Kombin Takip</a></li>
+                    }
 
+
+                </ul>
+            </li>
         }
 
 
-        <li>
-            <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><ion-icon name="layers-outline"></ion-icon></div>
-                <div class="menu-title">Bobin Kesme (Winder)</div>
-            </a>
-            <ul>
-                @if (CurrentUser.HasPermission("BOBINKESME.WinderCoilLength.View"))
-                {
-                    <li><a href="~/WinderCoilLength/GetWinderList"><ion-icon name="ellipse-outline"></ion-icon>Bobin Takip</a></li>
-                }
-                @if (CurrentUser.HasPermission("BOBINKESME.WinderCoilTracking.View"))
-                {
-                    <li><a href="~/WinderCoilTracking/WinderCoilTrackingList"><ion-icon name="ellipse-outline"></ion-icon>Kombin Takip</a></li>
-                }
 
 
-            </ul>
-        </li>
 
-
-        @if (CurrentUser.HasModulePermission("M2KANTAR"))
+        @if (CurrentUser.HasModulePermission("KAGITSATINALMA"))
         {
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><ion-icon name="cart-outline"></ion-icon></div>
+                    <div class="menu-title">Kağıt Satın Alma</div>
+                </a>
+                <ul>
+                    @if (CurrentUser.HasPermission("KAGITSATINALMA.WastePaperControl.View"))
+                    {
+                        <li><a href="~/WastePaperControl/GetWastePaperControlList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Kontrol</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KAGITSATINALMA.WastePaperCost.View"))
+                    {
+                        <li><a href="~/WastePaperCost/GetWastePaperCostList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Maliyet</a></li>
+                    }
 
+
+                </ul>
+            </li>
         }
 
-        <li>
-            <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><ion-icon name="cart-outline"></ion-icon></div>
-                <div class="menu-title">Kağıt Satın Alma</div>
-            </a>
-            <ul>
-                @if (CurrentUser.HasPermission("KAGITSATINALMA.WastePaperControl.View"))
-                {
-                    <li><a href="~/WastePaperControl/GetWastePaperControlList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Kontrol</a></li>
-                }
-                @if (CurrentUser.HasPermission("KAGITSATINALMA.WastePaperCost.View"))
-                {
-                    <li><a href="~/WastePaperCost/GetWastePaperCostList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Maliyet</a></li>
-                }
 
-
-            </ul>
-        </li>
 
 
         @if (CurrentUser.HasModulePermission("PLANLAMA"))
@@ -343,6 +353,7 @@
                 </a>
                 <ul>
                     <li><a href="~/Planning/GetDailyConsumables"><ion-icon name="ellipse-outline"></ion-icon>Genel Sarfiyatlar</a></li>
+                    <li><a href="~/PlanningScorBoardView/GetPlanList"><ion-icon name="ellipse-outline"></ion-icon>Üretim Plan Takibi</a></li>
                 </ul>
             </li>
         }

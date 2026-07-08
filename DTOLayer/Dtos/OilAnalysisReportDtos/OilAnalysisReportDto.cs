@@ -6,11 +6,11 @@
 
         public int DepartmentId { get; set; }
 
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string LocationSampleWasTaken { get; set; }
         public int Hours { get; set; } = DateTime.Now.Hour;
 
-        public DateTime Date { get; set; } = DateTime.Now;
+
 
         public DateTime? InsertDate { get; set; }
 

@@ -3,7 +3,7 @@
     public class CreateTestHeadDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; }
         public string TestDepartmentName { get; set; }
 
         public int AppUserId { get; set; }

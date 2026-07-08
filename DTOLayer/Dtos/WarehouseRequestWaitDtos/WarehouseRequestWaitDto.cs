@@ -3,6 +3,7 @@
     public class WarehouseRequestWaitDto
     {
         public int RecId { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string WaybillNo { get; set; }
         public string WaybillInvoiceNo { get; set; }
         public string IncomingCurrentAccountName { get; set; }

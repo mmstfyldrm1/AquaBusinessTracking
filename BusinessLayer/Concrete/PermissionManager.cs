@@ -96,4 +96,18 @@ public class PermissionManager : IPermissionService
         _context.Db_Permission.Remove(entity);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<PermissionDto>> GetByName()
+    {
+        return await _context.Db_Permission
+            .Select(x => new PermissionDto
+            {
+                RecId = x.RecId,
+                Module = x.Module,
+                Controller = x.Controller,
+                Action = x.Action,
+                Description = x.Description
+            })
+            .ToListAsync();
+    }
 }

@@ -7,5 +7,7 @@ namespace DataAccsessLayer.Abstract
         public Task<List<DB_NaturelGasMeterMonitoring>> GetWithDetails();
 
         public Task<List<DB_NaturelGasMeterMonitoring>> GetPreviousDay();
+
+        public Task<List<DB_NaturelGasMeterMonitoring>> GetLast7DaysNaturelGas();
     }
 }

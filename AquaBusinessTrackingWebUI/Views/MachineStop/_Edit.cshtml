@@ -1,0 +1,165 @@
+﻿@using DTOLayer.Dtos.MachineStopDtos
+@model ModalViewModel<MachineStopDto>
+
+<div class="modal fade" id="machineStopModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <form method="post" action="/MachineStop/Edit">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        @if (Model.IsEdit)
+                        {
+                            <input type="hidden" asp-for="Entity.RecId" />
+                        }
+
+                        <!-- Fiş Tarihi -->
+                        <div class="col-md-6">
+                            <label class="form-label">Fiş Tarihi</label>
+
+                            <input type="datetime-local"
+                                   asp-for="Entity.ReceiptDate"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Başlangıç -->
+                        <div class="col-md-6">
+                            <label class="form-label">Başlangıç Saati</label>
+
+                            <input type="datetime-local"
+                                   asp-for="Entity.StartTime"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Bitiş -->
+                        <div class="col-md-6">
+                            <label class="form-label">Bitiş Saati</label>
+
+                            <input type="datetime-local"
+                                   asp-for="Entity.EndTime"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Süre Kaybı -->
+                        <div class="col-md-4">
+                            <label class="form-label">Süre Kaybı (Dakika)</label>
+
+                            <input type="number"
+                                   step="0.01"
+                                   asp-for="Entity.DowntimeDuration"
+                                   class="form-control" />
+                        </div>
+
+                        <!-- Kopma Yeri -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kopma Yeri</label>
+
+                            <input type="text"
+                                   asp-for="Entity.BreakLocation"
+                                   class="form-control"
+                                   placeholder="Kopma yeri giriniz" />
+                        </div>
+
+                        <!-- Duruş Nedeni -->
+                        <div class="col-md-4">
+                            <label class="form-label">Duruş Nedeni</label>
+
+                            <input type="text"
+                                   asp-for="Entity.DowntimeReason"
+                                   class="form-control"
+                                   placeholder="Duruş nedeni giriniz" />
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12">
+                            <label class="form-label">Açıklama</label>
+
+                            <textarea asp-for="Entity.Explanation"
+                                      rows="4"
+                                      class="form-control"
+                                      placeholder="Açıklama giriniz">
+                            </textarea>
+                        </div>
+
+                        <!-- Vardiya -->
+                        <div class="col-md-6">
+                            <label class="form-label">Vardiya</label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+
+                                <option value="">Vardiya Seçiniz</option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Kayıt Eden</label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+
+                                <input type="text"
+                                       class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+
+                            </div>
+                        </div>
+
+                     
+
+                        <!-- Hidden Alanlar -->
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.InUse" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
         public string InventoryCode { get; set; }
-
+        public DateTime ReceiptDate { get; set; }
         public string InventoryName { get; set; }
 
         public int Month { get; set; } = DateTime.Now.Month;

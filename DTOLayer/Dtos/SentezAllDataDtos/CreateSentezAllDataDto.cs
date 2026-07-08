@@ -2,7 +2,7 @@
 {
     public class CreateSentezAllDataDto
     {
-        public DateTime Date { get; set; } = DateTime.Now;              // Tarih
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;              // Tarih
         public string BufferNo { get; set; }                    // Tampon No
         public string ProductType { get; set; }                 // Ürün Cinsi
         public decimal? Grammage { get; set; }                  // Gramaj

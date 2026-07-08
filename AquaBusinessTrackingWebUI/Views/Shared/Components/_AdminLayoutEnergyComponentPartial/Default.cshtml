@@ -1,15 +1,282 @@
-﻿<div class="page-section" id="enerji">
-    <div class="section-header">
-        <div>
-            <div class="section-title">Enerji & Su</div>
-            <div class="section-sub">Tüketim analizleri</div>
+﻿@model EnergyProductionViewModel
+
+<style>
+    @@media (max-width: 600px) {
+        .kpi-row
+
+    {
+            grid-template-columns: 1fr !important;
+    }
+
+    }
+
+    @@media (max-width: 700px) {
+        .two-col
+
+    {
+            grid-template-columns: 1fr !important;
+            
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .chart-wrap
+
+    {
+        height: 180px;
+    }
+
+    }
+
+    @@media (max-width: 400px) {
+        .hide-xs
+
+    {
+        display: none;
+    }
+
+    .e-table thead th,
+    .e-table tbody td {
+        padding: .5rem .75rem;
+    }
+
+    }
+
+    .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0,1fr));
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+        background: #f8f8f6;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+
+    .kpi-lbl {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+    }
+
+    .kpi-val {
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.1;
+    }
+
+    .kpi-unit {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 2px;
+    }
+
+    .e-card {
+        background: #fff;
+        border: 0.5px solid #e8e8e6;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .e-hd {
+        padding: .875rem 1.25rem;
+        border-bottom: 0.5px solid #e8e8e6;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .e-hd i {
+            font-size: 16px;
+            color: #888;
+        }
+
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .e-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        table-layout: fixed;
+    }
+
+        .e-table thead th {
+            padding: .5rem 1rem;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #aaa;
+            background: #fafafa;
+        }
+
+            .e-table thead th:not(:first-child) {
+                text-align: right;
+            }
+
+        .e-table tbody td {
+            padding: .55rem 1rem;
+            border-top: 0.5px solid #f0f0ee;
+        }
+
+            .e-table tbody td:not(:first-child) {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+
+        .e-table tbody tr:hover td {
+            background: #fafafa;
+        }
+
+    .pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 7px;
+        border-radius: 99px;
+    }
+
+    .pill-blue {
+        background: #E6F1FB;
+        color: #185FA5;
+    }
+
+    .pill-green {
+        background: #EAF3DE;
+        color: #3B6D11;
+    }
+</style>
+
+
+@{
+    var chartLabels = Model.Production.Select(p => p.Date.ToString("dd.MM")).ToList();
+    var chartProd = Model.Production.Select(p => p.Production).ToList();
+
+    var chartEnergy = Model.Production
+        .Select(p => Model.DailyStats.FirstOrDefault(d => d.Date.Date == p.Date.Date)?.Electricity ?? 0)
+        .ToList();
+}
+<div class="page-section" id="enerji">
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-lbl">Son 7 Gün üretim</div>
+            <div class="kpi-val">@((Model.TotalProduction).ToString("N1"))</div>
+            <div class="kpi-unit">Kg</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-lbl">Toplam elektrik</div>
+            <div class="kpi-val">@Model.TotalElectricity.ToString("N0")</div>
+            <div class="kpi-unit">kWh</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-lbl">Ton başına enerji</div>
+            <div class="kpi-val">@Model.KwhPerTon.ToString("N1")</div>
+            <div class="kpi-unit">kWh / Kg</div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Enerji Tüketimi</div>
+    <div class="e-card">
+        <div class="e-hd"><i class="ti ti-chart-bar"></i>Günlük üretim & enerji</div>
+        <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Üretim (ton)</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>Enerji (kWh)</span>
+        </div>
         <div class="chart-wrap">
-            <canvas id="enerjiChart"></canvas>
+            <canvas id="energyChart"></canvas>
         </div>
     </div>
+
+        
+
+    <div class="two-col">
+        <div class="e-card">
+            <div class="e-hd"><i class="ti ti-bolt"></i>Elektrik tüketimi</div>
+            <table class="e-table">
+                <thead><tr>
+                    <th>Lokasyon</th>
+                        <th>Tarih</th>
+                    <th>Tüketim</th>
+                    </tr></thead>
+                <tbody>
+                    @foreach (var item in Model.Electric)
+                    {
+                        <tr>
+                            <td>@item.LocationName</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM")</td>
+                            <td><span class="pill pill-green">@item.Consumption.ToString("N0") kWh</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="e-card">
+            <div class="e-hd"><i class="ti ti-package"></i>7 günlük üretim</div>
+            <table class="e-table">
+                <thead><tr><th>Tarih</th><th>Üretim</th><th>Ton Basına Kwh</th></tr></thead>
+                <tbody>
+                    @foreach (var item in Model.Production)
+                    {
+                        <tr>
+                            <td style="color:#888">@item.Date.ToString("dd.MM")</td>
+                            <td><span class="pill pill-green">@((item.Production).ToString("N2")) </span></td>
+
+                            @{
+                                var daily = Model.DailyStats.FirstOrDefault(x => x.Date.Date == item.Date.Date);
+                            }
+                            <td class="hide-xs">@((daily?.KwhPerTon ?? 0).ToString()) kWh/Kg</td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+
+<script>
+           document.addEventListener('DOMContentLoaded', function () {
+
+        const labels = @Html.Raw(Json.Serialize(chartLabels));
+        const prodVal = @Html.Raw(Json.Serialize(chartProd));
+        const energyVal = @Html.Raw(Json.Serialize(chartEnergy));
+
+        const existing = Chart.getChart('energyChart');
+        if (existing) existing.destroy();
+
+        new Chart(document.getElementById('energyChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Üretim (ton)', data: prodVal, backgroundColor: '#378ADD', yAxisID: 'y' },
+                    { label: 'Enerji (kWh)', data: energyVal, backgroundColor: '#F09595', yAxisID: 'y1' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true } },
+                scales: {
+                    y: { position: 'left', grid: { color: 'rgba(0,0,0,0.06)' } },
+                    y1: { position: 'right', grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    });
+</script>
+
+

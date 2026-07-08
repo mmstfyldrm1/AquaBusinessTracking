@@ -3,7 +3,7 @@
     public class PapperMachineChemicalDto
     {
         public int RecId { get; set; }
-
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string InventoryCode { get; set; }
 
         public string InventoryName { get; set; }
@@ -14,7 +14,7 @@
 
         public decimal RemainingQuantity { get; set; }
 
-        public DateTime? Date { get; set; }
+
 
         public int DepartmentId { get; set; }
 

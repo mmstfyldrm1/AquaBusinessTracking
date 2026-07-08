@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Saat</th>
                         <th>Tarih</th>
@@ -43,10 +44,10 @@
                     {
                         <tr>
                             <td>@counter</td>
-
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.LocationSampleWasTaken</td>
                             <td>@item.Hours</td>
-                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
 
                             <td>@item.InsertDate?.ToString("dd.MM.yyyy")</td>
                             <td>@item.UpdateDate?.ToString("dd.MM.yyyy")</td>
@@ -91,6 +92,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Lokasyon</th>
                         <th>Saat</th>
                         <th>Tarih</th>

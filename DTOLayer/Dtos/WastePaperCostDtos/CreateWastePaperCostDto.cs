@@ -8,7 +8,8 @@
         public int? SequenceNumber { get; set; }
 
 
-        public DateTime Date { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
 
 
         public string WaybillNumber { get; set; }

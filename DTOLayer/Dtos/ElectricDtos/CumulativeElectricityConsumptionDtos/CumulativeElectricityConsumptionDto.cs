@@ -7,7 +7,8 @@
         public int Month { get; set; } = DateTime.Now.Month;
 
         public decimal Consumption { get; set; }
-        public DateTime Date { get; set; }
+
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public string ShiftName { get; set; }
 
@@ -17,14 +18,14 @@
 
         public int ShiftId { get; set; }
 
-        public DateTime? InsertedDate { get; set; }
+        public DateTime? InsertDate { get; set; }
 
         public DateTime? DeleteDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }
         public int ElectricMeterLocationId { get; set; }
 
-        public int DepartmanId { get; set; }
+        public int DepartmentId { get; set; }
         //Location
 
         public string? LocationName { get; set; }

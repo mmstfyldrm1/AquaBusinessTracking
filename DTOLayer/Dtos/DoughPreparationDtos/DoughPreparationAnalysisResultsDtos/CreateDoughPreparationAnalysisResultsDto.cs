@@ -5,6 +5,7 @@
 
 
         public int SampleCollectionTime { get; set; }
+        public DateTime ReceiptDate { get; set; }
 
         public int SampleResultDeliveryTime { get; set; }
 

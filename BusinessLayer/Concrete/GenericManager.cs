@@ -50,9 +50,10 @@ namespace BusinessLayer.Concrete
         public async Task Delete(int id)
         {
             var entity = await Repository.TGetById(id);
+            await Repository.TDelete(entity);
             if (entity == null) return;
 
-            await Repository.TDelete(entity);
+
             await _uow.SaveChangesAsync();
         }
     }

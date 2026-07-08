@@ -1,6 +1,8 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.AdminDashboardDtos;
 using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos;
+using DTOLayer.Dtos.PapperMachineChemicalDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -29,19 +31,35 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = response.Content.ReadAsStringAsync();
-                return View(new List<DoughPreparationDto>());
+                return View(new RawMaterialsDto
+                {
+                    DoughPreparation = new List<DoughPreparationDto>(),
+                    PapperMachineChemical = new List<PapperMachineChemicalDto>()
+                });
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var values = JsonConvert.DeserializeObject<List<DoughPreparationDto>>(json);
+            var values = JsonConvert.DeserializeObject<RawMaterialsDto>(json);
 
-            if (values == null || !values.Any())
-                return View(new List<DoughPreparationDto>());
+            if (values == null)
+                return View(new RawMaterialsDto
+                {
+                    DoughPreparation = new List<DoughPreparationDto>(),
+                    PapperMachineChemical = new List<PapperMachineChemicalDto>()
+                });
 
-            var model = values
-                .OrderByDescending(x => x.InsertDate)
-                .Take(10)
-                .ToList();
+            var model = new RawMaterialsDto
+            {
+                DoughPreparation = values.DoughPreparation
+                    .OrderByDescending(x => x.InsertDate)
+                    .Take(10)
+                    .ToList(),
+
+                PapperMachineChemical = values.PapperMachineChemical
+                    .OrderByDescending(x => x.InsertDate)
+                    .Take(10)
+                    .ToList()
+            };
 
             return View(model);
         }

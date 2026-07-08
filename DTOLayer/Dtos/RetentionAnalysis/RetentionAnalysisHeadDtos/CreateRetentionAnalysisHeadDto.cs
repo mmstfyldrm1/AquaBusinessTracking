@@ -3,9 +3,7 @@
     public class CreateRetentionAnalysisHeadDto
     {
 
-
-        public DateTime Date { get; set; }
-
+        public DateTime ReceiptDate { get; set; }
         public TimeSpan? SampleCollectionTime { get; set; }
 
         public TimeSpan? SampleResultTime { get; set; }

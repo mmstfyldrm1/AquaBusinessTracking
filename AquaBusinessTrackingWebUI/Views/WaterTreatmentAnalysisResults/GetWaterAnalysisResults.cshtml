@@ -18,6 +18,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Numune Alma Süresi (dk)</th>
                         <th>Sonuç Teslim Süresi (dk)</th>
                         <th>Numune Alınan Yer</th>
@@ -45,6 +46,7 @@
 
                             <td>@counter</td>
 
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.SampleCollectionTime</td>
 
                             <td>@item.SampleResultDeliveryTime</td>
@@ -129,6 +131,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Fiş Tarihi</th>
                         <th>Numune Alma Süresi (dk)</th>
                         <th>Sonuç Teslim Süresi (dk)</th>
                         <th>Numune Alınan Yer</th>
