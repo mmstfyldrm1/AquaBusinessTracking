@@ -21,48 +21,95 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
 
         private async Task<Session> EnsureConnectedAsync(DB_PlcMachine machine)
         {
-            if (_sessions.TryGetValue(machine.RecId, out var existing) && existing.Connected)
-                return existing;
-
-            var appConfig = new ApplicationConfiguration
+            try
             {
-                ApplicationName = "AquaBusinessTracking",
-                ApplicationType = ApplicationType.Client,
-                SecurityConfiguration = new SecurityConfiguration
+                if (_sessions.TryGetValue(machine.RecId, out var existing) && existing.Connected)
+                    return existing;
+
+                if (existing == null) return null;
+                try
                 {
-                    AutoAcceptUntrustedCertificates = true,
-                    AddAppCertToTrustedStore = true
-                },
-                TransportConfigurations = new TransportConfigurationCollection(),
-                TransportQuotas = new TransportQuotas { OperationTimeout = 10000 },
-                ClientConfiguration = new ClientConfiguration { DefaultSessionTimeout = 60000 }
-            };
+                    if (existing.Connected) existing.Close();
+                }
+                catch { /* zaten kopmuşsa Close de hata verebilir, yok say */ }
+                finally
+                {
+                    existing.Dispose();
+                    _sessions.Remove(machine.RecId);
+                }
 
-            await appConfig.Validate(ApplicationType.Client);
+                var appConfig = new ApplicationConfiguration
+                {
+                    ApplicationName = "AquaBusinessTracking",
+                    ApplicationType = ApplicationType.Client,
+                    SecurityConfiguration = new SecurityConfiguration
+                    {
+                        ApplicationCertificate = new CertificateIdentifier
+                        {
+                            StoreType = "Directory",
+                            StorePath = "CertificateStores/MachineDefault",
+                            SubjectName = "CN=AquaBusinessTracking"
+                        },
+                        AutoAcceptUntrustedCertificates = true,
+                        AddAppCertToTrustedStore = true
+                    },
+                    TransportConfigurations = new TransportConfigurationCollection(),
+                    TransportQuotas = new TransportQuotas
+                    {
+                        OperationTimeout = 10000
+                    },
+                    ClientConfiguration = new ClientConfiguration
+                    {
+                        DefaultSessionTimeout = 60000
+                    }
+                };
 
-            // IpAddress'i endpoint olarak kullan
-            // Kullanıcı "opc.tcp://192.168.0.10:4840" yazarsa direkt kullan
-            // "192.168.0.10" yazarsa otomatik formatla
-            var endpoint = machine.IpAddress.StartsWith("opc.tcp://")
-                ? machine.IpAddress
-                : $"opc.tcp://{machine.IpAddress}:4863";
+                await appConfig.Validate(ApplicationType.Client);
 
-            var selectedEndpoint = CoreClientUtils.SelectEndpoint(endpoint, useSecurity: false);
-            var endpointConfig = EndpointConfiguration.Create(appConfig);
-            var configuredEndpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfig);
+                var endpoint = machine.IpAddress.StartsWith("opc.tcp://")
+                    ? machine.IpAddress
+                    : $"opc.tcp://{machine.IpAddress}:4863";
 
-            var session = await Session.Create(
-                appConfig,
-                configuredEndpoint,
-                updateBeforeConnect: false,
-                sessionName: $"AquaSession_{machine.RecId}",
-                sessionTimeout: 60000,
-                identity: new UserIdentity(new AnonymousIdentityToken()),
-                preferredLocales: null
-            );
+                var selectedEndpoint = CoreClientUtils.SelectEndpoint(endpoint, false);
 
-            _sessions[machine.RecId] = session;
-            return session;
+                var endpointConfig = EndpointConfiguration.Create(appConfig);
+                var configuredEndpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfig);
+
+                var session = await Session.Create(
+                    appConfig,
+                    configuredEndpoint,
+                    false,
+                    $"AquaSession_{machine.RecId}",
+                    60000,
+                    new UserIdentity(new AnonymousIdentityToken()),
+                    null);
+
+
+                session.KeepAlive += (s, e) =>
+                {
+                    if (e.Status != null && ServiceResult.IsNotGood(e.Status))
+                    {
+                        Console.WriteLine($"[KeepAlive] Session koptu [MachineId={machine.RecId}]: {e.Status}");
+                    }
+                };
+
+                _sessions[machine.RecId] = session;
+
+                return session;
+            }
+            catch (Exception ex)
+            {
+                // Debug için
+                Console.WriteLine(ex.ToString());
+
+                // Logger kullanıyorsan
+                //_logger.LogError(ex, "PLC bağlantı hatası. IP: {Ip}", machine?.IpAddress);
+
+                throw new Exception(
+                    $"PLC bağlantısı kurulamadı.\n" +
+                    $"IP: {machine?.IpAddress}\n\n" +
+                    ex.ToString(), ex);
+            }
         }
 
         public async Task ReadAndSaveAsync(int machineId, CancellationToken ct = default)

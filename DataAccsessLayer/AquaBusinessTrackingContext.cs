@@ -87,6 +87,8 @@ namespace DataAccsessLayer
         public DbSet<DB_PlanningScorBoardView> Db_PlanningScorBoardView { get; set; }
 
         public DbSet<DB_FavoriteMenuItem> Db_FavoriteMenuItem { get; set; }
+        public DbSet<DB_Message> Db_Message { get; set; }
+
 
     }
 }

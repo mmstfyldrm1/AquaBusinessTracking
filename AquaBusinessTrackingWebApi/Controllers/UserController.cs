@@ -1,4 +1,5 @@
 ﻿using DTOLayer.Dtos.UserDtos;
+using DTOLayer.Dtos.UserDtos.UserProfileDtos;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +34,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
             if (user == null)
                 return NotFound();
             return Ok(user);
+        }
+
+        [HttpPut("changeUserPassword/{id}")]
+        public async Task<IActionResult> ChangeUserPassword(PasswordDto dto, int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+            return Ok(result);
+
         }
 
         [HttpPut("updateuser")]

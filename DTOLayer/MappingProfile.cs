@@ -23,6 +23,7 @@ using DTOLayer.Dtos.LogisticsTrackingReportDtos;
 using DTOLayer.Dtos.MachineStopDtos;
 using DTOLayer.Dtos.MassWasteDtos.MassWasteBalanceDtos;
 using DTOLayer.Dtos.MassWasteDtos.MassWasteSupplierDtos;
+using DTOLayer.Dtos.MessageDtos;
 using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos;
 using DTOLayer.Dtos.OilAnalysisReportDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
@@ -318,6 +319,11 @@ namespace DTOLayer
             CreateMap<DB_ElectricMeterLocation, ElectricMeterLocationDto>().ForMember(x => x.ShiftName, x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null)).ForMember(x => x.CreatedByName, x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
 
+            CreateMap<DB_Message, MessageDto>().ReverseMap();
+            CreateMap<DB_Message, CreateMessageDto>().ReverseMap();
+            CreateMap<DB_Message, UpdateMessageDto>().ReverseMap();
+
+
             CreateMap<DB_CumulativeElectricityConsumption, CumulativeElectricityConsumptionDto>().ReverseMap();
             CreateMap<DB_CumulativeElectricityConsumption, CreateCumulativeElectricityConsumptionDto>().ReverseMap().ForMember(x => x.ElectricMeterLocation, opt => opt.Ignore());
             CreateMap<DB_CumulativeElectricityConsumption, UpdateCumulativeElectricityConsumptionDto>().ReverseMap().ForMember(x => x.ElectricMeterLocation, opt => opt.Ignore()).ForMember(x => x.Department, opt => opt.Ignore());
@@ -331,6 +337,7 @@ namespace DTOLayer
             CreateMap<DB_FavoriteMenuItem, UserDashboardAddFavoriteModuleDto>().ReverseMap();
 
             CreateMap<DB_AppUser, UpdateUserDto>().ForMember(x => x.DepartmentName, x => x.MapFrom(s => s.Department != null ? s.Department.DepartmentName : null)).ReverseMap();
+
 
 
 

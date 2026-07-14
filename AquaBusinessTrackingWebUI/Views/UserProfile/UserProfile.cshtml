@@ -1,157 +1,155 @@
 ﻿@using System.Globalization
 @using DTOLayer.Dtos.UserDtos
-@model UpdateUserDto
+@model UserProfileViewModel
 @{
     ViewData["Title"] = "UserProfile";
     Layout = "~/Views/_UserLayout/Index.cshtml";
     var userName = User.Identity?.Name ?? "Kullanıcı";
     var today = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+    var hasAvatar = !string.IsNullOrWhiteSpace(Model.UpdateUser.CoverImgUrl);
 }
 
-
-
-<div class="row">
-
-    <div class="col-lg-4">
-        <div class="card radius-10">
-            <div class="card-body text-center">
-                <div class="mb-3 position-relative d-inline-block">
-                    <img src="@Model.CoverImgUrl" class="rounded-circle border" width="120" height="120" alt="profil fotoğrafı">
-                    <label for="avatarUpload" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:34px;height:34px;cursor:pointer;">
-                        <ion-icon name="camera-outline"></ion-icon>
-                    </label>
-                    <input type="file" id="avatarUpload" class="d-none" accept="image/*">
-                </div>
-                <h5 class="mb-1">@Model.Name</h5>
-                <p class="text-secondary mb-3">MES Yönetim Sistemi</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button type="button"  class="btn btn-sm btn-outline-primary">Fotoğrafı Değiştir</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger">Kaldır</button>
-                </div>
-                <hr class="my-4">
-                <div class="row text-start g-3">
-                    <div class="col-12 d-flex align-items-center gap-2">
-                        <ion-icon name="mail-outline" class="text-secondary"></ion-icon>
-                        <span class="small">@Model.Email</span>
-                    </div>
-                    <div class="col-12 d-flex align-items-center gap-2">
-                        <ion-icon name="call-outline" class="text-secondary"></ion-icon>
-                        <span class="small">@Model.PhoneNumber</span>
-                    </div>
-                    <div class="col-12 d-flex align-items-center gap-2">
-                        <ion-icon name="business-outline" class="text-secondary"></ion-icon>
-                        <span class="small">@Model.DepartmentName</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- şifre değiştir -->
-        <div class="card radius-10">
-            <div class="card-body">
-                <h6 class="mb-3">Şifre Değiştir</h6>
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Mevcut Şifre</label>
-                        <input type="password" class="form-control" placeholder="••••••••">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Yeni Şifre</label>
-                        <input type="password" class="form-control" placeholder="••••••••">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Yeni Şifre (Tekrar)</label>
-                        <input type="password" class="form-control" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-outline-primary w-100">Şifreyi Güncelle</button>
-                </form>
-            </div>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0">Profilim</h4>
+        <span class="text-secondary small">@today</span>
     </div>
-    <div class="col-lg-8">
-        <div class="card radius-10">
-            <div class="card-body">
-                <h6 class="mb-3">Kişisel Bilgiler</h6>
-                <form>
+</div>
+
+<form asp-action="UserProfile"
+      asp-controller="UserProfile"
+      method="post"
+      enctype="multipart/form-data">
+
+    <input asp-for="UpdateUser.Id" type="hidden" />
+
+    <div class="row g-4">
+
+        <!-- Sol Kolon: Profil Kartı -->
+        <div class="col-lg-4">
+            <div class="card radius-10 h-100">
+                <div class="card-body text-center">
+
+                    <div class="mb-3 position-relative d-inline-block">
+                        @if (hasAvatar)
+                        {
+                            <img src="@Model.UpdateUser.CoverImgUrl"
+                                 class="rounded-circle border object-fit-cover"
+                                 style="width:120px;height:120px;object-fit:cover;"
+                                 alt="profil fotoğrafı">
+                        }
+                        else
+                        {
+                            <div class="rounded-circle border bg-light d-flex align-items-center justify-content-center mx-auto"
+                                 style="width:120px;height:120px;">
+                                <ion-icon name="person-outline" style="font-size:48px;" class="text-secondary"></ion-icon>
+                            </div>
+                        }
+                    </div>
+
+                    <h5 class="mb-1">@Model.UpdateUser.Name @Model.UpdateUser.SurName</h5>
+                    <p class="text-secondary mb-3">MES Yönetim Sistemi</p>
+
+                    <div class="d-flex justify-content-center gap-2 mb-2">
+                        <label class="btn btn-sm btn-outline-primary mb-0">
+                            Fotoğrafı Değiştir
+                            <input asp-for="UpdateUser.ProfileImage" type="file" accept="image/*" class="d-none" onchange="this.form.submit ? null : null">
+                        </label>
+                        <button type="button" class="btn btn-sm btn-outline-danger">Kaldır</button>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row text-start g-3">
+                        <div class="col-12 d-flex align-items-center gap-2">
+                            <ion-icon name="mail-outline" class="text-secondary"></ion-icon>
+                            <span class="small text-truncate">@Model.UpdateUser.Email</span>
+                        </div>
+                        <div class="col-12 d-flex align-items-center gap-2">
+                            <ion-icon name="call-outline" class="text-secondary"></ion-icon>
+                            <span class="small">@Model.UpdateUser.PhoneNumber</span>
+                        </div>
+                        <div class="col-12 d-flex align-items-center gap-2">
+                            <ion-icon name="business-outline" class="text-secondary"></ion-icon>
+                            <span class="small">@Model.UpdateUser.DepartmentName</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Kolon: Bilgi Formu -->
+        <div class="col-lg-8">
+            <div class="card radius-10 mb-4">
+                <div class="card-body">
+                    <h6 class="mb-3 d-flex align-items-center gap-2">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Kişisel Bilgiler
+                    </h6>
+
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Ad</label>
-                            <input type="text" class="form-control" placeholder="@Model.Name" asp-for="@Model.Name">
+                            <input asp-for="UpdateUser.Name" class="form-control">
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Soyad</label>
-                            <input type="text" class="form-control" placeholder="@Model.SurName" asp-for="@Model.SurName">
+                            <input asp-for="UpdateUser.SurName" class="form-control">
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Kullanıcı Adı</label>
-                            <input type="text" class="form-control" placeholder="@Model.UserName" asp-for="@Model.UserName">
+                            <input asp-for="UpdateUser.UserName" class="form-control">
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">E-Posta</label>
-                            <input type="email" class="form-control" placeholder="@Model.Email" asp-for="@Model.Email">
+                            <input asp-for="UpdateUser.Email" type="email" class="form-control">
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Telefon</label>
-                            <input type="text" class="form-control" placeholder="@Model.PhoneNumber" asp-for="@Model.PhoneNumber">
+                            <input asp-for="UpdateUser.PhoneNumber" class="form-control">
                         </div>
-                        @* <div class="col-12">
-                            <label class="form-label">Hakkında</label>
-                            <textarea class="form-control" rows="3" placeholder="Kısa bir açıklama yazın...">MES sisteminde üretim hattı takibi ve raporlama üzerinde çalışıyorum.</textarea>
-                        </div> *@
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
 
-        <!-- bildirim ve tercihler -->
-        <div class="card radius-10">
-            <div class="card-body">
-                <h6 class="mb-3">Bildirim Tercihleri</h6>
-                <div class="row g-3">
-                    <div class="col-md-6 d-flex align-items-center justify-content-between border rounded-3 p-3">
-                        <div>
-                            <p class="mb-0 fw-500">E-Posta Bildirimleri</p>
-                            <small class="text-secondary">Vardiya ve arıza uyarıları</small>
+            <div class="card radius-10">
+                <div class="card-body">
+                    <h6 class="mb-3 d-flex align-items-center gap-2">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        Şifre Değiştir
+                    </h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Mevcut Şifre</label>
+                            <input asp-for="Password.OldPassword" type="password" class="form-control">
                         </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" checked>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Yeni Şifre</label>
+                            <input asp-for="Password.NewPassword" type="password" class="form-control">
                         </div>
-                    </div>
-                    <div class="col-md-6 d-flex align-items-center justify-content-between border rounded-3 p-3">
-                        <div>
-                            <p class="mb-0 fw-500">SMS Bildirimleri</p>
-                            <small class="text-secondary">Kritik durum uyarıları</small>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch">
-                        </div>
-                    </div>
-                    <div class="col-md-6 d-flex align-items-center justify-content-between border rounded-3 p-3">
-                        <div>
-                            <p class="mb-0 fw-500">Haftalık Rapor</p>
-                            <small class="text-secondary">Üretim özet raporu</small>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" checked>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Yeni Şifre Tekrar</label>
+                            <input asp-for="Password.ConfirmPassword" type="password" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-6 d-flex align-items-center justify-content-between border rounded-3 p-3">
-                        <div>
-                            <p class="mb-0 fw-500">Karanlık Mod</p>
-                            <small class="text-secondary">Arayüz teması</small>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch">
-                        </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <ion-icon name="save-outline" class="me-1"></ion-icon>
+                            Kaydet
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- kaydet / iptal -->
-        <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary">İptal</button>
-            <button type="button" class="btn btn-primary">Değişiklikleri Kaydet</button>
-        </div>
     </div>
-</div>
+</form>

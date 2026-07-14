@@ -2,7 +2,16 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (function () {
+            var theme = localStorage.getItem('themeClass') || 'light-theme';
+            var headerColor = localStorage.getItem('headerColorClass') || '';
+            var sidebarColor = localStorage.getItem('sidebarColorClass') || '';
 
+            var combined = [theme, headerColor, sidebarColor].filter(Boolean).join(' ');
+            document.documentElement.setAttribute('class', combined);
+        })();
+    </script>
     <!-- loader-->
     <link href="assets/css/pace.min.css" rel="stylesheet" />
     <script src="assets/js/pace.min.js"></script>

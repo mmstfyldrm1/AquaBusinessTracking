@@ -1,36 +1,111 @@
 ﻿@using DTOLayer.Dtos.Integrations
 @model List<PlcReadingDto>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-warning">
-        Henüz PLC verisi yok.
-    </div>
-}
-else
-{
-    @foreach (var group in Model.GroupBy(r => r.Group))
-    {
-        <div class="row row-cols-1 row-cols-lg-4 g-3 mb-3">
-            <div class="col-12">
-                <h6 class="text-muted fw-bold">@group.Key</h6>
-            </div>
-            @foreach (var r in group)
+<style>
+    .plc-strip-card {
+        border: 1px solid #e8e8e6;
+        border-radius: 10px;
+        padding: .875rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        transition: .15s;
+    }
+
+        .plc-strip-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        }
+
+    .plc-strip-bar {
+        width: 4px;
+        height: 34px;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .plc-strip-bar-ok {
+        background: #28a745;
+    }
+
+    .plc-strip-bar-warn {
+        background: #ffc107;
+    }
+
+    .plc-strip-meta {
+        font-size: .72rem;
+        color: #888;
+        margin-bottom: 2px;
+    }
+
+    .plc-strip-value {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .plc-strip-unit {
+        font-size: .7rem;
+        font-weight: 500;
+        color: #999;
+        margin-left: 3px;
+    }
+
+    .plc-strip-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    @@media (min-width: 992px) {
+        .plc-strip-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .plc-strip-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="page-section" id="plc-readings">
+
+    <div class="card mt-3">
+        <div class="card-title">Kağıt Makinesi Anlık Değerler</div>
+
+        <div class="card-body">
+            @if (!Model.Any())
             {
-                <div class="col">
-                    <div class="card kpi-card">
-                        <div class="card-body">
-                            <div class="kpi-title">@r.DisplayName</div>
-                            <div class="kpi-value">@r.Value.ToString("F2")</div>
-                            <small class="soft-green">@r.Unit</small>
+                <div class="text-muted small">Henüz PLC verisi yok.</div>
+            }
+            else
+            {
+                <div class="plc-strip-grid">
+                    @foreach (var r in Model)
+                    {
+                        <div class="plc-strip-card">
+                            <div class="plc-strip-bar plc-strip-bar-ok"></div>
+                            <div>
+                                <div class="plc-strip-meta">@r.DisplayName </div>
+                                <div class="plc-strip-value">
+                                    @r.Value.ToString("F2")
+                                    @if (!string.IsNullOrWhiteSpace(r.Unit))
+                                    {
+                                        <span class="plc-strip-unit">@r.Unit</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
+                </div>
+
+                <div class="text-muted small mt-3">
+                    Son okuma: @Model.Max(x => x.ReadingTime).ToString("dd.MM.yyyy HH:mm")
                 </div>
             }
         </div>
-    }
+    </div>
 
-    <small class="text-muted">
-        Son okuma: @Model.FirstOrDefault()?.ReadingTime.ToString("dd.MM.yyyy HH:mm")
-    </small>
-}
+</div>

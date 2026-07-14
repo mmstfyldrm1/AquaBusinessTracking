@@ -1,4 +1,3 @@
-
 using AquaBusinessTrackingWebApi.Containers;
 using AquaBusinessTrackingWebApi.Services;
 using DataAccsessLayer;
@@ -32,19 +31,16 @@ builder.Services.AddIdentity<DB_AppUser, DB_AppRole>()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-
-
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-        x => x.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+          x => x.WithOrigins("https://localhost:7148")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 });
 
-// JWT
+// JWT (tek blok - hem TokenValidationParameters hem Events burada)
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -62,6 +58,23 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/messageHub"))
+            {
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -93,12 +106,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
-
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\AquaAPI\DataProtection-Keys"))
     .SetApplicationName("AquaBusinessTracking");
+
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AquaBusinessTrackingContext>();
@@ -110,7 +123,9 @@ using (var scope = app.Services.CreateScope())
         await PermissionSeed.SeedAsync(context);
     }
 }
+
 app.UseCors("AllowAll");
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -124,7 +139,10 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
     c.RoutePrefix = "swagger";
 });
+
 app.MapHub<PlcHub>("/hubs/plc");
+app.MapHub<MessageHub>("/messageHub");
+
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseCors("AllowAll");

@@ -7,18 +7,16 @@ using System.Text.Json;
 
 namespace AquaBusinessTrackingWebUI.ViewComponents
 {
-    public class _AdminLayoutStatisticComponentPartial : ViewComponent
+    public class _AdminLayoutPulperLevelComponentPartial : ViewComponent
     {
         private readonly AuthorizedHttpClientService _httpClientFactory;
         private readonly ApiSettings _apiSettings;
-
-        public _AdminLayoutStatisticComponentPartial(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings)
+        public _AdminLayoutPulperLevelComponentPartial(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
         }
-
-        public async Task<IViewComponentResult> InvokeAsync(int machineId = 6)
+        public async Task<IViewComponentResult> InvokeAsync(int machineId)
         {
             try
             {
@@ -40,6 +38,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             {
                 return View(new List<PlcReadingDto>());
             }
+
         }
     }
 }

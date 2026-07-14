@@ -1,4 +1,12 @@
-﻿<style>
+﻿@model IEnumerable<DTOLayer.Dtos.Integrations.PlcReadingDto>
+
+@{
+    // Sadece "Pulper" grubundaki PLC okumalarını al.
+    // Varsayım: Value alanı doğrudan doluluk yüzdesini (0-100) temsil ediyor.
+    var pulpers = Model.Where(x => x.Group == "Pulper").OrderBy(x => x.DisplayName).ToList();
+}
+
+<style>
     @@media (max-width: 700px) {
         .pulper-grid {
             grid-template-columns: 1fr 1fr !important;
@@ -166,43 +174,27 @@
         <div class="e-hd"><i class="ti ti-droplet"></i>Pulper Seviyeleri</div>
 
         <div class="pulper-grid">
+            @foreach (var p in pulpers)
+            {
+                var pct = Math.Clamp(p.Value, 0, 100);
+                var fillClass = pct >= 70 ? "fill-ok"
+                : pct >= 30 ? "fill-warn"
+                : "fill-danger";
 
-            <div class="pulper-card">
-                <div class="pulper-name">Pulper 1</div>
-                <div class="tank">
-                    <div class="tank-fill fill-ok" style="height:82%"></div>
-                    <div class="tank-pct">82%</div>
+                <div class="pulper-card">
+                    <div class="pulper-name">@p.DisplayName</div>
+                    <div class="tank">
+                        <div class="tank-fill @fillClass" style="height:@(pct.ToString("F0"))%"></div>
+                        <div class="tank-pct">@pct.ToString("N0")%</div>
+                    </div>
+                    <div class="pulper-meta">@p.ReadingTime.ToString("dd.MM HH:mm")</div>
                 </div>
-                <div class="pulper-meta">4.100 / 5.000 kg</div>
-            </div>
+            }
 
-            <div class="pulper-card">
-                <div class="pulper-name">Pulper 2</div>
-                <div class="tank">
-                    <div class="tank-fill fill-warn" style="height:45%"></div>
-                    <div class="tank-pct">45%</div>
-                </div>
-                <div class="pulper-meta">2.250 / 5.000 kg</div>
-            </div>
-
-            <div class="pulper-card">
-                <div class="pulper-name">Pulper 3</div>
-                <div class="tank">
-                    <div class="tank-fill fill-danger" style="height:18%"></div>
-                    <div class="tank-pct">18%</div>
-                </div>
-                <div class="pulper-meta">900 / 5.000 kg</div>
-            </div>
-
-            <div class="pulper-card">
-                <div class="pulper-name">Pulper 4</div>
-                <div class="tank">
-                    <div class="tank-fill fill-ok" style="height:95%"></div>
-                    <div class="tank-pct">95%</div>
-                </div>
-                <div class="pulper-meta">4.750 / 5.000 kg</div>
-            </div>
-
+            @if (!pulpers.Any())
+            {
+                <div class="pulper-meta">Pulper verisi bulunamadı.</div>
+            }
         </div>
     </div>
 
@@ -212,46 +204,35 @@
             <thead>
                 <tr>
                     <th>Pulper</th>
-                    <th>Mevcut (kg)</th>
-                    <th>Kapasite (kg)</th>
                     <th>Doluluk</th>
                     <th>Durum</th>
                     <th>Son Güncelleme</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Pulper 1</td>
-                    <td>4.100</td>
-                    <td>5.000</td>
-                    <td>82,0%</td>
-                    <td><span class="pill pill-green">Dolu</span></td>
-                    <td>08.07.2026 09:15</td>
-                </tr>
-                <tr>
-                    <td>Pulper 2</td>
-                    <td>2.250</td>
-                    <td>5.000</td>
-                    <td>45,0%</td>
-                    <td><span class="pill pill-yellow">Orta</span></td>
-                    <td>08.07.2026 09:15</td>
-                </tr>
-                <tr>
-                    <td>Pulper 3</td>
-                    <td>900</td>
-                    <td>5.000</td>
-                    <td>18,0%</td>
-                    <td><span class="pill pill-red">Düşük</span></td>
-                    <td>08.07.2026 09:15</td>
-                </tr>
-                <tr>
-                    <td>Pulper 4</td>
-                    <td>4.750</td>
-                    <td>5.000</td>
-                    <td>95,0%</td>
-                    <td><span class="pill pill-green">Dolu</span></td>
-                    <td>08.07.2026 09:15</td>
-                </tr>
+                @foreach (var p in pulpers)
+                {
+                    var pct = Math.Clamp(p.Value, 0, 100);
+                    var pillClass = pct >= 70 ? "pill-green"
+                    : pct >= 30 ? "pill-yellow"
+                    : "pill-red";
+
+                    var statusText = pct >= 70 ? "Dolu"
+                    : pct >= 30 ? "Orta"
+                    : "Düşük";
+
+                    <tr>
+                        <td>@p.DisplayName</td>
+                        <td>@pct.ToString("N1")%</td>
+                        <td><span class="pill @pillClass">@statusText</span></td>
+                        <td>@p.ReadingTime.ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                }
+
+                @if (!pulpers.Any())
+                {
+                    <tr><td colspan="4" style="text-align:center;color:#999">Kayıt yok</td></tr>
+                }
             </tbody>
         </table>
     </div>

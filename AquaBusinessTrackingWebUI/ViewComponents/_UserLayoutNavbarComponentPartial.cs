@@ -41,11 +41,12 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
                     var values = JsonConvert.DeserializeObject<List<GetUserDto>>(jsonData);
-                    if (string.IsNullOrEmpty(values.First().CoverImgUrl))
-                        values.First().CoverImgUrl = "~/img/ProfilPhotos/Default.png";
-
                     if (values != null && values.Any())
                     {
+                        if (string.IsNullOrEmpty(values.First().CoverImgUrl))
+                            values.First().CoverImgUrl = "~/img/ProfilPhotos/Default.png";
+
+
                         ViewBag.DepartmentName = values.First().DepartmentName;
                         ViewBag.AppUserName = values.FirstOrDefault().Name;
                         ViewBag.AppUserSurName = values.FirstOrDefault().SurName;

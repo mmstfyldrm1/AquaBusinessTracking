@@ -10,7 +10,7 @@ namespace DTOLayer.Dtos.UserDtos
 
         public string SurName { get; set; }
 
-        public string DepartmentName { get; set; }
+        public string? DepartmentName { get; set; }
         public string UserName { get; set; }
 
         public int DepartmentId { get; set; }

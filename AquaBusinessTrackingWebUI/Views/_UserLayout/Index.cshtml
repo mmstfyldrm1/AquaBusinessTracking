@@ -8,7 +8,6 @@
 @await Component.InvokeAsync("_UserLayoutHeadComponentPartial")
 <body>
 
-
     <!--start wrapper-->
     <div class="wrapper">
         <!--start sidebar -->
@@ -21,6 +20,7 @@
         <!--end top header-->
         <!-- start page content wrapper-->
         <div class="page-content-wrapper">
+
             <!-- start page content-->
             <div class="page-content">
 
@@ -45,6 +45,113 @@
     <!--end wrapper-->
     <!-- JS Files-->
     @await Component.InvokeAsync("_UserLayoutScriptComponentPartial")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+
+            function applyCombinedClass() {
+                var theme = localStorage.getItem('themeClass') || 'light-theme';
+                var headerColor = localStorage.getItem('headerColorClass') || '';
+                var sidebarColor = localStorage.getItem('sidebarColorClass') || '';
+                var combined = [theme, headerColor, sidebarColor].filter(Boolean).join(' ');
+                $("html").attr("class", combined);
+            }
+
+            
+            var savedTheme = localStorage.getItem('themeClass') || 'light-theme';
+            if (savedTheme === 'dark-theme') {
+                $("#DarkTheme").prop("checked", true);
+                $(".mode-icon ion-icon").attr("name", "sunny-outline");
+            } else if (savedTheme === 'semi-dark') {
+                $("#SemiDark").prop("checked", true);
+            } else {
+                $("#LightTheme").prop("checked", true);
+            }
+
+            // --- TEMA ---
+            $("#LightTheme, #DarkTheme, #SemiDark").on("click", function () {
+                var map = { LightTheme: 'light-theme', DarkTheme: 'dark-theme', SemiDark: 'semi-dark' };
+                localStorage.setItem('themeClass', map[this.id]);
+                applyCombinedClass();
+            });
+
+            $(".dark-mode-icon").on("click", function () {
+                // main.js zaten ikonu değiştirdi; biz sadece hangi temaya geçildiğini okuyup kaydediyoruz
+                var isDark = $(".mode-icon ion-icon").attr("name") === "sunny-outline";
+                localStorage.setItem('themeClass', isDark ? 'dark-theme' : 'light-theme');
+                applyCombinedClass();
+            });
+
+            // --- HEADER RENGİ ---
+            $("[id^='headercolor']").on("click", function () {
+                var num = this.id.replace('headercolor', '');
+                localStorage.setItem('headerColorClass', 'color-header headercolor' + num);
+                applyCombinedClass();
+            });
+
+            // --- SIDEBAR RENGİ ---
+            $("[id^='sidebarcolor']").on("click", function () {
+                var num = this.id.replace('sidebarcolor', '');
+                localStorage.setItem('sidebarColorClass', 'color-sidebar sidebarcolor' + num);
+                applyCombinedClass();
+            });
+
+        });
+
+          
+    </script>
+    <script>
+        (function () {
+            const jwtToken = "@Context.Request.Cookies["AuthToken"]";
+            const currentUserId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+            const apiBaseUrl = "@Html.Raw(Configuration["ApiSettings:BaseUrl"])"; // aşağıda açıklıyorum
+
+            if (!jwtToken || !currentUserId) return; // login olmamışsa hiç bağlanma
+
+            const hubBaseUrl = apiBaseUrl.replace(/\/api\/?$/, "");
+
+            const globalConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`${hubBaseUrl}/messageHub?access_token=${jwtToken}`)
+                .withAutomaticReconnect()
+                .build();
+
+            function updateBadge(count) {
+                const badge = document.getElementById("messageUnreadBadge");
+                if (!badge) return;
+
+                if (count > 0) {
+                    badge.innerText = count > 99 ? "99+" : count;
+                    badge.style.display = "inline-flex";
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+
+            // Yeni mesaj geldiğinde (Hub'dan) rozeti güncelle
+            globalConnection.on("UpdateUnreadCount", function (count) {
+                updateBadge(count);
+            });
+
+            globalConnection.start()
+                .then(function () {
+                    // Bağlantı kurulduğunda ilk yükleme: mevcut okunmamış sayıyı çek
+                    fetch(`${apiBaseUrl}/Message/unreadcount/${currentUserId}`, {
+                        headers: { "Authorization": "Bearer " + jwtToken }
+                    })
+                        .then(r => r.json())
+                        .then(count => updateBadge(count))
+                        .catch(err => console.error("Okunmamış sayı alınamadı:", err));
+                })
+                .catch(function (err) {
+                    console.error("Global SignalR bağlantı hatası:", err);
+                });
+
+            // Diğer script'lerin erişebilmesi için global scope'a koy (istersen mesajlaşma sayfası bunu kullanabilir)
+            window.globalMessageConnection = globalConnection;
+        })();
+    </script>
     @await Component.InvokeAsync("_UserLayoutGenericNotificationComponentPartial")
 
 

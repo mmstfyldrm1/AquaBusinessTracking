@@ -17,7 +17,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<List<NaturelGasMeterMonitoringDto>> GetPreviousDay()
         {
-            var entities = await _repo.GetWithDetails();
+            var entities = await _repo.GetPreviousDay();
             var dtos = _mapper.Map<List<NaturelGasMeterMonitoringDto>>(entities);
             return dtos;
         }

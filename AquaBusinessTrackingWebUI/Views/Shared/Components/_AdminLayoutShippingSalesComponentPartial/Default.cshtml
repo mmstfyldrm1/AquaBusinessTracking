@@ -158,7 +158,7 @@
 
 <script>
             document.addEventListener('DOMContentLoaded', function () {
-        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM.yyyy"))))
+        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM"))))
         const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)))
 
         const existing = Chart.getChart('shippingChart');
