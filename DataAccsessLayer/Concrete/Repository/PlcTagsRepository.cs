@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class PlcTagsRepository : GenericRepository<DB_PlcTags>, IPlcTagsRepository
     {
-        private AquaBusinessTrackingContext _context;
-        public PlcTagsRepository(AquaBusinessTrackingContext context) : base(context)
+        private readonly AquaBusinessTrackingContext _context;
+        public PlcTagsRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_PlcTags>> logger) : base(context, logger)
         {
             _context = context;
         }

@@ -1,0 +1,131 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@{
+    var previousDayData = (IEnumerable<SentezProductionDto>)Model.PreviousDay.Data;
+    var stockData = (IEnumerable<SentezProductionDto>)Model.Stock.Data;
+}
+
+
+<div class="section-header">
+    <div>
+        <div class="section-title">Atık Kağıt Giriş &amp; Stok</div>
+    </div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-grid">
+
+    <div class="kpi">
+        <div class="kpi-label">Dün Gelen Tplm</div>
+        <div class="kpi-val">@previousDayData.Sum(x => x.Production).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Dün İade Tplm</div>
+        <div class="kpi-val">@previousDayData.Sum(x => x.Consumable).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Genel Toplam</div>
+        <div class="kpi-val">@stockData.Sum(x => x.Production).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">İade Toplam</div>
+        <div class="kpi-val">@stockData.Sum(x => x.Consumable).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100">
+            <div class="card-title p-3">
+                Atık Kağıt Giriş (Dün)
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Gelen</th>
+                            <th>İade</th>
+                            <th>Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in previousDayData)
+                        {
+                            var net = item.Production - item.Consumable;
+                            <tr>
+                                <td>@item.PapperType</td>
+                                <td>@item.Production.ToString("N2")</td>
+                                <td>@item.Consumable.ToString("N2")</td>
+                                <td class="@(net >= 0 ? "text-success" : "text-danger")">
+                                    @net.ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr class="fw-bold">
+                            <td>Toplam</td>
+                            <td>@previousDayData.Sum(x => x.Production).ToString("N2")</td>
+                            <td>@previousDayData.Sum(x => x.Consumable).ToString("N2")</td>
+                            <td class="@(previousDayData.Sum(x => x.Production - x.Consumable) >= 0 ? "text-success" : "text-danger")">
+                                @previousDayData.Sum(x => x.Production - x.Consumable).ToString("N2")
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-3">
+        <div class="card h-100">
+            <div class="card-title p-3">
+                Atık Kağıt Giriş (Tüm)
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Gelen</th>
+                            <th>İade</th>
+                            <th>Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in stockData)
+                        {
+                            var net = item.Production - item.Consumable;
+                            <tr>
+                                <td>@item.PapperType</td>
+                                <td>@item.Production.ToString("N2")</td>
+                                <td>@item.Consumable.ToString("N2")</td>
+                                <td class="@(net >= 0 ? "text-success" : "text-danger")">
+                                    @net.ToString("N2")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr class="fw-bold">
+                            <td>Toplam</td>
+                            <td>@stockData.Sum(x => x.Production).ToString("N2")</td>
+                            <td>@stockData.Sum(x => x.Consumable).ToString("N2")</td>
+                            <td class="@(stockData.Sum(x => x.Production - x.Consumable) >= 0 ? "text-success" : "text-danger")">
+                                @stockData.Sum(x => x.Production - x.Consumable).ToString("N2")
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

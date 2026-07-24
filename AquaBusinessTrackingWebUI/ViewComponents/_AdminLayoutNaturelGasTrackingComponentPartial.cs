@@ -22,7 +22,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var emptyModel = new EnergyProductionViewModel();
+            var emptyModel = new NaturelGasProductionViewModel();
 
             try
             {
@@ -30,8 +30,8 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-                var productionTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysProductionAsync", cts.Token);
-                var naturelGasTask = client.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/Last7DaysNaturelGas", cts.Token);
+                var productionTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas30DaysProductionAsync", cts.Token);
+                var naturelGasTask = client.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/Last30DaysNaturelGas", cts.Token);
 
                 await Task.WhenAll(productionTask, naturelGasTask);
 
@@ -47,7 +47,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
                 return View(new NaturelGasProductionViewModel
                 {
-                    Production = production,
+                    Remaning = production,
                     NaturelGas = naturelGas
                 });
             }

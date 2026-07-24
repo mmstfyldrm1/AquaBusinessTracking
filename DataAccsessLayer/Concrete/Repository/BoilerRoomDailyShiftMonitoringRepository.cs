@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class BoilerRoomDailyShiftMonitoringRepository : GenericRepository<DB_BoilerRoomDailyShiftMonitoring>, IBoilerRoomDailyShiftMonitoringRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public BoilerRoomDailyShiftMonitoringRepository(AquaBusinessTrackingContext context) : base(context)
+        public BoilerRoomDailyShiftMonitoringRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_BoilerRoomDailyShiftMonitoring>> logger) : base(context, logger)
         {
             _context = context;
         }

@@ -17,6 +17,12 @@ namespace EntityLayer.Concrete
         public DB_Department Department { get; set; }
 
         [JsonIgnore]
+        public ICollection<DB_IncomingGoodsTracking> IncomingGoodsTracking { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_RawMaterialIntake> RawMaterialIntakes { get; set; }
+
+        [JsonIgnore]
         public ICollection<DB_SteamConsumption> SteamConsumptions { get; set; }
 
 

@@ -16,7 +16,13 @@ namespace EntityLayer.Concrete
         public string? Explanation { get; set; }
 
         [JsonIgnore]
+        public ICollection<DB_IncomingGoodsTracking> IncomingGoodsTracking { get; set; }
+
+        [JsonIgnore]
         public ICollection<DB_AppUser> AppUsers { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_RawMaterialIntake> RawMaterialIntakes { get; set; }
 
 
         [JsonIgnore]

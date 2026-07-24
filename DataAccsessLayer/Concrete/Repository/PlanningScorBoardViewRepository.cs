@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class PlanningScorBoardViewRepository : GenericRepository<DB_PlanningScorBoardView>, IPlanningScorBoardViewRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public PlanningScorBoardViewRepository(AquaBusinessTrackingContext context) : base(context)
+        public PlanningScorBoardViewRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_PlanningScorBoardView>> logger) : base(context, logger)
         {
             _context = context;
         }

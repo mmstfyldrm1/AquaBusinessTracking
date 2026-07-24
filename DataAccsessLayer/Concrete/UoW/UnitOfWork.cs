@@ -1,5 +1,6 @@
 ﻿using DataAccsessLayer.Abstract;
 using DataAccsessLayer.Concrete.Repository;
+using Microsoft.Extensions.Logging;
 
 
 namespace DataAccsessLayer.Concrete.UoW
@@ -8,28 +9,24 @@ namespace DataAccsessLayer.Concrete.UoW
     {
 
         private readonly AquaBusinessTrackingContext _context;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public UnitOfWork(AquaBusinessTrackingContext context)
+        public UnitOfWork(AquaBusinessTrackingContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
+            _loggerFactory = loggerFactory;
         }
+
         public IGenericRepository<T> Repository<T>() where T : class
         {
-            return new GenericRepository<T>(_context);
+            var logger = _loggerFactory.CreateLogger<GenericRepository<T>>();
+
+            return new GenericRepository<T>(
+                _context,
+                logger);
         }
-        public ISalesScaleRepository SalesScale => new SalesScaleRepository(_context);
 
-        public IElectricShiftWorkRepository ElectricShiftWork => new ElectricShiftWorkRepository(_context);
 
-        public IBoilerSteamFeedWaterCondensateDataRepository BoilerSteamFeedWaterCondensateDataRepository => new BoilerSteamFeedWaterCondensateDataRepository(_context);
-
-        public IBasinRepository Basin => new BasinRepository(_context);
-
-        public IBasinMeasurementRepository BasinMeasurement => new BasinMeasurementRepository(_context);
-
-        public IDepartmentRepository Department => new DepartmentRepository(_context);
-
-        public IShiftRepository Shift => new ShiftRepository(_context);
 
 
 

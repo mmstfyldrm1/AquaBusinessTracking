@@ -7,6 +7,6 @@ namespace BusinessLayer.Abstract
         public Task<List<NaturelGasMeterMonitoringDto>> GetWithDetails();
 
         public Task<List<NaturelGasMeterMonitoringDto>> GetPreviousDay();
-        public Task<List<NaturelGasMeterMonitoringDto>> GetLast7DaysNaturelGas();
+        public Task<List<NaturelGasMeterMonitoringDto>> GetLast30DaysNaturelGas();
     }
 }

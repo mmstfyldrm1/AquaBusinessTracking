@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class KazanChemicalsHeadRepository : GenericRepository<DB_KazanChemicalsHead>, IKazanChemicalsHeadRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public KazanChemicalsHeadRepository(AquaBusinessTrackingContext context) : base(context)
+        public KazanChemicalsHeadRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_KazanChemicalsHead>> logger) : base(context, logger)
         {
             _context = context;
         }

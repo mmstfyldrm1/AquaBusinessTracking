@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class CirculationTankAirPressureMeasurementTurbidityRepository : GenericRepository<DB_CirculationTankAirPressureMeasurementTurbidity>, ICirculationTankAirPressureMeasurementTurbidityRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public CirculationTankAirPressureMeasurementTurbidityRepository(AquaBusinessTrackingContext context) : base(context)
+        public CirculationTankAirPressureMeasurementTurbidityRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_CirculationTankAirPressureMeasurementTurbidity>> logger) : base(context, logger)
         {
             _context = context;
         }

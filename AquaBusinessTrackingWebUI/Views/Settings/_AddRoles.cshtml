@@ -1,39 +1,254 @@
 ﻿@using DTOLayer.Dtos.RolePermission
 @model ModalViewModel<CreateRoleDto>
 
-
 <style>
-    .perm-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
+    #roleModal .modal-content {
+        border: none;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, .18);
     }
 
-    .perm-item {
-        border: 1px solid #dee2e6;
+    #roleModal .modal-header {
+        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 55%, #6366f1 100%);
+        color: #fff;
+        border: none;
+        padding: 1.1rem 1.5rem;
+    }
+
+        #roleModal .modal-header .modal-title {
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+        #roleModal .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: .85;
+        }
+
+            #roleModal .modal-header .btn-close:hover {
+                opacity: 1;
+            }
+
+    #roleModal .modal-body {
+        background: #f8f9fc;
+        padding: 1.5rem;
+    }
+
+    #roleModal .field-label {
+        font-size: .72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #6b7280;
+        margin-bottom: .3rem;
+        display: block;
+    }
+
+    #roleModal .form-control-sm {
+        border-radius: 8px;
+        border-color: #e2e4ea;
+        padding: .5rem .75rem;
+    }
+
+        #roleModal .form-control-sm:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 .2rem rgba(99, 102, 241, .15);
+        }
+
+    #roleModal .section-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-size: .85rem;
+        font-weight: 700;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        margin: 1.4rem 0 .8rem;
+    }
+
+        #roleModal .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+    #roleModal .accordion {
+        --bs-accordion-border-color: #eceef2;
+    }
+
+    #roleModal .accordion-item {
+        border: 1px solid #eceef2;
+        border-radius: 10px !important;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, .03);
+    }
+
+    #roleModal .accordion-header-row {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        padding: .65rem .9rem;
+        background: #fff;
+    }
+
+    #roleModal .accordion-button {
+        font-size: .88rem;
+        font-weight: 600;
+        color: #1f2937;
+        padding: .1rem 0;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+        #roleModal .accordion-button::after {
+            width: 1rem;
+            height: 1rem;
+            background-size: 1rem;
+        }
+
+        #roleModal .accordion-button:not(.collapsed) {
+            color: #4338ca;
+        }
+
+    #roleModal .module-badge {
+        font-weight: 600;
+        font-size: .68rem;
+        background: #eef2ff;
+        color: #4338ca;
         border-radius: 20px;
-        padding: 4px 10px;
-        font-size: 12px;
+        padding: .2rem .55rem;
+    }
+
+    #roleModal .accordion-body {
+        background: #fbfbfd;
+        padding: 1rem 1.1rem 1.1rem 1.1rem;
+        border-top: 1px solid #eceef2;
+    }
+
+    #roleModal .controller-block {
+        background: #fff;
+        border: 1px solid #eef0f4;
+        border-radius: 8px;
+        padding: .7rem .85rem;
+        margin-bottom: .7rem;
+    }
+
+        #roleModal .controller-block:last-child {
+            margin-bottom: 0;
+        }
+
+    #roleModal .controller-header {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: .55rem;
+    }
+
+        #roleModal .controller-header span {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+    #roleModal .perm-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .4rem;
+    }
+
+    #roleModal .perm-item {
+        border: 1px solid #e5e7eb;
+        background: #f3f4f6;
+        border-radius: 20px;
+        padding: .3rem .7rem;
+        font-size: .78rem;
+        font-weight: 500;
+        color: #4b5563;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 6px;
+        transition: all .15s ease;
+        user-select: none;
     }
 
-        .perm-item input {
+        #roleModal .perm-item input {
             display: none;
         }
 
-        .perm-item:has(input:checked) {
-            background: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
+        #roleModal .perm-item:hover {
+            border-color: #c7d2fe;
+            background: #eef2ff;
         }
 
-    .modal-scroll {
-        max-height: 70vh;
+        #roleModal .perm-item:has(input:checked) {
+            background: #4338ca;
+            color: #fff;
+            border-color: #4338ca;
+        }
+
+    #roleModal .form-check-input.module-check,
+    #roleModal .form-check-input.controller-check {
+        width: 1.05em;
+        height: 1.05em;
+        cursor: pointer;
+        border-color: #c7cbd4;
+    }
+
+        #roleModal .form-check-input.module-check:checked,
+        #roleModal .form-check-input.controller-check:checked {
+            background-color: #4338ca;
+            border-color: #4338ca;
+        }
+
+    #roleModal .modal-footer {
+        background: #fff;
+        border-top: 1px solid #eceef2;
+        padding: .9rem 1.5rem;
+    }
+
+        #roleModal .modal-footer .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: .45rem 1.1rem;
+        }
+
+    #roleModal .btn-primary {
+        background: #4338ca;
+        border-color: #4338ca;
+    }
+
+        #roleModal .btn-primary:hover {
+            background: #372ea8;
+            border-color: #372ea8;
+        }
+
+    #roleModal .modal-scroll {
+        max-height: 65vh;
         overflow-y: auto;
-        padding-right: 8px;
+        padding-right: 6px;
+    }
+
+        #roleModal .modal-scroll::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        #roleModal .modal-scroll::-webkit-scrollbar-thumb {
+            background: #d7dae1;
+            border-radius: 10px;
+        }
+
+    #roleModal .empty-state {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: #9ca3af;
+        font-size: .9rem;
     }
 </style>
 
@@ -49,116 +264,113 @@
 
             <form action="/Settings/AddRoles" method="post">
 
-                <div class="modal-body">
-                    <div class="modal-body modal-scroll">
+                <div class="modal-body modal-scroll">
+
                     <!-- ROLE INFO -->
-                    <div class="row mb-3">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <label>Rol Adı</label>
+                            <label class="field-label">Rol Adı</label>
                             <input asp-for="Entity.Name" class="form-control form-control-sm" />
                         </div>
                         <div class="col-md-6">
-                            <label>Açıklama</label>
+                            <label class="field-label">Açıklama</label>
                             <input asp-for="Entity.RoleName" class="form-control form-control-sm" />
                         </div>
                     </div>
 
-                    <hr />
-                   
-
-                      
-
-                    <label class="fw-semibold mb-2">Yetkiler</label>
+                    <div class="section-title">Yetkiler</div>
 
                     @{
                         var permissions = (List<PermissionDto>)ViewBag.Permissions;
-
-                        var modules = permissions
-                        .GroupBy(x => x.Module);
+                        var modules = permissions.GroupBy(x => x.Module);
                     }
 
-                    <div class="accordion" id="permAccordion">
+                    @if (modules != null && modules.Any())
+                    {
+                        <div class="accordion" id="permAccordion">
 
-                        @foreach (var module in modules)
-                        {
-                            var modKey = module.Key.Replace(" ", "_");
+                            @foreach (var module in modules)
+                            {
+                                var modKey = module.Key.Replace(" ", "_");
+                                var controllers = module.GroupBy(x => x.Controller);
 
-                            var controllers = module.GroupBy(x => x.Controller);
+                                <div class="accordion-item mb-2">
 
-                            <div class="accordion-item mb-2 border rounded">
+                                    <!-- MODULE HEADER -->
+                                    <div class="accordion-header-row">
 
-                                <!-- MODULE HEADER -->
-                                <div class="accordion-header d-flex align-items-center px-3 py-2">
+                                        <input type="checkbox"
+                                               class="form-check-input module-check"
+                                               data-module="@modKey" />
 
-                                    <input type="checkbox"
-                                           class="form-check-input me-2 module-check"
-                                           data-module="@modKey" />
-
-                                    <button class="accordion-button collapsed bg-transparent shadow-none p-0"
-                                            type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#m_@modKey">
-                                        <span class="fw-semibold">@module.Key</span>
-                                        <span class="badge bg-secondary ms-2">@module.Count()</span>
-                                    </button>
-
-                                </div>
-
-                                <!-- MODULE BODY -->
-                                <div id="m_@modKey"
-                                     class="accordion-collapse collapse"
-                                     data-bs-parent="#permAccordion">
-
-                                    <div class="accordion-body pt-2">
-
-                                        @foreach (var controller in controllers)
-                                        {
-                                            var ctrlKey = controller.Key.Replace(" ", "_");
-
-                                            <div class="mb-3 border rounded p-2">
-
-                                                <!-- CONTROLLER HEADER -->
-                                                <div class="d-flex align-items-center mb-2">
-
-                                                    <input type="checkbox"
-                                                           class="form-check-input me-2 controller-check"
-                                                           data-module="@modKey"
-                                                           data-controller="@ctrlKey" />
-
-                                                    <span class="fw-semibold small text-secondary">
-                                                        @controller.Key
-                                                    </span>
-
-                                                </div>
-
-                                                <!-- PERMISSIONS -->
-                                                <div class="perm-grid">
-
-                                                    @foreach (var perm in controller)
-                                                    {
-                                                        <label class="perm-item">
-                                                            <input type="checkbox"
-                                                                   class="perm-check"
-                                                                   data-module="@modKey"
-                                                                   data-controller="@ctrlKey"
-                                                                   name="Entity.PermissionIds"
-                                                                   value="@perm.RecId" />
-                                                            @perm.Action
-                                                        </label>
-                                                    }
-
-                                                </div>
-
-                                            </div>
-                                        }
+                                        <button class="accordion-button collapsed"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#m_@modKey">
+                                            @module.Key
+                                            <span class="module-badge ms-2">@module.Count()</span>
+                                        </button>
 
                                     </div>
+
+                                    <!-- MODULE BODY -->
+                                    <div id="m_@modKey"
+                                         class="accordion-collapse collapse"
+                                         data-bs-parent="#permAccordion">
+
+                                        <div class="accordion-body">
+
+                                            @foreach (var controller in controllers)
+                                            {
+                                                var ctrlKey = controller.Key.Replace(" ", "_");
+
+                                                <div class="controller-block">
+
+                                                    <!-- CONTROLLER HEADER -->
+                                                    <div class="controller-header">
+
+                                                        <input type="checkbox"
+                                                               class="form-check-input controller-check"
+                                                               data-module="@modKey"
+                                                               data-controller="@ctrlKey" />
+
+                                                        <span>@controller.Key</span>
+
+                                                    </div>
+
+                                                    <!-- PERMISSIONS -->
+                                                    <div class="perm-grid">
+
+                                                        @foreach (var perm in controller)
+                                                        {
+                                                            <label class="perm-item">
+                                                                <input type="checkbox"
+                                                                       class="perm-check"
+                                                                       data-module="@modKey"
+                                                                       data-controller="@ctrlKey"
+                                                                       name="Entity.PermissionIds"
+                                                                       value="@perm.RecId" />
+                                                                @perm.Action
+                                                            </label>
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+
                                 </div>
+                            }
 
-                            </div>
-                        }
-
-                    </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">Yetki bulunamadı</div>
+                    }
 
                 </div>
 
@@ -179,7 +391,7 @@
 </div>
 
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
         // MODULE -> ALL
         document.querySelectorAll(".module-check").forEach(cb => {

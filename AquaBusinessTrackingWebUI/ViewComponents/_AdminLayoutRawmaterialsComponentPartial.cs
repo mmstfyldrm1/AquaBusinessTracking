@@ -20,7 +20,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             _apiSettings = apiSettings.Value;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int machineId)
         {
             var start = DateTime.Today;
             var end = start.AddDays(1);
@@ -63,5 +63,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
             return View(model);
         }
+
     }
+
 }

@@ -10,6 +10,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
     [Authorize]
     public class AdminDashboardController : ControllerBase
     {
+        private readonly ILogger<AdminDashboardController> _logger;
 
         private readonly ISalesScaleService _service;
         private readonly IDoughPreparationHeadService _headService;
@@ -19,8 +20,17 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly ICumulativeElectricityConsumptionService _cumulativeElectricityConsumptionService;
         private readonly INaturelGasMeterMonitoringService _minerMonitoringService;
 
-        public AdminDashboardController(ISalesScaleService service, IDoughPreparationHeadService headService, IPapperMachineChemicalService machineChemicalService, IMachineStopService machineStopService, IWaterPreparationAndConsumptionService waterPreparationAndConsumptionService, ICumulativeElectricityConsumptionService cumulativeElectricityConsumptionService, INaturelGasMeterMonitoringService minerMonitoringService)
+        public AdminDashboardController(
+            ILogger<AdminDashboardController> logger,
+            ISalesScaleService service,
+            IDoughPreparationHeadService headService,
+            IPapperMachineChemicalService machineChemicalService,
+            IMachineStopService machineStopService,
+            IWaterPreparationAndConsumptionService waterPreparationAndConsumptionService,
+            ICumulativeElectricityConsumptionService cumulativeElectricityConsumptionService,
+            INaturelGasMeterMonitoringService minerMonitoringService)
         {
+            _logger = logger;
             _service = service;
             _headService = headService;
             _machineChemicalService = machineChemicalService;
@@ -33,53 +43,72 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpGet("production")]
         public async Task<IActionResult> GetDailyProduction()
         {
+            _logger.LogInformation("Production dashboard istendi. User: {User}",
+                User?.Identity?.Name);
+
             return Ok();
         }
 
         [HttpGet("sales")]
         public async Task<IActionResult> GetDailySales()
         {
+            _logger.LogInformation("Sales dashboard istendi. User: {User}",
+                User?.Identity?.Name);
+
             var result = await _service.GetWithDetails();
+
+            _logger.LogInformation("Sales dashboard başarıyla döndü.");
+
             return Ok(result);
         }
 
         [HttpGet("rawmaterials")]
         public async Task<IActionResult> GetDailyRawMaterials()
         {
+            _logger.LogInformation("Raw Materials dashboard istendi.");
+
             var resultDoughPrepation = await _headService.GetWithDetails();
             var resultPaperMachine = await _machineChemicalService.GetWithDetails();
 
-            var AdminDasboardRawmateriels = new RawMaterialsDto
+            var dashboard = new RawMaterialsDto
             {
                 DoughPreparation = resultDoughPrepation,
-                PapperMachineChemical = resultPaperMachine,
+                PapperMachineChemical = resultPaperMachine
             };
 
-            return Ok(AdminDasboardRawmateriels);
+            _logger.LogInformation("Raw Materials dashboard oluşturuldu.");
+
+            return Ok(dashboard);
         }
 
         [HttpGet("stopChart")]
         public async Task<IActionResult> GetMachineStop()
         {
+            _logger.LogInformation("Machine Stop Chart istendi.");
+
             var result = await _machineStopService.GetStopChart();
+
             return Ok(result);
         }
 
-
-        [HttpGet("electricConsumable")]
-        public async Task<IActionResult> GetElectricConsumable()
+        [HttpGet("Last30DaysElectricConsumable")]
+        public async Task<IActionResult> GetLast30DaysElectricConsumable()
         {
+            _logger.LogInformation("Son 30 günlük elektrik tüketimi istendi.");
 
-            var electric = await _cumulativeElectricityConsumptionService.GetLast7Days();
-            return Ok(electric);
+            var result = await _cumulativeElectricityConsumptionService.GetLast30DaysElectricConsumable();
+
+            return Ok(result);
         }
 
-        [HttpGet("Last7DaysNaturelGas")]
-        public async Task<IActionResult> GetLast7DaysNaturelGas()
+        [HttpGet("Last30DaysNaturelGas")]
+        public async Task<IActionResult> GetLast30DaysNaturelGas()
         {
+            _logger.LogInformation("Son 30 günlük doğal gaz tüketimi istendi.");
 
-            var electric = await _minerMonitoringService.GetLast7DaysNaturelGas();
-            return Ok(electric);
+            var result = await _minerMonitoringService.GetLast30DaysNaturelGas();
+
+            return Ok(result);
         }
     }
 }

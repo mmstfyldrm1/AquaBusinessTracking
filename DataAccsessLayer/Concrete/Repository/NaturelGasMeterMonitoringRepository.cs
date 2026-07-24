@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class NaturelGasMeterMonitoringRepository : GenericRepository<DB_NaturelGasMeterMonitoring>, INaturelGasMeterMonitoringRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public NaturelGasMeterMonitoringRepository(AquaBusinessTrackingContext context) : base(context)
+        public NaturelGasMeterMonitoringRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_NaturelGasMeterMonitoring>> logger) : base(context, logger)
         {
             _context = context;
         }
@@ -32,10 +33,10 @@ namespace DataAccsessLayer.Concrete.Repository
                 .ToListAsync();
         }
 
-        public async Task<List<DB_NaturelGasMeterMonitoring>> GetLast7DaysNaturelGas()
+        public async Task<List<DB_NaturelGasMeterMonitoring>> GetLast30DaysNaturelGas()
         {
-            DateTime startDate = DateTime.Today.AddDays(-7);
-            DateTime endDate = DateTime.Today.AddDays(1);
+            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            DateTime endDate = DateTime.Today;
             return await _context.Db_NaturelGasMeterMonitoring
                 .AsNoTracking()
                 .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)

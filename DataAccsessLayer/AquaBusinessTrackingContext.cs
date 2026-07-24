@@ -33,7 +33,6 @@ namespace DataAccsessLayer
         public DbSet<DB_LabWork> Db_LabWork { get; set; }
         public DbSet<DB_LogisticsTrackingReport> Db_LogisticsTrackingReport { get; set; }
         public DbSet<DB_MassWasteSupplier> Db_MassWasteSupplier { get; set; }
-
         public DbSet<DB_MassWasteBalance> Db_MassWasteBalance { get; set; }
         public DbSet<DB_NaturelGasMeterMonitoring> Db_NaturelGasMeterMonitoring { get; set; }
         public DbSet<DB_OilAnalysisReport> Db_OilAnalysisReport { get; set; }
@@ -88,7 +87,9 @@ namespace DataAccsessLayer
 
         public DbSet<DB_FavoriteMenuItem> Db_FavoriteMenuItem { get; set; }
         public DbSet<DB_Message> Db_Message { get; set; }
+        public DbSet<DB_RawMaterialIntake> Db_RawMaterialIntake { get; set; }
 
+        public DbSet<DB_IncomingGoodsTracking> Db_IncomingGoodsTracking { get; set; }
 
     }
 }

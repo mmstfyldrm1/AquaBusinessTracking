@@ -60,72 +60,6 @@
         color: #aaa;
         margin-top: 2px;
     }
-
-    .e-card {
-        background: #fff;
-        border: 0.5px solid #e8e8e6;
-        border-radius: 12px;
-        overflow: hidden;
-        margin-bottom: 1rem;
-    }
-
-    .e-hd {
-        padding: .875rem 1.25rem;
-        border-bottom: 0.5px solid #e8e8e6;
-        font-size: 13px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-        .e-hd i {
-            font-size: 16px;
-            color: #888;
-        }
-
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-
-    .e-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-        table-layout: fixed;
-    }
-
-        .e-table thead th {
-            padding: .5rem 1rem;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            color: #aaa;
-            background: #fafafa;
-        }
-
-            .e-table thead th:not(:first-child) {
-                text-align: right;
-            }
-
-        .e-table tbody td {
-            padding: .55rem 1rem;
-            border-top: 0.5px solid #f0f0ee;
-        }
-
-            .e-table tbody td:not(:first-child) {
-                text-align: right;
-                font-variant-numeric: tabular-nums;
-            }
-
-        .e-table tbody tr:hover td {
-            background: #fafafa;
-        }
-
     .pill {
         display: inline-block;
         font-size: 11px;
@@ -146,11 +80,20 @@
 </style>
 
 @{
-    var chartLabels = Model.Production.Select(p => p.Date.ToString("dd.MM")).ToList();
-    var chartProd = Model.Production.Select(p => p.Production).ToList();
+    var last7Days = Enumerable.Range(0, 7)
+           .Select(i => DateTime.Today.AddDays(-6 + i))
+           .ToList();
 
-    var chartgas = Model.Production
-        .Select(p => Model.DailyStats.FirstOrDefault(d => d.Date.Date == p.Date.Date)?.NaturelGas ?? 0)
+    var chartLabels = last7Days
+        .Select(d => d.ToString("dd.MM"))
+        .ToList();
+
+    var chartProd = last7Days
+        .Select(d => Model.Remaning.FirstOrDefault(x => x.Date.Date == d.Date)?.Remaning ?? 0)
+        .ToList();
+
+    var chartgas = last7Days
+        .Select(d => Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date)?.NaturelGas ?? 0)
         .ToList();
 }
 
@@ -158,81 +101,127 @@
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">Son 7 Gün Üretim</div>
-            <div class="kpi-val">@((Model.TotalProduction).ToString("N1"))</div>
+            <div class="kpi-lbl">Son 30 Gün Üretim</div>
+            <div class="kpi-val">@((Model.TotalRemaning).ToString("N2"))</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-lbl">Toplam Doğal Gaz</div>
-            <div class="kpi-val">@Model.TotalGas.ToString("N0")</div>
+            <div class="kpi-val">@Model.TotalGas.ToString("N2")</div>
             <div class="kpi-unit">m³</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-lbl">Kg Başına Gaz</div>
-            <div class="kpi-val">@Model.KwhPerTon.ToString("N3")</div>
+            <div class="kpi-val">@Model.KwhPerTon.ToString("N2")</div>
             <div class="kpi-unit">m³ / Kg</div>
         </div>
     </div>
 
-    <div class="e-card">
-        <div class="e-hd"><i class="ti ti-chart-bar"></i>Günlük üretim & doğal gaz</div>
-        <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
-            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Üretim (Kg)</span>
-            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>Doğal Gaz (m³)</span>
-        </div>
-        <div class="chart-wrap">
-            <canvas id="gasChart"></canvas>
-        </div>
-    </div>
-
-    <div class="two-col">
-        <div class="e-card">
-            <div class="e-hd"><i class="ti ti-flame"></i>Doğal Gaz Tüketimi</div>
-            <table class="e-table">
-                <thead>
-                    <tr>
-                        <th>Tarih</th>
-                        <th>Tüketim (m³)</th>
-                        <th>kW</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.NaturelGas)
-                    {
-                        <tr>
-                            <td>@item.ReceiptDate.ToString("dd.MM")</td>
-                            <td><span class="pill pill-blue">@item.DailyConsumption.ToString("N0") m³</span></td>
-                            <td>@item.kW.ToString("N0")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="row">
+        <!-- Grafik Kartı -->
+        <div class="col-12 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-chart-bar"></i> Günlük Üretim &amp; Doğal Gaz
+                </div>
+                <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
+                    <span>
+                        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>
+                        Üretim (Kg)
+                    </span>
+                    <span>
+                        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>
+                        Doğal Gaz (m³)
+                    </span>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="gasChart"></canvas>
+                </div>
+            </div>
         </div>
 
-        <div class="e-card">
-            <div class="e-hd"><i class="ti ti-package"></i>7 Günlük Üretim</div>
-            <table class="e-table">
-                <thead>
-                    <tr>
-                        <th>Tarih</th>
-                        <th>Üretim</th>
-                        <th>m³/Kg</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Production)
-                    {
-                        <tr>
-                            <td style="color:#888">@item.Date.ToString("dd.MM")</td>
-                            <td><span class="pill pill-green">@((item.Production).ToString("N2"))</span></td>
-                            @{
-                                var daily = Model.DailyStats.FirstOrDefault(x => x.Date.Date == item.Date.Date);
+        <!-- Doğal Gaz Tüketim Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-flame"></i> Doğal Gaz Tüketimi (Son 7 Gün)
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Tüketim (m³)</th>
+                                <th>kW</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).OrderBy(x => x.ReceiptDate))
+                            {
+                                <tr>
+                                    <td>@item.ReceiptDate.ToString("dd.MM")</td>
+                                    <td>@item.DailyConsumption.ToString("N2") m³</td>
+                                    <td>@item.kW.ToString("N2")</td>
+                                </tr>
                             }
-                            <td class="hide-xs">@((daily?.KwhPerTon ?? 0).ToString("N3")) m³/Kg</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td>@Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.DailyConsumption).ToString("N2") m³</td>
+                                <td>@Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.kW).ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7 Günlük Üretim Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-package"></i> 7 Günlük Üretim
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Üretim</th>
+                                <th>m³/Kg</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Remaning.OrderByDescending(x => x.Date).Take(7).OrderBy(x => x.Date))
+                            {
+                                var daily = Model.DailyStats.FirstOrDefault(x => x.Date.Date == item.Date.Date);
+                                <tr>
+                                    <td>@item.Date.ToString("dd.MM")</td>
+                                    <td class="text-success">@item.Production.ToString("N2")</td>
+                                    <td>@((daily?.KwhPerTon ?? 0).ToString("N3")) m³/Kg</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="text-success" >@Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Production).ToString("N2")</td>
+                                <td>
+                                    @{
+                                        var totalM3 = Model.DailyStats
+                                        .Where(x => Model.Remaning.Select(r => r.Date.Date).Contains(x.Date.Date))
+                                        .Sum(x => x.KwhPerTon * x.Production);
+                                        var totalProduction = Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Production);
+                                        var avgM3PerKg = totalProduction > 0 ? (totalM3 / totalProduction) : 0;
+                                    }
+                                    @avgM3PerKg.ToString("N3") m³/Kg
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

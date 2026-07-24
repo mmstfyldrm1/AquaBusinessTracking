@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class BufferAnalysisReportRepository : GenericRepository<DB_BufferAnalysisReport>, IBufferAnalysisReportRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public BufferAnalysisReportRepository(AquaBusinessTrackingContext context) : base(context)
+        public BufferAnalysisReportRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_BufferAnalysisReport>> logger) : base(context, logger)
         {
             _context = context;
         }

@@ -9,50 +9,83 @@ namespace AquaBusinessTrackingWebApi.Services
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IConfiguration _config;
         private readonly IHostEnvironment _env;
+        private readonly ILogger<PlcHoursReadingService> _logger;
         private const int MaxHeartbeatValue = 10000;
+
+
+        private DateTime? _lastSuccessHour = null;
 
         public PlcHoursReadingService(
             IPlcReader plcReader,
             IServiceScopeFactory scopeFactory,
             IConfiguration config,
-            IHostEnvironment env)
+            IHostEnvironment env,
+            ILogger<PlcHoursReadingService> logger)
         {
             _plcReader = plcReader;
             _scopeFactory = scopeFactory;
             _config = config;
             _env = env;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken ct)
         {
-            // Debug modda: hemen başla ve kısa aralıklarla çalış (görmek için)
-            // Production'da: saatte bir çalış
             var isDebug = _env.IsDevelopment();
-
             if (isDebug)
             {
-                Console.WriteLine("[DEBUG MOD] PLC okuma servisi debug modunda çalışıyor - her 1 dakikada bir okuyacak.");
+                _logger.LogInformation("[DEBUG MOD] PLC okuma servisi debug modunda çalışıyor - her 1 dakikada bir okuyacak.");
             }
 
             while (!ct.IsCancellationRequested)
             {
                 if (!isDebug)
                 {
-                    // --- PRODUCTION: bir sonraki tam saate kadar bekle ---
                     var now = DateTime.Now;
-                    var nextRun = now.Date
-                        .AddHours(now.Hour)
-                        .AddHours(1); // bir sonraki tam saat, örn. 14:32 -> 15:00
+                    var currentHourSlot = now.Date.AddHours(now.Hour);
 
-                    var delay = nextRun - now;
-                    Console.WriteLine($"Sonraki PLC okuma: {nextRun:dd.MM.yyyy HH:mm}");
-                    await Task.Delay(delay, ct);
+
+                    bool alreadyDoneThisHour = _lastSuccessHour.HasValue && _lastSuccessHour.Value == currentHourSlot;
+
+                    DateTime targetSlot;
+
+                    if (alreadyDoneThisHour)
+                    {
+                        targetSlot = currentHourSlot.AddHours(1);
+                    }
+                    else if (_lastSuccessHour == null)
+                    {
+
+                        targetSlot = currentHourSlot.AddHours(1);
+                    }
+                    else
+                    {
+                        targetSlot = currentHourSlot;
+                    }
+
+
+                    var delay = targetSlot > now ? targetSlot - now : TimeSpan.Zero;
+
+                    _logger.LogInformation("Sonraki PLC okuma hedefi: {TargetSlot}, bekleme: {Delay}",
+                        targetSlot.ToString("dd.MM.yyyy HH:mm"), delay);
+
+                    try
+                    {
+                        if (delay > TimeSpan.Zero)
+                            await Task.Delay(delay, ct);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
                 }
                 else
                 {
-                    // --- DEBUG: hemen çalış, sonraki turda 1 dakika bekle ---
-                    Console.WriteLine($"[DEBUG] PLC okuma tetiklendi: {DateTime.Now:HH:mm:ss}");
+                    _logger.LogInformation("[DEBUG] PLC okuma tetiklendi: {Now}", DateTime.Now.ToString("HH:mm:ss"));
                 }
+
+                var runHourSlot = DateTime.Now.Date.AddHours(DateTime.Now.Hour);
+                bool anyFailure = false;
 
                 try
                 {
@@ -62,7 +95,17 @@ namespace AquaBusinessTrackingWebApi.Services
 
                     foreach (var machine in machines)
                     {
-                        await _plcReader.ReadAndSaveAsync(machine.RecId, ct);
+                        try
+                        {
+                            await _plcReader.ReadAndSaveAsync(machine.RecId, ct);
+                            _logger.LogInformation("{Machine} okundu: {Now}", machine.Name, DateTime.Now.ToString("HH:mm:ss"));
+                        }
+                        catch (Exception ex)
+                        {
+                            anyFailure = true;
+                            _logger.LogError(ex, "Okuma hatası [{Machine}]", machine.Name);
+
+                        }
 
                         try
                         {
@@ -70,23 +113,47 @@ namespace AquaBusinessTrackingWebApi.Services
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Heartbeat loop hatası [{machine.Name}]: {ex.Message}");
+                            _logger.LogError(ex, "Heartbeat hatası [{Machine}]", machine.Name);
                         }
-
-                        Console.WriteLine($"{machine.Name} okundu: {DateTime.Now:HH:mm:ss}");
                     }
 
-                    Console.WriteLine($"PLC okuma turu tamamlandı: {DateTime.Now:dd.MM.yyyy HH:mm}");
+                    _logger.LogInformation("PLC okuma turu tamamlandı: {Now}", DateTime.Now.ToString("dd.MM.yyyy HH:mm"));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"PLC okuma hatası: {ex.Message}");
+                    anyFailure = true;
+                    _logger.LogError(ex, "PLC okuma turu genel hata");
+                }
+
+
+                if (!anyFailure && !isDebug)
+                {
+                    _lastSuccessHour = runHourSlot;
+                }
+                else if (anyFailure && !isDebug)
+                {
+
+                    _logger.LogWarning("Bu turda hata oluştu, 2 dakika sonra tekrar denenecek.");
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromMinutes(2), ct);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
                 }
 
                 if (isDebug)
                 {
-
-                    await Task.Delay(TimeSpan.FromMinutes(0.25), ct);
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromMinutes(0.25), ct);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
                 }
             }
         }

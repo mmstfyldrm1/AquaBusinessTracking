@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class DoughPreparationAnalysisResultsRepository : GenericRepository<DB_DoughPreparationAnalysisResults>, IDoughPreparationAnalysisResultsRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public DoughPreparationAnalysisResultsRepository(AquaBusinessTrackingContext context) : base(context)
+        public DoughPreparationAnalysisResultsRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_DoughPreparationAnalysisResults>> logger) : base(context, logger)
         {
             _context = context;
         }

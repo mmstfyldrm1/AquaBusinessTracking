@@ -12,6 +12,6 @@ namespace BusinessLayer.Abstract
 
         public Task<List<ElectricMeterLocationDto>> GetLocationName();
 
-        public Task<List<CumulativeElectricityConsumptionDto>> GetLast7Days();
+        public Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable();
     }
 }

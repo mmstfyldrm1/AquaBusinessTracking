@@ -2,13 +2,14 @@
 using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class CumulativeElectricityConsumptionRepository : GenericRepository<DB_CumulativeElectricityConsumption>, ICumulativeElectricityConsumptionRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public CumulativeElectricityConsumptionRepository(AquaBusinessTrackingContext context) : base(context)
+        public CumulativeElectricityConsumptionRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_CumulativeElectricityConsumption>> logger) : base(context, logger)
         {
             _context = context;
         }
@@ -44,10 +45,10 @@ namespace DataAccsessLayer.Concrete.Repository
                  .ToListAsync();
         }
 
-        public async Task<List<CumulativeElectricityConsumptionDto>> GetLast7DaysGet()
+        public async Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable()
         {
-            DateTime startDate = DateTime.Today.AddDays(-7);
-            DateTime endDate = DateTime.Today.AddDays(1);
+            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            DateTime endDate = DateTime.Today;
             var data = await _context.Db_CumulativeElectricityConsumption
                 .AsNoTracking()
                 .Include(x => x.ElectricMeterLocation)

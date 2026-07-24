@@ -1,9 +1,43 @@
-﻿
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@{
+    var data = (IEnumerable<SentezProductionDto>)Model.PreviousDay.Data;
+    var data2 = (IEnumerable<SentezProductionDto>)Model.Stock.Data;
+}
+
 <div class="section-header">
     <div>
         <div class="section-title">Üretim  & Stok</div>
         
     </div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-grid">
+
+    <div class="kpi">
+        <div class="kpi-label">Dün Üretilen</div>
+        <div class="kpi-val">@data.Sum(x => x.Production).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Dün Sarf Edilen</div>
+        <div class="kpi-val">@data.Sum(x => x.Consumable).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Genel Toplam</div>
+        <div class="kpi-val">@data2.Sum(x => x.Production).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Sarf Edilen Toplam</div>
+        <div class="kpi-val">@data2.Sum(x => x.Consumable).ToString("N2")</div>
+        <div class="kpi-unit">Kg</div>
+    </div>
+
 </div>
 <div class="row">
     <div class="col-lg-6 mb-3">
@@ -35,8 +69,26 @@
                                     @net.ToString("N2")
                                 </td>
                             </tr>
+
                         }
+
                     </tbody>
+
+                    <tfoot class="table-light">
+                        <tr class="fw-bold">
+                            <td>Toplam</td>
+                            <td>
+                                @data.Sum(x => x.Production).ToString("N2")
+                            </td>
+                            <td>
+                                @data.Sum(x => x.Consumable).ToString("N2")
+                            </td>
+                            <td class="@(data.Sum(x => x.Production - x.Consumable) >= 0 ? "text-success" : "text-danger")">
+                                @data.Sum(x => x.Production - x.Consumable).ToString("N2")
+                            </td>
+                        </tr>
+                    </tfoot>
+
                 </table>
             </div>
         </div>
@@ -73,6 +125,22 @@
                             </tr>
                         }
                     </tbody>
+
+                    <tfoot class="table-light">
+                        <tr class="fw-bold">
+                            <td>Toplam</td>
+                            <td>
+                                @data2.Sum(x => x.Production).ToString("N2")
+                            </td>
+                            <td>
+                                @data2.Sum(x => x.Consumable).ToString("N2")
+                            </td>
+                            <td class="@(data2.Sum(x => x.Production - x.Consumable) >= 0 ? "text-success" : "text-danger")">
+                                @data2.Sum(x => x.Production - x.Consumable).ToString("N2")
+                            </td>
+                        </tr>
+                    </tfoot>
+
                 </table>
             </div>
         </div>

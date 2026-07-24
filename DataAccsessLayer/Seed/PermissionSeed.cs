@@ -20,6 +20,7 @@ namespace DataAccsessLayer.Seed
             
                 // ================= M2 KANTAR =================
                 ("M2KANTAR", "SalesScale", "Araç Listesi"),
+                ("M2KANTAR", "IncomingGoodsTracking", "Gelen Malzeme Takibi"),
             
                 // ================= KAZAN =================
                 ("KAZAN", "KazanChemicals", "Kazan Kimyasal Takip Sistemi"),
@@ -71,7 +72,7 @@ namespace DataAccsessLayer.Seed
                 ("PLANLAMA", "ProductionPlan", "Üretim Planı"),
             
                 // ================= KAĞIT KANTAR =================
-                ("KAGITKANTAR", "Weighing", "Tartım"),
+                ("KAGITKANTAR", "RawMaterials", "Hammadde Takip"),
             
                 // ================= ELEKTRIK =================
                 ("ELEKTRIK", "ElectricMotorTracking", "Motor Takip"),

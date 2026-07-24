@@ -68,11 +68,25 @@
                                 <tr>
                                     <td>@item.PapperType</td>
                                     <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
-                                    <td class="fw-bold text-warning">@item.Consumable.ToString("N2")</td>
+                                    <td class="">@item.Consumable.ToString("N2")</td>
                                     <td>@item.Remaning.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="text-success">
+                                    @Model.PreviousDay.Data.Sum(x => x.Production).ToString("N2")
+                                </td>
+                                <td class="">
+                                    @Model.PreviousDay.Data.Sum(x => x.Consumable).ToString("N2")
+                                </td>
+                                <td>
+                                    @Model.PreviousDay.Data.Sum(x => x.Remaning).ToString("N2")
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -107,12 +121,20 @@
                                     <td>@item.InsertDate.ToString("dd.MM.yyyy HH:mm")</td>
                                     <td>@item.CurrentAccountName</td>
                                     <td class="fw-bold text-success">
-                                        @item.DeliveryQuantity.ToString("N0")
+                                        @item.DeliveryQuantity.ToString("N2")
                                     </td>
                                 </tr>
                                 counter++;
                             }
                         </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td colspan="3">Toplam</td>
+                                <td class="text-success">
+                                    @Model.Last10.Sum(x => x.DeliveryQuantity).ToString("N2")
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -142,11 +164,25 @@
                                 <tr>
                                     <td>@item.PapperType</td>
                                     <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
-                                    <td class="fw-bold text-warning">@item.Consumable.ToString("N2")</td>
+                                    <td class="">@item.Consumable.ToString("N2")</td>
                                     <td>@item.Remaning.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="text-success">
+                                    @Model.Sales.Data.Sum(x => x.Production).ToString("N2")
+                                </td>
+                                <td class="">
+                                    @Model.Sales.Data.Sum(x => x.Consumable).ToString("N2")
+                                </td>
+                                <td>
+                                    @Model.Sales.Data.Sum(x => x.Remaning).ToString("N2")
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

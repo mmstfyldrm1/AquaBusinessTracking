@@ -2,56 +2,51 @@
 
 <style>
     @@media (max-width: 600px) {
-        .kpi-row
-
-    {
+        .kpi-row {
             grid-template-columns: 1fr !important;
-    }
-
+        }
     }
 
     @@media (max-width: 700px) {
-        .two-col
-
-    {
+        .two-col {
             grid-template-columns: 1fr !important;
-            
-    }
-
+        }
     }
 
     @@media (max-width: 480px) {
-        .chart-wrap
-
-    {
-        height: 180px;
-    }
-
+        .chart-wrap {
+            height: 180px;
+        }
     }
 
     @@media (max-width: 400px) {
-        .hide-xs
+        .hide-xs {
+            display: none;
+        }
 
-    {
-        display: none;
+        .e-table thead th,
+        .e-table tbody td {
+            padding: .5rem .75rem;
+        }
     }
 
-    .e-table thead th,
-    .e-table tbody td {
-        padding: .5rem .75rem;
+    .card-title i {
+        margin-right: 8px;
     }
 
+    .badge {
+        font-weight: 500;
+        padding: 6px 12px;
     }
 
     .kpi-row {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0,1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px;
         margin-bottom: 1.5rem;
     }
 
     .kpi-card {
-        background: #f8f8f6;
         border-radius: 8px;
         padding: 1rem;
     }
@@ -75,70 +70,11 @@
     }
 
     .e-card {
-        background: #fff;
         border: 0.5px solid #e8e8e6;
         border-radius: 12px;
         overflow: hidden;
         margin-bottom: 1rem;
     }
-
-    .e-hd {
-        padding: .875rem 1.25rem;
-        border-bottom: 0.5px solid #e8e8e6;
-        font-size: 13px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-        .e-hd i {
-            font-size: 16px;
-            color: #888;
-        }
-
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-
-    .e-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-        table-layout: fixed;
-    }
-
-        .e-table thead th {
-            padding: .5rem 1rem;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            color: #aaa;
-            background: #fafafa;
-        }
-
-            .e-table thead th:not(:first-child) {
-                text-align: right;
-            }
-
-        .e-table tbody td {
-            padding: .55rem 1rem;
-            border-top: 0.5px solid #f0f0ee;
-        }
-
-            .e-table tbody td:not(:first-child) {
-                text-align: right;
-                font-variant-numeric: tabular-nums;
-            }
-
-        .e-table tbody tr:hover td {
-            background: #fafafa;
-        }
-
     .pill {
         display: inline-block;
         font-size: 11px;
@@ -158,37 +94,48 @@
     }
 </style>
 
-
 @{
-    var chartLabels = Model.Production.Select(p => p.Date.ToString("dd.MM")).ToList();
-    var chartProd = Model.Production.Select(p => p.Production).ToList();
+    var last7Days = Enumerable.Range(0, 7)
+        .Select(i => DateTime.Today.AddDays(-6 + i))
+        .ToList();
 
-    var chartEnergy = Model.Production
-        .Select(p => Model.DailyStats.FirstOrDefault(d => d.Date.Date == p.Date.Date)?.Electricity ?? 0)
+    var chartLabels = last7Days
+        .Select(d => d.ToString("dd.MM"))
+        .ToList();
+
+    var chartProd = last7Days
+        .Select(d => Model.Remaning.FirstOrDefault(x => x.Date.Date == d.Date)?.Remaning ?? 0)
+        .ToList();
+
+    var chartEnergy = last7Days
+        .Select(d => Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date)?.Electricity ?? 0)
         .ToList();
 }
+
 <div class="page-section" id="enerji">
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">Son 7 Gün üretim</div>
-            <div class="kpi-val">@((Model.TotalProduction).ToString("N1"))</div>
+            <div class="kpi-lbl">Son 30 Gün Üretim</div>
+            <div class="kpi-val">@Model.TotalProduction.ToString("N2")</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Toplam elektrik</div>
-            <div class="kpi-val">@Model.TotalElectricity.ToString("N0")</div>
+            <div class="kpi-lbl">Toplam Elektrik</div>
+            <div class="kpi-val">@Model.TotalElectricity.ToString("N2")</div>
             <div class="kpi-unit">kWh</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Ton başına enerji</div>
-            <div class="kpi-val">@Model.KwhPerTon.ToString("N1")</div>
+            <div class="kpi-lbl">Ton Başına Enerji</div>
+            <div class="kpi-val">@Model.KwhPerTon.ToString("N2")</div>
             <div class="kpi-unit">kWh / Kg</div>
         </div>
     </div>
 
     <div class="e-card">
-        <div class="e-hd"><i class="ti ti-chart-bar"></i>Günlük üretim & enerji</div>
+        <div class="card-title p-3">
+            <i class="ti ti-flame"></i> Doğal Gaz Tüketimi (Son 7 Gün)
+        </div>
         <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Üretim (ton)</span>
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>Enerji (kWh)</span>
@@ -198,57 +145,96 @@
         </div>
     </div>
 
-        
-
-    <div class="two-col">
-        <div class="e-card">
-            <div class="e-hd"><i class="ti ti-bolt"></i>Elektrik tüketimi</div>
-            <table class="e-table">
-                <thead><tr>
-                    <th>Lokasyon</th>
-                        <th>Tarih</th>
-                    <th>Tüketim</th>
-                    </tr></thead>
-                <tbody>
-                    @foreach (var item in Model.Electric)
-                    {
-                        <tr>
-                            <td>@item.LocationName</td>
-                            <td>@item.ReceiptDate.ToString("dd.MM")</td>
-                            <td><span class="pill pill-green">@item.Consumption.ToString("N0") kWh</span></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="row">
+        <!-- Elektrik Tüketimi Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-bolt"></i> Elektrik Tüketimi (Son 7 Gün)
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Lokasyon</th>
+                                <th>Tarih</th>
+                                <th>Tüketim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Electric.OrderByDescending(x => x.ReceiptDate).Take(7).OrderBy(x => x.ReceiptDate))
+                            {
+                                <tr>
+                                    <td>@item.LocationName</td>
+                                    <td>@item.ReceiptDate.ToString("dd.MM")</td>
+                                    <td class="">@item.Consumption.ToString("N2") kWh</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td></td>
+                                <td class="">@Model.Electric.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.Consumption).ToString("N2") kWh</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="e-card">
-            <div class="e-hd"><i class="ti ti-package"></i>7 günlük üretim</div>
-            <table class="e-table">
-                <thead><tr><th>Tarih</th><th>Üretim</th><th>Ton Basına Kwh</th></tr></thead>
-                <tbody>
-                    @foreach (var item in Model.Production)
-                    {
-                        <tr>
-                            <td style="color:#888">@item.Date.ToString("dd.MM")</td>
-                            <td><span class="pill pill-green">@((item.Production).ToString("N2")) </span></td>
-
-                            @{
+        <!-- 7 Günlük Üretim Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-package"></i> 7 Günlük Üretim
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Üretim</th>
+                                <th>Ton Başına kWh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Remaning.OrderByDescending(x => x.Date).Take(7).OrderBy(x => x.Date))
+                            {
                                 var daily = Model.DailyStats.FirstOrDefault(x => x.Date.Date == item.Date.Date);
+                                <tr>
+                                    <td>@item.Date.ToString("dd.MM")</td>
+                                    <td class="text-success">@item.Remaning.ToString("N2")</td>
+                                    <td>@((daily?.KwhPerTon ?? 0).ToString()) kWh/Kg</td>
+                                </tr>
                             }
-                            <td class="hide-xs">@((daily?.KwhPerTon ?? 0).ToString()) kWh/Kg</td>
-                            
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="text-success">@Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Remaning).ToString("N2")</td>
+                                <td>
+                                    @{
+                                        var totalKwh = Model.DailyStats
+                                        .Where(x => Model.Remaning.Select(r => r.Date.Date).Contains(x.Date.Date))
+                                        .Sum(x => x.KwhPerTon * x.Production);
+                                        var totalProduction = Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Remaning);
+                                        var avgKwhPerTon = totalProduction > 0 ? (totalKwh / totalProduction) : 0;
+                                    }
+                                    @avgKwhPerTon.ToString("N2") kWh/Kg
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 
 <script>
-           document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
         const labels = @Html.Raw(Json.Serialize(chartLabels));
         const prodVal = @Html.Raw(Json.Serialize(chartProd));
@@ -278,5 +264,3 @@
         });
     });
 </script>
-
-

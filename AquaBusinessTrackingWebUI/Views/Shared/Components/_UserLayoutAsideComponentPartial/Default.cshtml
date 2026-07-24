@@ -1,13 +1,36 @@
 ﻿@inject AquaBusinessTrackingWebUI.Services.CurrentUserService CurrentUser
 
+<style>
+
+    .brand-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #0A4E78;
+        font-family: "Segoe UI", sans-serif;
+        text-transform: uppercase;
+    }
+
+    .brand-red {
+        color: #dc3545;
+    }
+
+    .brand-blue {
+        color: #0A4E78;
+    }
+
+</style>
+
 <aside class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
         <div>
             <img src="~/img/logo.png" class="logo-icon" alt="logo icon">
         </div>
-        <div>
-            <h4 class="logo-text">Aquakraft</h4>
-        </div>
+        
+        <h4 class="logo-text">
+            <span class="brand-blue"> AQU<span class="brand-red">A</span>KRAFT</span>
+        </h4>
     </div>
 
     <ul class="metismenu" id="menu">
@@ -84,6 +107,10 @@
                     @if (CurrentUser.HasPermission("M2KANTAR.SalesScale.View"))
                     {
                         <li><a href="~/SalesScale/GetSalesList"><ion-icon name="ellipse-outline"></ion-icon>Araç Listesi</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("M2KANTAR.IncomingGoodsTracking.View"))
+                    {
+                        <li><a href="~/IncomingGoodsTracking/GetIncomingGoodsTrackingList"><ion-icon name="ellipse-outline"></ion-icon>Gelen Malzeme Takibi</a></li>
                     }
 
                 </ul>
@@ -369,7 +396,7 @@
                     <div class="menu-title">Kağıt Kantar</div>
                 </a>
                 <ul>
-                    <li><a href="#"><ion-icon name="ellipse-outline"></ion-icon>Tartım</a></li>
+                    <li><a href="~/RawMaterials/GetRawMaterialsList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Giriş</a></li>
                 </ul>
             </li>
 

@@ -114,6 +114,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IPlcTagsService, PlcTagsManager>();
             Services.AddSingleton<IPlcReader, OpcUaPlcReader>();
             Services.AddHostedService<PlcHoursReadingService>();
+            Services.AddHostedService<MachineRandomanJob>();
             Services.AddScoped<ISentezIntegrationsService, SentezIntegrationsManager>();
             Services.AddScoped<ISentezQueryService, SentezQueryManager>();
             Services.AddSignalR();
@@ -122,7 +123,12 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IFavoriteMenuItemService, FavoriteMenuItemManager>();
             Services.AddScoped<IMessageRepository, MessageRepository>();
             Services.AddScoped<IMessageService, MessageManager>();
+            Services.AddScoped<IRawMaterialIntakeRepository, RawMaterialIntakeRepository>();
+            Services.AddScoped<IRawMaterialIntakeService, RawMaterialIntakeManager>();
+            Services.AddScoped<IIncomingGoodsTrackingRepository, IncomingGoodsTrackingRepository>();
+            Services.AddScoped<IIncomingGoodsTrackingService, IncomingGoodsTrackingManager>();
             Services.AddScoped<GenerateTokenService>();
+
             Services.AddHttpContextAccessor();
             Services.AddHttpClient();
         }

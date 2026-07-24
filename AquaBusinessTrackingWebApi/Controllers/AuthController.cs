@@ -16,17 +16,20 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly UserManager<DB_AppUser> _userManager;
         private readonly SignInManager<DB_AppUser> _signInManager;
         private readonly GenerateTokenService _generateTokenService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(UserManager<DB_AppUser> userManager, SignInManager<DB_AppUser> signInManager, GenerateTokenService generateTokenService)
+        public AuthController(UserManager<DB_AppUser> userManager, SignInManager<DB_AppUser> signInManager, GenerateTokenService generateTokenService, ILogger<AuthController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _generateTokenService = generateTokenService;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+            _logger.LogInformation("Yeni kullanıcı kayıt isteği. Email={Email}", dto.Email);
             var user = new DB_AppUser
             {
                 Name = dto.Name,
@@ -43,16 +46,22 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             if (result.Succeeded)
             {
+                _logger.LogInformation("Kullanıcı oluşturuldu. Id={UserId}, Email={Email}", user.Id, user.Email);
                 var role = await _userManager.AddToRoleAsync(user, "User");
                 if (role.Succeeded)
                 {
+                    _logger.LogInformation("Kullanıcıya 'User' rolü atandı. Id={UserId}, Email={Email}", user.Id, user.Email);
                     return Ok("ok");
                 }
             }
 
 
             if (!result.Succeeded)
+            {
+                _logger.LogWarning("Kullanıcı oluşturulamadı. Hatalar: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
                 return BadRequest(result.Errors);
+            }
+
 
             return Ok("Kayıt başarılı!");
         }
@@ -60,13 +69,27 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
+            _logger.LogInformation("Kullanıcı giriş isteği. Email={Email}", dto.UserName);
             var user = await _userManager.FindByEmailAsync(dto.UserName);
             if (user == null)
+            {
+                _logger.LogWarning("Kullanıcı bulunamadı. Email={Email}", dto.UserName);
                 return Unauthorized("Kullanıcı bulunamadı");
+            }
 
+
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             var result = await _signInManager.PasswordSignInAsync(user, dto.Password, false, false);
             if (!result.Succeeded)
+            {
+                _logger.LogWarning("Geçersiz giriş. Email={Email}", dto.UserName);
                 return Unauthorized("Geçersiz giriş");
+            }
+
+            else
+                _logger.LogInformation("Başarılı giriş. UserId={UserId}, UserName={UserName}, IP={IP}", user.Id, user.UserName, ip);
+
+
             var roles = await _userManager.GetRolesAsync(user);
             var token = await _generateTokenService.CreateToken(user);
             return Ok(new
@@ -84,6 +107,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
+            _logger.LogInformation("Tüm kullanıcılar listeleniyor.");
             var users = await _userManager.Users
                 .Select(x => new GetListUserDto
                 {

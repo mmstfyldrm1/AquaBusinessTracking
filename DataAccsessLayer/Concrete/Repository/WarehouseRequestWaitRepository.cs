@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class WarehouseRequestWaitRepository : GenericRepository<DB_WarehouseRequestWait>, IWarehouseRequestWaitRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public WarehouseRequestWaitRepository(AquaBusinessTrackingContext context) : base(context)
+        public WarehouseRequestWaitRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_WarehouseRequestWait>> logger) : base(context, logger)
         {
             _context = context;
         }

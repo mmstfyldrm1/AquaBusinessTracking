@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class BoilerSteamFeedWaterCondensateDataRepository : GenericRepository<DB_BoilerSteamFeedWaterCondensateData>, IBoilerSteamFeedWaterCondensateDataRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public BoilerSteamFeedWaterCondensateDataRepository(AquaBusinessTrackingContext context) : base(context)
+        public BoilerSteamFeedWaterCondensateDataRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_BoilerSteamFeedWaterCondensateData>> logger) : base(context, logger)
         {
             _context = context;
         }

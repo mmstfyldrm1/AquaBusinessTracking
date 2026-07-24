@@ -2,13 +2,14 @@
 using DTOLayer.Dtos.AdminDashboardDtos;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class MachineStopRepository : GenericRepository<DB_MachineStop>, IMachineStopRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public MachineStopRepository(AquaBusinessTrackingContext context) : base(context)
+        public MachineStopRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_MachineStop>> logger) : base(context, logger)
         {
             _context = context;
         }

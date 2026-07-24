@@ -1,5 +1,4 @@
-﻿
-using BusinessLayer.Abstract;
+﻿using BusinessLayer.Abstract;
 using DTOLayer.Dtos.PlanningDto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,8 +18,10 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly IBufferAnalysisReportService _bufferAnalysisReportService;
         private readonly INaturelGasMeterMonitoringService _naturelGasMeterMonitoringService;
         private readonly ICumulativeElectricityConsumptionService _cumulativeElectricityConsumptionService;
+        private readonly ILogger<PlanningController> _logger;
 
-        public PlanningController(IWastePaperControlService wastepPaperService,
+        public PlanningController(
+            IWastePaperControlService wastepPaperService,
             IDoughPreparationHeadService doughPreparationHeadService,
             IPapperMachineChemicalService paperMachineChemicalService,
             IKazanChemicalsHeadService kazanChemicalsHeadService,
@@ -29,7 +30,8 @@ namespace AquaBusinessTrackingWebApi.Controllers
             IPurificationChemicalsConsumptionService purificationChemicalsConsumptionService,
             IBufferAnalysisReportService bufferAnalysisReportService,
             INaturelGasMeterMonitoringService naturelGasMeterMonitoringService,
-            ICumulativeElectricityConsumptionService cumulativeElectricityConsumptionService)
+            ICumulativeElectricityConsumptionService cumulativeElectricityConsumptionService,
+            ILogger<PlanningController> logger)
         {
             _wastepPaperService = wastepPaperService;
             _doughPreparationHeadService = doughPreparationHeadService;
@@ -41,11 +43,16 @@ namespace AquaBusinessTrackingWebApi.Controllers
             _bufferAnalysisReportService = bufferAnalysisReportService;
             _naturelGasMeterMonitoringService = naturelGasMeterMonitoringService;
             _cumulativeElectricityConsumptionService = cumulativeElectricityConsumptionService;
+            _logger = logger;
         }
 
         [HttpGet("planning")]
         public async Task<IActionResult> GetPreviosDay()
         {
+            _logger.LogInformation(
+                "Planlama verileri isteniyor. User={User}",
+                User?.Identity?.Name);
+
             var wastePaperControl = await _wastepPaperService.GetPreviousDay();
             var doughPreparationHeads = await _doughPreparationHeadService.GetPreviousDay();
             var paperMachineChemicals = await _paperMachineChemicalService.GetPreviousDay();
@@ -56,7 +63,6 @@ namespace AquaBusinessTrackingWebApi.Controllers
             var bufferAnalysisReports = await _bufferAnalysisReportService.GetPreviousDay();
             var naturelGasMeterMonitorings = await _naturelGasMeterMonitoringService.GetPreviousDay();
             var cumulativeElectricityConsumptions = await _cumulativeElectricityConsumptionService.GetPreviousDay();
-
 
             var planningDto = new PlanningDto
             {
@@ -71,6 +77,9 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 WastePaperControls = wastePaperControl,
                 WaterPreparationAndConsumptions = waterPreparationAndConsumptions
             };
+
+            _logger.LogInformation(
+                "Planlama verileri başarıyla oluşturuldu ve döndürüldü.");
 
             return Ok(planningDto);
         }

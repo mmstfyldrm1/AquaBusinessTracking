@@ -23,6 +23,12 @@ namespace EntityLayer.Concrete
         public DateTime? DeleteDate { get; set; }
 
         [JsonIgnore]
+        public ICollection<DB_IncomingGoodsTracking> IncomingGoodsTracking { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_RawMaterialIntake> RawMaterialIntakes { get; set; }
+
+        [JsonIgnore]
         public ICollection<DB_SteamConsumption> SteamConsumptions { get; set; }
 
         [JsonIgnore]

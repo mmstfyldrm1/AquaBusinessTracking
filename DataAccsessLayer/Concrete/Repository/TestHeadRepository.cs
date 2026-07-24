@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class TestHeadRepository : GenericRepository<DB_TestHeader>, ITestHeadRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public TestHeadRepository(AquaBusinessTrackingContext context) : base(context)
+        public TestHeadRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_TestHeader>> logger) : base(context, logger)
         {
             _context = context;
         }

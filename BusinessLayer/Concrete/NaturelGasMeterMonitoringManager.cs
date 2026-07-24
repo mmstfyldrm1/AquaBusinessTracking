@@ -29,9 +29,9 @@ namespace BusinessLayer.Concrete
             return dtos;
         }
 
-        public async Task<List<NaturelGasMeterMonitoringDto>> GetLast7DaysNaturelGas()
+        public async Task<List<NaturelGasMeterMonitoringDto>> GetLast30DaysNaturelGas()
         {
-            var entities = await _repo.GetLast7DaysNaturelGas();
+            var entities = await _repo.GetLast30DaysNaturelGas();
             var dtos = _mapper.Map<List<NaturelGasMeterMonitoringDto>>(entities);
             return dtos;
         }

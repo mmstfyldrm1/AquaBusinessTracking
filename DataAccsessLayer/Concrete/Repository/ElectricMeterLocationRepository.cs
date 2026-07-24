@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class ElectricMeterLocationRepository : GenericRepository<DB_ElectricMeterLocation>, IElectricMeterLocationRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public ElectricMeterLocationRepository(AquaBusinessTrackingContext context) : base(context)
+        public ElectricMeterLocationRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_ElectricMeterLocation>> logger) : base(context, logger)
         {
             _context = context;
         }

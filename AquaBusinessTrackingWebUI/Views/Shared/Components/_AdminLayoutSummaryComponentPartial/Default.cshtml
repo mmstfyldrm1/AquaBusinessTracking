@@ -78,7 +78,7 @@
                 ));
 
         const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                        Model.GetLast7Days.Data.Select(x => x.Production)
+                        Model.GetLast7Days.Data.Select(x => x.Remaning)
                 ));
 
         new Chart(document.getElementById('trendChart'), {

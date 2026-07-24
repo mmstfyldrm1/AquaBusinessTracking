@@ -10,7 +10,7 @@ namespace DataAccsessLayer.Abstract
         Task<List<DB_CumulativeElectricityConsumption>> GetPreviousDay();
         Task<List<DB_ElectricMeterLocation>> GetLocationName();
 
-        Task<List<CumulativeElectricityConsumptionDto>> GetLast7DaysGet();
+        Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable();
 
 
     }

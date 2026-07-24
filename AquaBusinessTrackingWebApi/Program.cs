@@ -9,9 +9,91 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using System.Text;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
+    .Enrich.WithProcessId()
+    .WriteTo.Console()
+
+
+    // API Loglarý
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(x =>
+            !x.Properties.ContainsKey("SourceContext") ||
+            !x.Properties["SourceContext"]
+            .ToString()
+            .Contains("OpcUaPlcReader"))
+        .WriteTo.File(
+            "Logs/Api/api-.txt",
+            rollingInterval: RollingInterval.Day)
+
+        .WriteTo.MSSqlServer(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            sinkOptions: new Serilog.Sinks.MSSqlServer.MSSqlServerSinkOptions
+            {
+                TableName = "ApiLogs",
+                AutoCreateSqlTable = true
+            })
+    )
+
+
+    // PLC Loglarý
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(x =>
+            x.Properties.ContainsKey("SourceContext") &&
+            x.Properties["SourceContext"]
+            .ToString()
+            .Contains("OpcUaPlcReader"))
+        .WriteTo.File(
+            "Logs/Plc/plc-.txt",
+            rollingInterval: RollingInterval.Day)
+
+        .WriteTo.MSSqlServer(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            sinkOptions: new Serilog.Sinks.MSSqlServer.MSSqlServerSinkOptions
+            {
+                TableName = "PlcLogs",
+                AutoCreateSqlTable = true
+            })
+    )
+
+
+    // Error Loglarý
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(x =>
+            x.Level == LogEventLevel.Error ||
+            x.Level == LogEventLevel.Fatal)
+
+        .WriteTo.File(
+            "Logs/Error/error-.txt",
+            rollingInterval: RollingInterval.Day)
+
+        .WriteTo.MSSqlServer(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            sinkOptions: new Serilog.Sinks.MSSqlServer.MSSqlServerSinkOptions
+            {
+                TableName = "ErrorLogs",
+                AutoCreateSqlTable = true
+            })
+    )
+
+
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
+
 
 // Add services to the container.
 
@@ -31,13 +113,15 @@ builder.Services.AddIdentity<DB_AppUser, DB_AppRole>()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-          x => x.WithOrigins("https://localhost:7148")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials());
+        x => x.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 
 // JWT (tek blok - hem TokenValidationParameters hem Events burada)
@@ -106,6 +190,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\AquaAPI\DataProtection-Keys"))
     .SetApplicationName("AquaBusinessTracking");
@@ -133,12 +218,22 @@ app.UseCors("AllowAll");
 //    app.UseSwaggerUI();
 //}
 
+
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
     c.RoutePrefix = "swagger";
 });
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate =
+        "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+});
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapHub<PlcHub>("/hubs/plc");
 app.MapHub<MessageHub>("/messageHub");

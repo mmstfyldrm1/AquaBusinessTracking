@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class SalesScaleRepository : GenericRepository<DB_SalesScale>, ISalesScaleRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public SalesScaleRepository(AquaBusinessTrackingContext context) : base(context)
+        public SalesScaleRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_SalesScale>> logger) : base(context, logger)
         {
             _context = context;
         }

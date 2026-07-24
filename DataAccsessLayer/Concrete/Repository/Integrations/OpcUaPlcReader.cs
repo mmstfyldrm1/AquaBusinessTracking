@@ -2,9 +2,9 @@
 using DataAccsessLayer.Concrete.UoW;
 using EntityLayer.Concrete;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Opc.Ua;
 using Opc.Ua.Client;
-
 
 namespace DataAccsessLayer.Concrete.Repository.Integrations
 {
@@ -12,11 +12,12 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly Dictionary<int, Session> _sessions = new();
+        private readonly ILogger<OpcUaPlcReader> _logger;
 
-        public OpcUaPlcReader(IServiceScopeFactory scopeFactory)
+        public OpcUaPlcReader(IServiceScopeFactory scopeFactory, ILogger<OpcUaPlcReader> logger)
         {
             _scopeFactory = scopeFactory;
-
+            _logger = logger;
         }
 
         private async Task<Session> EnsureConnectedAsync(DB_PlcMachine machine)
@@ -25,19 +26,6 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
             {
                 if (_sessions.TryGetValue(machine.RecId, out var existing) && existing.Connected)
                     return existing;
-
-                if (existing == null) return null;
-                try
-                {
-                    if (existing.Connected) existing.Close();
-                }
-                catch { /* zaten kopmuşsa Close de hata verebilir, yok say */ }
-                finally
-                {
-                    existing.Dispose();
-                    _sessions.Remove(machine.RecId);
-                }
-
                 var appConfig = new ApplicationConfiguration
                 {
                     ApplicationName = "AquaBusinessTracking",
@@ -94,16 +82,13 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                 };
 
                 _sessions[machine.RecId] = session;
-
+                _logger.LogInformation("PLC bağlantısı kuruldu. Machine={MachineName}, Ip={Ip}", machine.Name, machine.IpAddress);
                 return session;
             }
             catch (Exception ex)
             {
-                // Debug için
-                Console.WriteLine(ex.ToString());
 
-                // Logger kullanıyorsan
-                //_logger.LogError(ex, "PLC bağlantı hatası. IP: {Ip}", machine?.IpAddress);
+                _logger.LogError(ex, "PLC bağlantısı kurulamadı. Machine={MachineName}, Ip={Ip}", machine?.Name, machine?.IpAddress);
 
                 throw new Exception(
                     $"PLC bağlantısı kurulamadı.\n" +
@@ -116,10 +101,9 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
         {
             using var scope = _scopeFactory.CreateScope();
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
             var machine = await uow.Repository<DB_PlcMachine>().TGetById(machineId);
             if (machine is null) return;
-
+            _logger.LogInformation("PLC okuma başladı. Machine={MachineName}", machine.Name);
             // session makine tablosundaki endpoint ile kurulur
             var session = await EnsureConnectedAsync(machine);
 
@@ -127,7 +111,7 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                 .Where(t => t.MachineId == machineId && t.IsActive)
                 .ToList();
 
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             foreach (var tag in tags)
             {
@@ -146,12 +130,16 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Tag okuma hatası [{tag.TagName}]: {ex.Message}");
+                    _logger.LogError(ex, "Tag okunamadı. Machine={MachineName}, Tag={TagName}, NodeId={NodeId}", machine.Name, tag.TagName, tag.DataAddress);
                 }
             }
 
             await uow.SaveChangesAsync();
-            Console.WriteLine($"OPC-UA okuma tamamlandı [{machine.Name}]: {now:HH:mm:ss}");
+            _logger.LogInformation("PLC okuma tamamlandı. Machine={MachineName}, TagCount={TagCount}, Time={Time}", machine.Name, tags.Count, now);
+
+
+
+
         }
 
         public async ValueTask DisposeAsync()
@@ -182,7 +170,7 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
 
             if (heartbeatTag is null)
             {
-                Console.WriteLine($"Heartbeat tag'i bulunamadı [MachineId={machineId}]");
+                _logger.LogWarning("Heartbeat tag bulunamadı. Machine={MachineName}", machine.Name);
                 return;
             }
 
@@ -221,16 +209,16 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
 
                 if (StatusCode.IsGood(results[0]))
                 {
-                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Heartbeat gönderildi [{machine.Name}]: {toggled}");
+                    _logger.LogInformation("Heartbeat gönderildi. Machine={MachineName}, Counter={Counter}", machine.Name, counter);
                 }
                 else
                 {
-                    Console.WriteLine($"Heartbeat yazma hatası [{machine.Name}]: {results[0]}");
+                    _logger.LogError("Heartbeat yazma hatası. Machine={MachineName}, StatusCode={StatusCode}", machine.Name, results[0]);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Heartbeat exception [{machine.Name}]: {ex.Message}");
+                _logger.LogError(ex, "Heartbeat exception. Machine={MachineName}", machine.Name);
             }
         }
     }

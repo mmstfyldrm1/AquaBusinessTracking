@@ -1,13 +1,14 @@
 ﻿using DataAccsessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
     public class MassWasteSupplierRepository : GenericRepository<DB_MassWasteSupplier>, IMassWasteSupplierRepository
     {
         private readonly AquaBusinessTrackingContext _context;
-        public MassWasteSupplierRepository(AquaBusinessTrackingContext context) : base(context)
+        public MassWasteSupplierRepository(AquaBusinessTrackingContext context, ILogger<GenericRepository<DB_MassWasteSupplier>> logger) : base(context, logger)
         {
             _context = context;
         }
