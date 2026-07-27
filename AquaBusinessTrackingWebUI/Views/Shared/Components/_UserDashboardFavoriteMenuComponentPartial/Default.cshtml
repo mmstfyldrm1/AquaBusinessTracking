@@ -1,28 +1,62 @@
-﻿@using System.Globalization
+﻿@using DTOLayer.Dtos.UserDashboardDtos
+@model List<UserDashboardFavoriteMenuDto>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">
+            <i class="bx bxs-star text-warning me-2"></i>
+            Favori Modüllerim
+        </h5>
+    </div>
 
-@{
-    var userName = User.Identity?.Name ?? "Kullanıcı";
-    var culture = new CultureInfo("tr-TR");
-    var now = DateTime.Now.ToString("dddd, dd MMMM yyyy - HH:mm", culture);
-}
+    <div class="card-body">
 
-<div class="text-center py-5">
-    <h2 class="fw-bold mb-2">
-        👋 Hoş Geldiniz, @userName
-    </h2>
+        <div class="row g-3">
 
-    <p class="text-muted mb-4">
-        📅 @now
-    </p>
+            @foreach (var item in Model)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
 
-    <div class="card shadow-sm border-0 mx-auto" style="max-width:700px;">
-        <div class="card-body py-4">
-            <h5 class="card-title">MES Yönetim Paneli</h5>
+                    <a href="@item.Url"
+                       class="text-decoration-none">
 
-            <p class="card-text text-muted mb-0">
-                Sisteme başarıyla giriş yaptınız. Sol menüden istediğiniz modüle geçiş yapabilirsiniz.
-                Yakında bu alan; grafikler, KPI kartları, son işlemler ve hızlı erişim panelleriyle zenginleştirilmiş bir dashboard olarak kullanılacaktır.
-            </p>
+                        <div class="card border h-100 favorite-card">
+                            <div class="card-body text-center">
+
+                                <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3"
+                                     style="width:60px;height:60px;">
+                                    <i class="bx bx-grid-alt text-warning fs-2"></i>
+                                </div>
+
+                                <h6 class="fw-bold text-dark mb-1">
+                                    @item.Controller
+                                </h6>
+
+                                <small class="text-muted">
+                                    Hızlı Erişim
+                                </small>
+
+                            </div>
+                        </div>
+
+                    </a>
+
+                </div>
+            }
+
         </div>
+
     </div>
 </div>
+
+<style>
+    .favorite-card {
+        transition: .25s;
+        border-radius: 14px;
+    }
+
+        .favorite-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.12);
+            border-color: #ffc107 !important;
+        }
+</style>

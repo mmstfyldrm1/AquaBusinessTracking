@@ -22,6 +22,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
         public async Task<IActionResult> GetDailyConsumables()
         {
+
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Planning/planning");
             if (!response.IsSuccessStatusCode)

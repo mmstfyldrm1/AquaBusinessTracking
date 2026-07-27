@@ -2,7 +2,7 @@
 
 namespace AquaBusinessTrackingWebUI.Models
 {
-    public class UserDashboardFavoriteMenuItemViewModel
+    public class userDashboardFavoriteMenuDtoUserDashboardFavoriteMenuItemViewModel
     {
         public List<UserDashboardFavoriteMenuDto> userDashboardFavoriteMenuDto { get; set; }
     }

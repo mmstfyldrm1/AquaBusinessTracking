@@ -2,20 +2,23 @@
 @{
     ViewData["Title"] = "GetSentezAllData";
     Layout = "~/Views/_UserLayout/Index.cshtml";
+    var controller = "SentezAllData/GetSentezAllData";  
 }
 
 @using DTOLayer.Dtos.SentezAllDataDtos
 
-@{
-    ViewData["Title"] = "GetSentezAllDataList";
-    Layout = "~/Views/_UserLayout/Index.cshtml";
-}
-
 @model List<SentezAllDataDto>
 
-<h6 class="mb-0 text-uppercase">
-    Sentez Tüm Veri Takip Sistemi
-</h6>
+<div class="d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-uppercase">Sentez Tüm Veri Takip Sistemi</h6>
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+    </a>
+</div>
 
 <hr />
 

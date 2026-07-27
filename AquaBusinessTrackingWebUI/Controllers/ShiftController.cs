@@ -26,7 +26,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetShiftList()
         {
-            if (!_currentUserService.HasPermission("AYARLAR.Shifts.View"))
+            if (!_currentUserService.HasPermission("AYARLAR.Shift.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -55,7 +55,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             //ViewBag.AppUserName = User.Identity?.Name;
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("AYARLAR.Shifts.Update"))
+                if (!_currentUserService.HasPermission("AYARLAR.Shift.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -78,7 +78,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("AYARLAR.Shifts.Add"))
+                if (!_currentUserService.HasPermission("AYARLAR.Shift.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -127,7 +127,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteShift(int id)
         {
-            if (!_currentUserService.HasPermission("AYARLAR.Shifts.Delete"))
+            if (!_currentUserService.HasPermission("AYARLAR.Shift.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

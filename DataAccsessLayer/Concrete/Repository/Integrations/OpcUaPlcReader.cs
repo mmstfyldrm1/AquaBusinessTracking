@@ -20,12 +20,19 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
             _logger = logger;
         }
 
-        private async Task<Session> EnsureConnectedAsync(DB_PlcMachine machine)
+        private async Task<Session> EnsureConnectedAsync(DB_PlcMachine machine, bool forceNew = false)
         {
             try
             {
-                if (_sessions.TryGetValue(machine.RecId, out var existing) && existing.Connected)
+                if (!forceNew && _sessions.TryGetValue(machine.RecId, out var existing) && existing.Connected)
                     return existing;
+
+                if (_sessions.TryGetValue(machine.RecId, out var old))
+                {
+                    try { if (old.Connected) old.Close(); } catch { /* yoksay */ }
+                    old.Dispose();
+                    _sessions.Remove(machine.RecId);
+                }
                 var appConfig = new ApplicationConfiguration
                 {
                     ApplicationName = "AquaBusinessTracking",
@@ -48,7 +55,7 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                     },
                     ClientConfiguration = new ClientConfiguration
                     {
-                        DefaultSessionTimeout = 60000
+                        DefaultSessionTimeout = (int)TimeSpan.FromHours(6).TotalMilliseconds
                     }
                 };
 
@@ -68,7 +75,7 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                     configuredEndpoint,
                     false,
                     $"AquaSession_{machine.RecId}",
-                    60000,
+                     (uint)TimeSpan.FromHours(6).TotalMilliseconds,
                     new UserIdentity(new AnonymousIdentityToken()),
                     null);
 
@@ -118,7 +125,21 @@ namespace DataAccsessLayer.Concrete.Repository.Integrations
                 try
                 {
                     var nodeId = new NodeId(tag.DataAddress);
-                    var dataValue = session.ReadValue(nodeId);
+                    DataValue dataValue;
+
+                    try
+                    {
+                        dataValue = session.ReadValue(nodeId);
+                    }
+                    catch (Opc.Ua.ServiceResultException ex) when (ex.StatusCode == StatusCodes.BadSessionIdInvalid)
+                    {
+                        _logger.LogWarning("Session geçersiz olmuş, yeniden bağlanılıyor. Machine={MachineName}, Tag={TagName}",
+                            machine.Name, tag.TagName);
+
+                        session = await EnsureConnectedAsync(machine, forceNew: true);
+                        dataValue = session.ReadValue(nodeId); // session yenilendikten sonra tek sefer tekrar dene
+                    }
+
                     var value = Convert.ToDouble(dataValue.Value);
 
                     await uow.Repository<DB_PlcReading>().TAdd(new DB_PlcReading

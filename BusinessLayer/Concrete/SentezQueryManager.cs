@@ -59,8 +59,6 @@ namespace BusinessLayer.Concrete
             return await _service.ExecuteQueryAsync<SentezProductionDto>(query);
         }
 
-
-
         public async Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsStockAsync()
         {
             var query = BuildRawMaterielsStockQuery();

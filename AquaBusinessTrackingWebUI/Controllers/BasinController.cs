@@ -32,7 +32,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> GetBasinList()
         {
             var client = _httpClientFactory.CreateClient();
-            if (!_currentUserService.HasPermission("ARITMA.AATLabAnalysis.View"))
+            if (!_currentUserService.HasPermission("ARITMA.Basin.View"))
             {
                 return Json(new { success = false, message = "Bu işlemi gerçekleştirmek için gerekli izniniz bulunmamaktadır." });
             }
@@ -56,7 +56,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("ARITMA.AATLabAnalysis.Update"))
+                if (!_currentUserService.HasPermission("ARITMA.Basin.Update"))
                 {
                     return Json(new { success = false, message = "Bu işlemi gerçekleştirmek için gerekli izniniz bulunmamaktadır." });
                 }
@@ -87,7 +87,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ARITMA.AATLabAnalysis.Add"))
+                if (!_currentUserService.HasPermission("ARITMA.Basin.Add"))
                 {
                     return Json(new { success = false, message = "Bu işlemi gerçekleştirmek için gerekli izniniz bulunmamaktadır." });
                 }
@@ -164,7 +164,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             var client = _httpClientFactory.CreateClient();
 
-            if (_currentUserService.HasPermission("ARITMA.AATLabAnalysis.Delete"))
+            if (_currentUserService.HasPermission("ARITMA.Basin.Delete"))
             {
 
                 var measurementResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/Basin/{id}/measurements");

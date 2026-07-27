@@ -29,7 +29,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> CirculationTankList()
         {
             var client = _httpClientFactory.CreateClient();
-            if (!_currentUserService.HasPermission("KALITE.CirculationTankAnalysis.View"))
+            if (!_currentUserService.HasPermission("KALITE.CirculationTankAirPressureMeasurementTurbidity.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -51,7 +51,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KALITE.CirculationTankAnalysis.Update"))
+                if (!_currentUserService.HasPermission("KALITE.CirculationTankAirPressureMeasurementTurbidity.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -74,7 +74,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KALITE.CirculationTankAnalysis.Add"))
+                if (!_currentUserService.HasPermission("KALITE.CirculationTankAirPressureMeasurementTurbidity.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -127,7 +127,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KALITE.CirculationTankAnalysis.Delete"))
+            if (!_currentUserService.HasPermission("KALITE.CirculationTankAirPressureMeasurementTurbidity.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

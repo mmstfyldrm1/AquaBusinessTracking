@@ -29,7 +29,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> GetCondensateData()
         {
             var client = _httpClientFactory.CreateClient();
-            if (!_currentUserService.HasPermission("KAZAN.CondensateTracking.View"))
+            if (!_currentUserService.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -52,7 +52,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KAZAN.CondensateTracking.Update"))
+                if (!_currentUserService.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -75,7 +75,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KAZAN.CondensateTracking.Add"))
+                if (!_currentUserService.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -116,7 +116,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KAZAN.CondensateTracking.Delete"))
+            if (!_currentUserService.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

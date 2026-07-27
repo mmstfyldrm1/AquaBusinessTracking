@@ -28,7 +28,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPurificationChemicalsList()
         {
-            if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalConsumption.View"))
+            if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalsConsumption.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -56,7 +56,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalConsumption.Update"))
+                if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalsConsumption.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -79,7 +79,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalConsumption.Add"))
+                if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalsConsumption.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -120,7 +120,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalConsumption.Delete"))
+            if (!_currentUserService.HasPermission("ARITMA.PurificationChemicalsConsumption.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

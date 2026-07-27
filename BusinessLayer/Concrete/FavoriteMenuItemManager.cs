@@ -3,6 +3,7 @@ using BusinessLayer.Abstract;
 using DataAccsessLayer.Abstract;
 using DataAccsessLayer.Concrete.UoW;
 using DTOLayer.Dtos.UserDashboardDtos;
+using EntityLayer.Concrete;
 
 namespace BusinessLayer.Concrete
 {
@@ -21,7 +22,8 @@ namespace BusinessLayer.Concrete
 
         public async Task<bool> AddFavorite(UserDashboardAddFavoriteModuleDto dto)
         {
-            var resut = await _repository.AddFavorite(dto);
+            var dtos = _mapper.Map<DB_FavoriteMenuItem>(dto);
+            var resut = await _repository.AddFavorite(dtos);
             await _uow.SaveChangesAsync();
             return resut;
         }

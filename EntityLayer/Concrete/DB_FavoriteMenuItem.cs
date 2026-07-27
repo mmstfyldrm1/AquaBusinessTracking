@@ -10,6 +10,8 @@ namespace EntityLayer.Concrete
 
         public int ModuleId { get; set; }
 
+        public string Controller { get; set; }
+
         [JsonIgnore]
         public DB_Permission Permission { get; set; }
 

@@ -1,9 +1,9 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.QueryDtos;
 using DTOLayer.Dtos.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text;
 
@@ -25,38 +25,56 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             var client = _httpClientFactory.CreateClient();
 
             var user = HttpContext.User;
-            var DepartmentId = user.FindFirst("DepartmentId")?.Value;
+            var departmentId = user.FindFirst("DepartmentId")?.Value;
 
-            if (!string.IsNullOrEmpty(DepartmentId))
+            if (!string.IsNullOrEmpty(departmentId))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine($"select Id, Name , SurName , CoverImgUrl, d.DepartmentName ,d.DepartmentCode   from AspNetUsers anu left join Db_Department d with(nolock) on d.RecId = anu.DepartmentId where anu.Id={user.FindFirstValue(ClaimTypes.NameIdentifier)}");
+                sb.AppendLine($"SELECT");
+                sb.AppendLine($"anu.Id,");
+                sb.AppendLine($"anu.Name,");
+                sb.AppendLine($"anu.SurName,");
+                sb.AppendLine($"anu.CoverImgUrl,");
+                sb.AppendLine($"d.DepartmentName,");
+                sb.AppendLine($"d.DepartmentCode");
+                sb.AppendLine($" FROM AspNetUsers anu");
+                sb.AppendLine($" LEFT JOIN Db_Department d WITH(NOLOCK)");
+                sb.AppendLine($" ON d.RecId = anu.DepartmentId");
+                sb.AppendLine($" WHERE anu.Id ={user.FindFirstValue(ClaimTypes.NameIdentifier)}");
 
-                var queryObj = new { query = sb.ToString() };
-                var content = new StringContent(JsonConvert.SerializeObject(queryObj), Encoding.UTF8, "application/json");
+                var requestDto = new QueryRequestDto
+                {
+                    Query = sb.ToString(),
+                    Parameters = null
+                };
 
-                var response = await client.PostAsync($"{_apiSettings.BaseUrl}/Query/execute", content);
+                var response = await client.PostAsJsonAsync(
+                    $"{_apiSettings.BaseUrl}/Query/execute",
+                    requestDto);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var jsonData = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<List<GetUserDto>>(jsonData);
-                    if (values != null && values.Any())
+                    var values = await response.Content.ReadFromJsonAsync<List<GetUserDto>>();
+
+                    if (values?.Any() == true)
                     {
-                        if (string.IsNullOrEmpty(values.First().CoverImgUrl))
-                            values.First().CoverImgUrl = "~/img/ProfilPhotos/Default.png";
+                        var value = values.First();
 
+                        value.CoverImgUrl ??= "~/img/ProfilPhotos/Default.png";
 
-                        ViewBag.DepartmentName = values.First().DepartmentName;
-                        ViewBag.AppUserName = values.FirstOrDefault().Name;
-                        ViewBag.AppUserSurName = values.FirstOrDefault().SurName;
-                        ViewBag.CoverImgUrl = values.FirstOrDefault().CoverImgUrl;
-
+                        ViewBag.DepartmentName = value.DepartmentName;
+                        ViewBag.AppUserName = value.Name;
+                        ViewBag.AppUserSurName = value.SurName;
+                        ViewBag.CoverImgUrl = value.CoverImgUrl;
                     }
                 }
-
-
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                }
             }
+
+
 
             return View();
         }

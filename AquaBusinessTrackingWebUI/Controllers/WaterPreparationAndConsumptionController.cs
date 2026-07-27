@@ -29,7 +29,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetWaterPreparationAndConsumptionList()
         {
-            if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationConsumption.View"))
+            if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationAndConsumption.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -53,7 +53,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationConsumption.Update"))
+                if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationAndConsumption.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -76,7 +76,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationConsumption.Add"))
+                if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationAndConsumption.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -117,7 +117,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationConsumption.Delete"))
+            if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationAndConsumption.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

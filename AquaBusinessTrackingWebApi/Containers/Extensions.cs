@@ -128,7 +128,8 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IIncomingGoodsTrackingRepository, IncomingGoodsTrackingRepository>();
             Services.AddScoped<IIncomingGoodsTrackingService, IncomingGoodsTrackingManager>();
             Services.AddScoped<GenerateTokenService>();
-
+            Services.AddScoped<IQueryService, QueryManager>();
+            Services.AddScoped<IQueryRepository, QueryRepository>();
             Services.AddHttpContextAccessor();
             Services.AddHttpClient();
         }

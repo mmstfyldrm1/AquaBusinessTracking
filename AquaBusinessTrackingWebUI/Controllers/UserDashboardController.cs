@@ -24,15 +24,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
         {
             return View();
         }
-
-
-        public async Task<IActionResult> AddFavorite(string permisionsName)
+        public async Task<IActionResult> AddFavorite(string url)
         {
-            if (string.IsNullOrWhiteSpace(permisionsName))
+            if (string.IsNullOrWhiteSpace(url))
             {
-                return BadRequest("Yetki adı belirtilmedi.");
+                return BadRequest("URL belirtilmedi.");
             }
 
+            var ControllerName = url.Split('/')[0];
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!int.TryParse(userIdClaim, out var appUserId))
@@ -43,7 +42,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
 
             var response = await client.GetAsync(
-                $"{_apiSettings.BaseUrl}/Permission/getPermisionsName?permisionsName={permisionsName}");
+                $"{_apiSettings.BaseUrl}/Permission/getPermisionsName?permisionsName={ControllerName}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -58,14 +57,19 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 return NotFound("İlgili yetki bulunamadı.");
             }
 
-            var permission = values.First();
+            var permission = values.FirstOrDefault(v => v.Controller == ControllerName);
+
+            if (permission == null)
+            {
+                return NotFound("İlgili yetki bulunamadı.");
+            }
 
             var dto = new UserDashboardAddFavoriteModuleDto
             {
-                Controller = permission.Controller ?? string.Empty,
+                Controller = permission.Description,
                 ModuleId = permission.RecId,
                 AppUserId = appUserId,
-                Url = $"{permission.Controller}/View",
+                Url = $"{url}",
                 DisplayOrder = 1,
                 DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value)
             };
@@ -75,11 +79,12 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (!addFavoriteResponse.IsSuccessStatusCode)
             {
+                var errorMessage = await addFavoriteResponse.Content.ReadAsStringAsync();
                 return StatusCode((int)addFavoriteResponse.StatusCode, "Favori eklenirken hata oluştu.");
             }
 
             TempData["SuccessMessage"] = "Favorilere eklendi.";
-            return Ok();
+            return Redirect($"~/{url}");
         }
     }
 }

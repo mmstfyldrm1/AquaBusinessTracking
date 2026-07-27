@@ -2,57 +2,71 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
+@inject AquaBusinessTrackingWebUI.Services.CurrentUserService CurrentUser
 
 <!DOCTYPE html>
 <html lang="tr">
 
     @await Component.InvokeAsync("_AdminLayoutHeadComponentPartial")
 <body>
-
-    @await Component.InvokeAsync("_AdminLayoutStatisticComponentPartial")
-
-    @*
-    <!-- TOP NAV -->
-    <div class="topnav">
-        <a href="#ozet">Genel Özet</a>
-        <a href="#hammadde">Hammadde & Kimyasal</a>
-        <a href="#enerji">Enerji & Su</a>
-        <a href="#durus">Duruş Analizi</a>
-        <a href="#stok">Stok & Üretim</a>
-        <a href="#sevk">Sevkiyat & Satış</a>
-    </div>
-    *@
+    @if (CurrentUser.HasPermission("ADMIN.AdminLayoutStatisticComponentPartial.View"))
+    {
+        @await Component.InvokeAsync("_AdminLayoutStatisticComponentPartial")
+    }
 
     <div class="content">
 
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutShippingSalesComponentPartial.View"))
+        {
+            <!-- SEVKİYAT & SATIŞ -->
+            @await Component.InvokeAsync("_AdminLayoutShippingSalesComponentPartial")
+        }
 
-        <!-- SEVKİYAT & SATIŞ -->
-        @await Component.InvokeAsync("_AdminLayoutShippingSalesComponentPartial")
-       
-        <!-- ÖZET -->
-        @await Component.InvokeAsync("_AdminLayoutSummaryComponentPartial")
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutSummaryComponentPartial.View"))
+        {
+            <!-- ÖZET -->
+            @await Component.InvokeAsync("_AdminLayoutSummaryComponentPartial")
+        }
 
-        <!-- STOK -->
-        @await Component.InvokeAsync("_AdminLayoutStockComponentPartial")
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutStockComponentPartial.View"))
+        {
+            <!-- STOK -->
+            @await Component.InvokeAsync("_AdminLayoutStockComponentPartial")
+        }
 
 
-        <!-- HAMMADDE GİRİŞ -->
-        @await Component.InvokeAsync("_AdminLayoutIntakeRawMaterialComponentPartial")
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutIntakeRawMaterialComponentPartial.View"))
+        {
+            <!-- HAMMADDE GİRİŞ -->
+            @await Component.InvokeAsync("_AdminLayoutIntakeRawMaterialComponentPartial")
+        }
 
-        <!-- HAMMADDE -->
-        @await Component.InvokeAsync("_AdminLayoutRawmaterialsComponentPartial")
 
-        <!-- ENERJİ -->
-        @await Component.InvokeAsync("_AdminLayoutEnergyComponentPartial")
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutRawmaterialsComponentPartial.View"))
+        {
+            <!-- HAMMADDE -->
+            @await Component.InvokeAsync("_AdminLayoutRawmaterialsComponentPartial")
+        }
 
-        <!-- Gaz -->
-        @await Component.InvokeAsync("_AdminLayoutNaturelGasTrackingComponentPartial")
 
-        <!-- DURUŞ -->
-        @await Component.InvokeAsync("_AdminLayoutStanceComponentPartial")
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutEnergyComponentPartial.View"))
+        {
+            <!-- ENERJİ -->
+            @await Component.InvokeAsync("_AdminLayoutEnergyComponentPartial")
+        }
 
-      
-       
+
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutNaturelGasTrackingComponentPartial.View"))
+        {
+            <!-- Gaz -->
+            @await Component.InvokeAsync("_AdminLayoutNaturelGasTrackingComponentPartial")
+        }
+
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutNaturelGasTrackingComponentPartial.View"))
+        {
+            <!-- DURUŞ -->
+            @await Component.InvokeAsync("_AdminLayoutStanceComponentPartial")
+        }
 
     </div>
 

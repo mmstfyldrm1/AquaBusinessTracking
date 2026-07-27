@@ -1,5 +1,4 @@
-﻿using DTOLayer.Dtos.UserDashboardDtos;
-using EntityLayer.Concrete;
+﻿using EntityLayer.Concrete;
 
 namespace DataAccsessLayer.Abstract
 {
@@ -7,7 +6,7 @@ namespace DataAccsessLayer.Abstract
     {
         public Task<List<DB_FavoriteMenuItem>> GetFavoriteMenuItemsByUserIdAsync(int userId);
 
-        public Task<bool> AddFavorite(UserDashboardAddFavoriteModuleDto dto);
+        public Task<bool> AddFavorite(DB_FavoriteMenuItem dto);
     }
 
 }

@@ -4,10 +4,24 @@
     ViewData["Title"] = "GetBoilerRoomDailyShiftData";
     Layout = "~/Views/_UserLayout/Index.cshtml";
     int counter = 0;
+    var controller = "BoilerRoomDailyShiftMonitoring/GetBoilerRoomDailyShiftData";
 }
 @model List<BoilerRoomDailyShiftMonitoringDto>
-<h6 class="mb-0 text-uppercase">Kazan Vardiya Devir Teslim Takip Sistemi</h6>
-<hr />
+<h6 class="mb-0 text-uppercase"></h6>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-uppercase">Kazan Vardiya Devir Teslim Takip Sistemi</h6>
+
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+    </a>
+</div>
+
+<br />
 
 <div class="card">
     <div class="card-body">

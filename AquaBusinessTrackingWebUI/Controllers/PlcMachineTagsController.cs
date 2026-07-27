@@ -26,7 +26,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMachineTagsList()
         {
-            if (!_currentUserService.HasPermission("OTOMASYON.PlcTags.View"))
+            if (!_currentUserService.HasPermission("OTOMASYON.PlcMachineTags.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -67,7 +67,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             ViewBag.Machines = machines;
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("OTOMASYON.PlcTags.Update"))
+                if (!_currentUserService.HasPermission("OTOMASYON.PlcMachineTags.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -134,7 +134,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("OTOMASYON.PlcTags.Delete"))
+            if (!_currentUserService.HasPermission("OTOMASYON.PlcMachineTags.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

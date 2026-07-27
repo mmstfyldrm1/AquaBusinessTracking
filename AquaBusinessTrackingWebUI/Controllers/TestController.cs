@@ -30,7 +30,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTestList()
         {
-            if (!_currentUserService.HasPermission("ARITMA.IndustrialTest.View"))
+            if (!_currentUserService.HasPermission("ARITMA.Test.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -55,7 +55,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("ARITMA.IndustrialTest.Update"))
+                if (!_currentUserService.HasPermission("ARITMA.Test.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -84,7 +84,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ARITMA.IndustrialTest.Add"))
+                if (!_currentUserService.HasPermission("ARITMA.Test.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -156,7 +156,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("ARITMA.IndustrialTest.Delete"))
+            if (!_currentUserService.HasPermission("ARITMA.Test.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

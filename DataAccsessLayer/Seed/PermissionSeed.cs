@@ -12,9 +12,9 @@ namespace DataAccsessLayer.Seed
             var modules = new List<(string Module, string Controller, string Description)>
             {
                 // ================= ARITMA =================
-                ("ARITMA", "AATLabAnalysis", "AAT Lab. Analiz Defteri"),
-                ("ARITMA", "PurificationChemicalConsumption", "Arıtma Kimyasal Tüketim"),
-                ("ARITMA", "IndustrialTest", "Endüstriyel Deneme İzleme"),
+                ("ARITMA", "Basin", "AAT Lab. Analiz Defteri"),
+                ("ARITMA", "PurificationChemicalsConsumption", "Arıtma Kimyasal Tüketim"),
+                ("ARITMA", "Test", "Endüstriyel Deneme İzleme"),
                 ("ARITMA", "MassWasteSupplier", "Kütle Denklik Firma Bazlı"),
                 ("ARITMA", "MassWasteBalance", "Kütle Denklik Atık Kodu Bazlı"),
             
@@ -24,8 +24,8 @@ namespace DataAccsessLayer.Seed
             
                 // ================= KAZAN =================
                 ("KAZAN", "KazanChemicals", "Kazan Kimyasal Takip Sistemi"),
-                ("KAZAN", "CondensateTracking", "Kazan Kondens Takip Sistemi"),
-                ("KAZAN", "NaturalGasTracking", "Kazan Doğalgaz Takip Sistemi"),
+                ("KAZAN", "BoilerSteamFeedWaterCondensateData", "Kazan Kondens Takip Sistemi"),
+                ("KAZAN", "NaturelGasMeterMonitoring", "Kazan Doğalgaz Takip Sistemi"),
                 ("KAZAN", "BoilerRoomDailyShiftMonitoring", "Kazan Vardiya Takip Sistemi"),
             
                 // ================= MEKANIK BAKIM =================
@@ -36,7 +36,7 @@ namespace DataAccsessLayer.Seed
             
                 // ================= KIMYASAL =================
                 ("KIMYASAL", "PaperMachineChemical", "Kağıt Makinesi Kimyasalları"),
-                ("KIMYASAL", "WaterPreparationConsumption", "Su Hazırlama ve Tüketim"),
+                ("KIMYASAL", "WaterPreparationAndConsumption", "Su Hazırlama ve Tüketim"),
             
                 // ================= MALZEME DEPO =================
                 ("MALZEMEDEPO", "WarehouseRequestWait", "Depo Talep Bekleyen"),
@@ -51,14 +51,25 @@ namespace DataAccsessLayer.Seed
                 ("KURUKISIM", "BufferProduction", "Kuru Kısım"),
             
                 // ================= KALITE =================
-                ("KALITE", "DoughPreparationAnalysis", "Hamur Analiz Sonucu"),
-                ("KALITE", "CirculationTankAnalysis", "Devir Daim Tankı Sonuçları"),
+                ("KALITE", "DoughPreparationAnalysisResult", "Hamur Analiz Sonucu"),
+                ("KALITE", "CirculationTankAirPressureMeasurementTurbidity", "Devir Daim Tankı Sonuçları"),
                 ("KALITE", "StarchAnalysis", "Nişasta Analiz Sonuçları"),
                 ("KALITE", "LabWork", "Laboratuvar İş Takip Sistemi"),
                 ("KALITE", "SentezAllData", "Sentez Veri Takip Sistemi"),
-                ("KALITE", "WaterTreatmentAnalysis", "Su Arıtma Analiz Sonuçları"),
+                ("KALITE", "WaterTreatmentAnalysisResults", "Su Arıtma Analiz Sonuçları"),
                 ("KALITE", "BufferAnalysisReport", "Tampon Analiz Raporu"),
                 ("KALITE", "OilAnalysisReport", "Yağ Analiz Raporu"),
+
+                // ================= Admin Dashboard =================
+                ("ADMIN", "AdminLayoutIntakeRawMaterialComponentPartial", "Elektirik Tüketimi Özeti"),
+                ("ADMIN", "AdminLayoutIntakeRawMaterialComponentPartial", "Atık Kağıt Giriş"),
+                ("ADMIN", "AdminLayoutNaturelGasTrackingComponentPartial", "Doğalgaz Tüketimi Özeti"),
+                ("ADMIN", "AdminLayoutRawmaterialsComponentPartial", "Kimyasal Pulper Tüketim"),
+                ("ADMIN", "AdminLayoutShippingSalesComponentPartial", "Sentez Veri Takip Sistemi"),
+                ("ADMIN", "AdminLayoutStanceComponentPartial", "Duruş Özeti"),
+                ("ADMIN", "AdminLayoutStatisticComponentPartial", "Plc Özet Tablosu"),
+                ("ADMIN", "AdminLayoutStockComponentPartial", "Üretim Stok Tablosu"),
+                ("ADMIN", "AdminLayoutSummaryComponentPartial", "Genel Özet"),
             
                 // ================= BOBIN KESME =================
                 ("BOBINKESME", "WinderCoilLength", "Bobin Takip"),
@@ -69,7 +80,8 @@ namespace DataAccsessLayer.Seed
                 ("KAGITSATINALMA", "WastePaperCost", "Hammadde Maliyet"),
             
                 // ================= PLANLAMA =================
-                ("PLANLAMA", "ProductionPlan", "Üretim Planı"),
+                ("PLANLAMA", "Planning", "Dün Sarf Edilenler"),
+                ("PLANLAMA", "PlanningScorBoardView", "Plan Formu Takibi"),
             
                 // ================= KAĞIT KANTAR =================
                 ("KAGITKANTAR", "RawMaterials", "Hammadde Takip"),
@@ -83,12 +95,12 @@ namespace DataAccsessLayer.Seed
                 // ================= OTOMASYON =================
                 ("OTOMASYON", "General", "Otomasyon"),
                 ("OTOMASYON", "PlcMachine", "Otomasyon"),
-                ("OTOMASYON", "PlcTags", "Otomasyon"),
+                ("OTOMASYON", "PlcMachineTags", "Otomasyon"),
             
                 // ================= AYARLAR =================
                 ("AYARLAR", "Users", "Kullanıcı Listesi"),
                 ("AYARLAR", "Roles", "Rol Listesi"),
-                ("AYARLAR", "Shifts", "Vardiya Listesi")
+                ("AYARLAR", "Shift", "Vardiya Listesi")
             };
 
             var list = new List<DB_Permission>();

@@ -27,7 +27,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDoughPreparationResultList()
         {
-            if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysis.View"))
+            if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysisResult.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -56,7 +56,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysis.Update"))
+                if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysisResult.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -79,7 +79,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysis.Add"))
+                if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysisResult.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -133,7 +133,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysis.Delete"))
+            if (!_currentUserService.HasPermission("KALITE.DoughPreparationAnalysisResult.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

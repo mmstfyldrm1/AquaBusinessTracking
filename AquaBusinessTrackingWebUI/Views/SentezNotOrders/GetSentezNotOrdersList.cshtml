@@ -3,11 +3,21 @@
 @{
     ViewData["Title"] = "GetSentezNotOrdersList";
     Layout = "~/Views/_UserLayout/Index.cshtml";
+    var controller = "SentezNotOrders/GetSentezNotOrdersList";
 }
 
 @model IEnumerable<SentezNotOrderDto>
+<div class="d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-uppercase">Sentezde Siparişi Olmayanlar</h6>
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+    </a>
+</div>
 
-<h6 class="mb-0 text-uppercase">Sentezde Siparişi Olmayanlar</h6>
 <hr />
 
 <div class="card">

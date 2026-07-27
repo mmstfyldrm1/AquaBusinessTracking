@@ -28,7 +28,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetWaterAnalysisResults()
         {
-            if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysis.View"))
+            if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysisResults.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -52,7 +52,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysis.Update"))
+                if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysisResults.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -75,7 +75,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysis.Add"))
+                if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysisResults.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -116,7 +116,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysis.Delete"))
+            if (!_currentUserService.HasPermission("KALITE.WaterTreatmentAnalysisResults.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

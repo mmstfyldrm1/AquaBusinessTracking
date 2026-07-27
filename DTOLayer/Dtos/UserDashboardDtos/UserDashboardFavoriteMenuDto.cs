@@ -4,7 +4,7 @@
     {
         public int RecId { get; set; }
 
-        public string Controller { get; set; }
+        public string? Controller { get; set; }
 
         public int ModuleId { get; set; }
 
