@@ -283,6 +283,23 @@
                     @{
                         var permissions = (List<PermissionDto>)ViewBag.Permissions;
                         var modules = permissions.GroupBy(x => x.Module);
+
+
+                        Func<string, string> GetModuleName = desc =>
+                        {
+                            if (string.IsNullOrWhiteSpace(desc)) return string.Empty;
+                            var trimmed = desc.Trim();
+                            var idx = trimmed.LastIndexOf(' ');
+                            return idx > 0 ? trimmed.Substring(0, idx).Trim() : trimmed;
+                        };
+
+                        Func<string, string> GetActionName = desc =>
+                        {
+                            if (string.IsNullOrWhiteSpace(desc)) return string.Empty;
+                            var trimmed = desc.Trim();
+                            var idx = trimmed.LastIndexOf(' ');
+                            return idx > 0 ? trimmed.Substring(idx + 1).Trim() : trimmed;
+                        };
                     }
 
                     @if (modules != null && modules.Any())
@@ -292,7 +309,9 @@
                             @foreach (var module in modules)
                             {
                                 var modKey = module.Key.Replace(" ", "_");
-                                var controllers = module.GroupBy(x => x.Controller);
+
+                                // Controller (İngilizce) yerine Description'dan çıkarılan modül adına göre grupla
+                                var controllers = module.GroupBy(x => GetModuleName(x.Description));
 
                                 <div class="accordion-item mb-2">
 
@@ -326,7 +345,7 @@
 
                                                 <div class="controller-block">
 
-                                                    <!-- CONTROLLER HEADER -->
+                                                    <!-- SUB-GROUP HEADER: sadece modül adı, aksiyon yok -->
                                                     <div class="controller-header">
 
                                                         <input type="checkbox"
@@ -350,7 +369,7 @@
                                                                        data-controller="@ctrlKey"
                                                                        name="Entity.PermissionIds"
                                                                        value="@perm.RecId" />
-                                                                @perm.Action
+                                                                @GetActionName(perm.Description)
                                                             </label>
                                                         }
 

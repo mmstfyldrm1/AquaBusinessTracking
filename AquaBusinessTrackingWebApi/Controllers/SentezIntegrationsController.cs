@@ -117,6 +117,40 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("getLas7DaysRawMaterilsAsync")]
+        public async Task<IActionResult> GetLas7DaysRawMaterilsAsync()
+        {
+            _logger.LogInformation(
+                "Son 7 günlük Atık Kağıt bilgileri isteniyor.");
+
+
+            var result = await _service.GetLas7DaysRawMaterilsAsync();
+
+
+            _logger.LogInformation(
+                "Son 7 günlük Atık Kağıt bilgileri isteniyor.");
+
+
+            return Ok(result);
+        }
+
+        [HttpGet("getLas7DaysSalesAsync")]
+        public async Task<IActionResult> GetLas7DaysSalesAsync()
+        {
+            _logger.LogInformation(
+                "Son 7 günlük satış bilgileri isteniyor.");
+
+
+            var result = await _service.GetLas7DaysSalesAsync();
+
+
+            _logger.LogInformation(
+                "Son 7 günlük satış bilgileri getirildi.");
+
+
+            return Ok(result);
+        }
+
 
         [HttpGet("getLas30DaysProductionAsync")]
         public async Task<IActionResult> GetLas30DaysProductionAsync()

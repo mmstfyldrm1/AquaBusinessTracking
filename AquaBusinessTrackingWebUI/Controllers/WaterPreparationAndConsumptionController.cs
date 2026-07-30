@@ -1,5 +1,7 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
+using DTOLayer.Dtos.SentezProductionDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using DTOLayer.Dtos.WaterPreparationAndConsumptionDtos;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +50,24 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var client = _httpClientFactory.CreateClient();
+
+            var responseInventory = await client.GetAsync($"{_apiSettings.BaseUrl}/WaterPreparationAndConsumption/getChemicalInventory");
+            if (!responseInventory.IsSuccessStatusCode)
+                return RedirectToAction("GetWaterPreparationAndConsumptionList");
+
+            var jsonInventory = await responseInventory.Content.ReadAsStringAsync();
+            var dtoInventory = JsonConvert.DeserializeObject<SentezIntegrationsResponsoDto<SentezInventoryResponseDto>>(jsonInventory);
+
+            ViewBag.InventoryList = dtoInventory.Data
+              .Select(x => new SelectListItem
+              {
+
+                  Value = x.Code,
+                  Text = x.Name
+              })
+              .ToList();
+
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
@@ -57,7 +77,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
-                var client = _httpClientFactory.CreateClient();
+
                 var response = await client.GetAsync($"{_apiSettings.BaseUrl}/WaterPreparationAndConsumption/getbyid/{id}");
                 if (!response.IsSuccessStatusCode)
                     return RedirectToAction("GetWaterPreparationAndConsumptionList");

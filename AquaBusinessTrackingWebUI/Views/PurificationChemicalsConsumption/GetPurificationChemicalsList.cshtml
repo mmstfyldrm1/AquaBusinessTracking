@@ -38,6 +38,7 @@
                         <th>Gelen</th>
                         <th>Tüketilen</th>
                         <th>Kalan</th>
+                        <th>Stok</th>
                         <th>Vardiya</th>
                         <th>Durum</th>
                         <th>Kayıt Tarihi</th>
@@ -57,11 +58,11 @@
                             <td>@item.InventoryName</td>
                             <td>@item.Month</td>
 
-                            <td>@item.IncomingQuantity</td>
-                            <td>@item.ConsumedQuantity</td>
-                            <td>@item.RemainingQuantity</td>
+                            <td>@item.IncomingQuantity.ToString("N2")</td>
+                            <td>@item.ConsumedQuantity.ToString("N2")</td>
+                            <td>@item.RemainingQuantity.ToString("N2")</td>
 
-
+                            <td>@item.CurrentStock.ToString("N2")</td>
                             <td>@item.ShiftName</td>
 
                             <td>
@@ -146,6 +147,19 @@
                 const modal = new bootstrap.Modal(modalEl);
 
                 modal.show();
+                 $(modalEl).find('.inventory-select').select2({
+                dropdownParent: $(modalEl),
+                placeholder: 'Stok kodu ara...',
+                allowClear: true,
+                tags: true,
+                width: '100%'
+                 });
+
+                 $(document).on('change', '#InventoryCode', function () {
+                 var stockName = $(this).find('option:selected').data('name');
+
+                   $('#InventoryName').val(stockName);
+                 });
 
                 const form = modalEl.querySelector('form');
                 form.addEventListener('submit', function (e) {
@@ -162,6 +176,27 @@
                         }
                     });
                 });
+                 const incoming = document.getElementById("Entity_IncomingQuantity");
+            const consumed = document.getElementById("Entity_ConsumedQuantity");
+            const currentStock = document.getElementById("Entity_CurrentStock");
+            const remaining = document.getElementById("Entity_RemainingQuantity");
+
+            function calculateRemaining() {
+
+                const incomingValue = parseFloat(incoming.value) || 0;
+                const consumedValue = parseFloat(consumed.value) || 0;
+                const currentStockValue = parseFloat(currentStock.value) || 0;
+
+                const result = (incomingValue + currentStockValue) - consumedValue;
+
+                remaining.value = result.toFixed(2);
+            }
+
+            incoming.addEventListener("input", calculateRemaining);
+            consumed.addEventListener("input", calculateRemaining);
+            currentStock.addEventListener("input", calculateRemaining);
+
+            calculateRemaining();
             });
     }
 </script>

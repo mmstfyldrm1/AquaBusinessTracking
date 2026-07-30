@@ -1,6 +1,8 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
+using DTOLayer.Dtos.SentezProductionDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -28,7 +30,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPapperMachineChemicalList()
         {
-            if (!_currentUserService.HasPermission("KIMYASAL.PaperMachineChemical.View"))
+            if (!_currentUserService.HasPermission("KIMYASAL.PapperMachineChemical.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -48,22 +50,42 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var client = _httpClientFactory.CreateClient();
             await LoadShiftListAsync();
+            var responseInventory = await client.GetAsync($"{_apiSettings.BaseUrl}/PapperMachineChemical/getChemicalInventoryList");
+
+            var jsonInventory = await responseInventory.Content.ReadAsStringAsync();
+            var dtoInventory = JsonConvert.DeserializeObject<SentezIntegrationsResponsoDto<SentezInventoryResponseDto>>(jsonInventory);
+
+            ViewBag.InventoryList = dtoInventory.Data
+               .Select(x => new SelectListItem
+               {
+
+                   Value = x.Code,
+                   Text = x.Name
+               })
+               .ToList();
+
             ViewBag.AppUserName = User.Identity?.Name;
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KIMYASAL.PaperMachineChemical.Update"))
+                if (!_currentUserService.HasPermission("KIMYASAL.PapperMachineChemical.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
-                var client = _httpClientFactory.CreateClient();
+
                 var response = await client.GetAsync($"{_apiSettings.BaseUrl}/PapperMachineChemical/getbyid/{id}");
+
                 if (!response.IsSuccessStatusCode)
                     return RedirectToAction("GetPapperMachineChemicalList");
 
                 var json = await response.Content.ReadAsStringAsync();
                 var dto = JsonConvert.DeserializeObject<PapperMachineChemicalDto>(json);
+
+
+
+
 
                 var model = new ModalViewModel<PapperMachineChemicalDto>
                 {
@@ -76,7 +98,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KIMYASAL.PaperMachineChemical.Add"))
+                if (!_currentUserService.HasPermission("KIMYASAL.PapperMachineChemical.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -117,7 +139,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KIMYASAL.PaperMachineChemical.Delete"))
+            if (!_currentUserService.HasPermission("KIMYASAL.PapperMachineChemical.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

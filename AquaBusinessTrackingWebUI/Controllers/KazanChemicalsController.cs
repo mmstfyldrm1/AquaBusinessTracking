@@ -1,6 +1,8 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
+using DTOLayer.Dtos.SentezProductionDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -45,11 +47,26 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var client = _httpClientFactory.CreateClient();
+            var responseInventory = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanChemicals/getChemicalInventory");
+
+            var jsonInventory = await responseInventory.Content.ReadAsStringAsync();
+            var dtoInventory = JsonConvert.DeserializeObject<SentezIntegrationsResponsoDto<SentezInventoryResponseDto>>(jsonInventory);
+
+            ViewBag.InventoryList = dtoInventory.Data
+               .Select(x => new SelectListItem
+               {
+
+                   Value = x.Code,
+                   Text = x.Name
+               })
+               .ToList();
+
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
             if (id.HasValue)
             {
-                var client = _httpClientFactory.CreateClient();
+
                 var headingResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanChemicals/{id}");
                 var headingJson = await headingResponse.Content.ReadAsStringAsync();
                 var dto = JsonConvert.DeserializeObject<KazanChemicalsHeadDto>(headingJson);

@@ -1,4 +1,5 @@
-﻿@inject AquaBusinessTrackingWebUI.Services.CurrentUserService CurrentUser
+﻿@using System.Security.Claims
+@inject AquaBusinessTrackingWebUI.Services.CurrentUserService CurrentUser
 <nav class="navbar navbar-expand gap-3">
     <div class="toggle-icon">
         <ion-icon name="menu-outline"></ion-icon>
@@ -162,6 +163,20 @@
                             </div>
                         </a>
                     </li>
+                    @{
+                        var Energy = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutEnergyComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var IntakeRawMaterial = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutIntakeRawMaterialComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var NaturelGas = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutNaturelGasTrackingComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var Rawmaterials = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutRawmaterialsComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var ShippingSales = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutShippingSalesComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var Stance = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutStanceComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var Statistic = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutStatisticComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var Stock = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutStockComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                        var summary = User.Claims.Any(c => c.Type == "Permission" && c.Value.Equals("ADMIN.AdminLayoutSummaryComponentPartial.View", StringComparison.OrdinalIgnoreCase));
+                       
+                     
+
+                    }
                     <li>
                         @if (CurrentUser.HasPermission("Admin"))
                         {
@@ -174,9 +189,21 @@
                                 </div>
                             </a>
                         }
+                        @if ((Energy || IntakeRawMaterial || NaturelGas || Rawmaterials || ShippingSales || Stance || Statistic || Stock || summary))
+                        {
+                            <a class="dropdown-item" href="~/AdminDashboard/Index">
+                                <div class="d-flex align-items-center">
+                                    <div class="">
+                                        <ion-icon name="speedometer-outline"></ion-icon>
+                                    </div>
+                                    <div class="ms-3"><span> Admin Dashboard</span></div>
+                                </div>
+                            </a>
+                        }
+
                         @if (!CurrentUser.HasPermission("Admin"))
                         {
-                            <a class="dropdown-item" href="~/UserDashboard/Index">
+                            <a class="dropdown-item" href="~/UserDashboard">
                                 <div class="d-flex align-items-center">
                                     <div class="">
                                         <ion-icon name="speedometer-outline"></ion-icon>

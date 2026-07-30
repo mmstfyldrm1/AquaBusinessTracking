@@ -35,6 +35,10 @@
                         <th>Stok Adı</th>
                         <th>Gün</th>
                         <th>Tarih</th>
+                        <th>Gelen</th>
+                        <th>Sarf Edilen</th>
+                        <th>Kalan</th>
+                        <th>Stok</th>
                         <th>Kullanıcı</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
@@ -56,6 +60,14 @@
                             <td>@item.Day</td>
 
                             <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
+
+                            <td>@item.Incoming.ToString("N2")</td>
+
+                            <td>@item.Consumption.ToString("N2")</td>
+
+                            <td>@item.Remaining.ToString("N2")</td>
+
+                            <td>@item.CurrentStock.ToString("N2")</td>
 
                             <td>@item.CreatedByName</td>
 
@@ -107,6 +119,10 @@
                         <th>Stok Adı</th>
                         <th>Gün</th>
                         <th>Tarih</th>
+                        <th>Gelen</th>
+                        <th>Sarf Edilen</th>
+                        <th>Kalan</th>
+                        <th>Stok</th>
                         <th>Kullanıcı</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
@@ -142,12 +158,26 @@
                 const modal = new bootstrap.Modal(modalEl);
 
                 modal.show();
+               
+                 $(modalEl).find('.inventory-select').select2({
+                dropdownParent: $(modalEl),
+                placeholder: 'Stok kodu ara...',
+                allowClear: true,
+                tags: true,
+                width: '100%'
+                 });
+
+                $(document).on('change', '#InventoryCode', function () {
+                 var stockName = $(this).find('option:selected').data('name');
+
+                   $('#InventoryName').val(stockName);
+                 });
 
                 const form = modalEl.querySelector('form');
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
 
-                    fetch('/KazanChemicals/Edit', {
+                    fetch('/PapperMachineChemical/Edit', {
                         method: 'POST',
                         body: new FormData(this)
                     })
@@ -158,7 +188,33 @@
                         }
                     });
                 });
+
+            const incoming = document.getElementById("Entity_Incoming");
+            const consumed = document.getElementById("Entity_Consumption");
+            const currentStock = document.getElementById("Entity_CurrentStock");
+            const remaining = document.getElementById("Entity_Remaining");
+
+            function calculateRemaining() {
+
+                const incomingValue = parseFloat(incoming.value) || 0;
+                const consumedValue = parseFloat(consumed.value) || 0;
+                const currentStockValue = parseFloat(currentStock.value) || 0;
+
+                const result = (incomingValue + currentStockValue) - consumedValue;
+
+                remaining.value = result.toFixed(2);
+            }
+
+            incoming.addEventListener("input", calculateRemaining);
+            consumed.addEventListener("input", calculateRemaining);
+            currentStock.addEventListener("input", calculateRemaining);
+
+            calculateRemaining();
             });
+
+
+
+
     }
 </script>
 

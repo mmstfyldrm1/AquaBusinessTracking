@@ -12,16 +12,14 @@ namespace AquaBusinessTrackingWebApi.Controllers
     {
         private readonly IWaterPreparationAndConsumptionService _service;
         private readonly ILogger<WaterPreparationAndConsumptionController> _logger;
+        private readonly ISentezInventoryQueryService _sentez;
 
-
-        public WaterPreparationAndConsumptionController(
-            IWaterPreparationAndConsumptionService service,
-            ILogger<WaterPreparationAndConsumptionController> logger)
+        public WaterPreparationAndConsumptionController(IWaterPreparationAndConsumptionService service, ILogger<WaterPreparationAndConsumptionController> logger, ISentezInventoryQueryService sentez)
         {
             _service = service;
             _logger = logger;
+            _sentez = sentez;
         }
-
 
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
@@ -55,6 +53,23 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             _logger.LogInformation(
                 "Su hazırlama ve tüketim detayları başarıyla getirildi.");
+
+
+            return Ok(result);
+        }
+
+        [HttpGet("getChemicalInventory")]
+        public async Task<IActionResult> GetChemicalInventory()
+        {
+            _logger.LogInformation(
+                "Kimyasal Malzemeleri  istendi.");
+
+
+            var result = await _sentez.GetChemicalInventory();
+
+
+            _logger.LogInformation(
+                "Kimyasal Malzemeleri başarıyla getirildi.");
 
 
             return Ok(result);

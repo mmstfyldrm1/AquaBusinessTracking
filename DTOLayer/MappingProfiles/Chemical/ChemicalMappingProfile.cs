@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTOLayer.Dtos.ChemicalSupplierProductsDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
 using DTOLayer.Dtos.WaterPreparationAndConsumptionDtos;
 using EntityLayer.Concrete;
@@ -30,6 +31,20 @@ namespace DTOLayer.MappingProfiles.Chemical
             CreateMap<DB_WaterPreparationAndConsumption, WaterPreparationAndConsumptionDto>().ReverseMap();
 
             CreateMap<DB_WaterPreparationAndConsumption, WaterPreparationAndConsumptionDto>()
+                .ForMember(x => x.ShiftName,
+                    x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName,
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+
+            #endregion
+
+            # region ChemicalSupplierProducts
+
+            CreateMap<DB_ChemicalSupplierProducts, CreateChemicalSupplierProductsDto>().ReverseMap();
+            CreateMap<DB_ChemicalSupplierProducts, UpdateChemicalSupplierProductsDto>().ReverseMap();
+            CreateMap<DB_ChemicalSupplierProducts, ChemicalSupplierProductsDto>().ReverseMap();
+
+            CreateMap<DB_ChemicalSupplierProducts, ChemicalSupplierProductsDto>()
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,

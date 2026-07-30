@@ -36,13 +36,14 @@
 
 
         <!-- CHART -->
-        <div class="card chart-card">
-            <div class="card-title">Sevkiyat & Satış Trend</div>
 
-            <div class="chart-wrapper-small">
-                <canvas id="shippingChart"></canvas>
+        <div class="card chart-card">
+            <div class="card-title">Satış Trend</div>
+            <div class="chart-wrap-small">
+                <canvas id="trendsChart"></canvas>
             </div>
         </div>
+
 
         <!-- TABLO -->
         <div class="col-lg-6 mb-3">
@@ -193,37 +194,50 @@
 </div>
 
 <script>
-            document.addEventListener('DOMContentLoaded', function () {
-        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM"))))
-        const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)))
+    document.addEventListener('DOMContentLoaded', function () {
+        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM"))));
+        const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)));
 
-        const existing = Chart.getChart('shippingChart');
+        const existing = Chart.getChart('trendsChart');
         if (existing) existing.destroy();
 
-        new Chart(document.getElementById('shippingChart'), {
+        new Chart(document.getElementById('trendsChart'), {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Ton',
+                    label: 'Satış',
                     data: values,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    borderWidth: 2,
+                    borderColor: '#185FA5',
+                    backgroundColor: 'rgba(24,95,165,0.15)',
                     fill: true,
-                    tension: 0.3,
+                    tension: 0.4,
+                    borderWidth: 3,
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+                    pointBackgroundColor: '#185FA5'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                devicePixelRatio: Math.max(window.devicePixelRatio || 1, 2)
+                devicePixelRatio: Math.max(window.devicePixelRatio || 1, 2),
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
     });
-
-
 </script>

@@ -41,7 +41,7 @@
                             </label>
 
                             <input type="date"
-                                   asp-for="Entity.ReceiptDate"
+                                   asp-for="Entity.ReceiptDate" required
                                    class="form-control"
                                    placeholder="Fiş Tarihi" />
 
@@ -222,7 +222,7 @@
                                 Vardiya
                             </label>
 
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
 

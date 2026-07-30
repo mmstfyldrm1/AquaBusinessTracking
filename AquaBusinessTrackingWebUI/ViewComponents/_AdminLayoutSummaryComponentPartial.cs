@@ -4,7 +4,6 @@ using DTOLayer.Dtos.AdminDashboardDtos;
 using DTOLayer.Dtos.SentezProductionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 
 namespace AquaBusinessTrackingWebUI.ViewComponents
@@ -29,8 +28,9 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             };
             var emptyModel = new AdminDashboardSummaryViewModel
             {
-                DurusDagilim = null,
-                GetLast7Days = emptySentez
+                GetLast7Sales = emptySentez,
+                GetLast7Days = emptySentez,
+                GetLast7RawMateriels = emptySentez
             };
 
 
@@ -38,11 +38,12 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            var response = cilent.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/stopChart", cts.Token);
+            var response = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysSalesAsync", cts.Token);
+            var responseRawMateriles = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysRawMaterilsAsync", cts.Token);
             var responseProduction = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysProductionAsync", cts.Token);
 
 
-            await Task.WhenAll(response, responseProduction);
+            await Task.WhenAll(response, responseProduction, responseRawMateriles);
 
             var stock = responseProduction.Result.IsSuccessStatusCode
                 ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
@@ -51,26 +52,24 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
 
 
-            var json = await response.Result.Content.ReadAsStringAsync();
-            var values = JsonConvert.DeserializeObject<List<StopChartDto>>(json);
+            var sales = response.Result.IsSuccessStatusCode
+                  ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
+                      await response.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
+                  : emptySentez;
+
+            var rawMateriels = responseRawMateriles.Result.IsSuccessStatusCode
+                  ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
+                      await responseRawMateriles.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
+                  : emptySentez;
 
 
-            if (values == null)
-                return View(new AdminDashboardSummaryViewModel
-                {
-                    DurusDagilim = new List<StopChartDto>(),
-                    GetLast7Days = emptySentez
-                });
 
-
-
-            if (values == null)
-                return View(new List<StopChartDto>());
 
             var result = new AdminDashboardSummaryViewModel
             {
-                DurusDagilim = values,
-                GetLast7Days = stock
+                GetLast7Sales = sales,
+                GetLast7Days = stock,
+                GetLast7RawMateriels = rawMateriels,
             };
 
 

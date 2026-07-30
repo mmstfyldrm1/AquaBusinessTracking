@@ -173,14 +173,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
 
 
-            // ✅ 1. Önce mevcut rolleri getir
+
             var rolesResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/Role/user-roles/{model.Entity.Id}");
             if (rolesResponse.IsSuccessStatusCode)
             {
                 var rolesJson = await rolesResponse.Content.ReadAsStringAsync();
                 var currentRoles = JsonConvert.DeserializeObject<List<string>>(rolesJson);
 
-                // ✅ 2. Eski rolleri sil
+
                 if (currentRoles != null && currentRoles.Any())
                 {
                     var removeDto = new AssignRoleDto
@@ -193,7 +193,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 }
 
 
-                // ✅ 3. Yeni rolü ata
+
                 var roleDto = new AssignRoleDto
                 {
                     UserId = model.Entity.Id,
@@ -210,49 +210,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
 
             return RedirectToAction("UserList");
-            /*
-            var client = _httpClientFactory.CreateClient();
-            if (model.Entity.ProfileImage != null)
-            {
-                var file = model.Entity.ProfileImage;
-                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/ProfilPhotos", fileName);
-                using (var stream = new FileStream(savePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                model.Entity.CoverImgUrl = "/img/ProfilPhotos/" + fileName;
 
-            }
-            model.Entity.UpdateDate = DateTime.Now;
-            var content = new StringContent(JsonConvert.SerializeObject(model.Entity), Encoding.UTF8, "application/json");
-            var response = await client.PutAsync($"{_apiSettings.BaseUrl}/User/updateuser", content);
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorMessage = await response.Content.ReadAsStringAsync();
-            }
-
-            if (model.Entity.Name != null && model.Entity.Name.Any())
-            {
-                var roleDto = new AssignRoleDto
-                {
-                    UserId = model.Entity.Id,
-                    Name = model.Entity.RoleName,
-                };
-
-                var roleContent = new StringContent(JsonConvert.SerializeObject(roleDto), Encoding.UTF8, "application/json");
-                var result = await client.PostAsync($"{_apiSettings.BaseUrl}/Role/assign", roleContent);
-                if (!result.IsSuccessStatusCode)
-                {
-                    var errorMessage = await result.Content.ReadAsStringAsync();
-                }
-            }
-
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction("UserList");
-
-            return PartialView("_Edit", model);
-            */
         }
 
         [HttpGet]

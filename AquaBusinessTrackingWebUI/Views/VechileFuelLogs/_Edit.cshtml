@@ -53,7 +53,7 @@
                             </label>
 
                             <input type="text"
-                                   asp-for="Entity.VehicleLicensePlate"
+                                   asp-for="Entity.VehicleLicensePlate" required
                                    class="form-control"
                                    placeholder="Araç plakası giriniz" />
 
@@ -141,7 +141,7 @@
                             </label>
 
                             <input type="text"
-                                   asp-for="Entity.Recipient"
+                                   asp-for="Entity.Recipient" required
                                    class="form-control"
                                    placeholder="Teslim alan kişi" />
 
@@ -170,7 +170,7 @@
                                 Vardiya
                             </label>
 
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
 

@@ -6,8 +6,6 @@ namespace DataAccsessLayer.Seed
     {
         public static async Task SeedAsync(AquaBusinessTrackingContext context)
         {
-            if (context.Db_Permission.Any())
-                return;
 
             var modules = new List<(string Module, string Controller, string Description)>
             {
@@ -35,8 +33,9 @@ namespace DataAccsessLayer.Seed
                 ("HAMURHAZIRLAMA", "DoughPreparation", "Hamur Girişi"),
             
                 // ================= KIMYASAL =================
-                ("KIMYASAL", "PaperMachineChemical", "Kağıt Makinesi Kimyasalları"),
+                ("KIMYASAL", "PapperMachineChemical", "Kağıt Makinesi Kimyasalları"),
                 ("KIMYASAL", "WaterPreparationAndConsumption", "Su Hazırlama ve Tüketim"),
+                ("KIMYASAL", "ChemicalSupplierProducts", "Tedarikçi Kimyasal Ürünleri"),
             
                 // ================= MALZEME DEPO =================
                 ("MALZEMEDEPO", "WarehouseRequestWait", "Depo Talep Bekleyen"),
@@ -61,11 +60,11 @@ namespace DataAccsessLayer.Seed
                 ("KALITE", "OilAnalysisReport", "Yağ Analiz Raporu"),
 
                 // ================= Admin Dashboard =================
-                ("ADMIN", "AdminLayoutIntakeRawMaterialComponentPartial", "Elektirik Tüketimi Özeti"),
+                ("ADMIN", "AdminLayoutEnergyComponentPartial", "Elektirik Tüketimi Özeti"),
                 ("ADMIN", "AdminLayoutIntakeRawMaterialComponentPartial", "Atık Kağıt Giriş"),
                 ("ADMIN", "AdminLayoutNaturelGasTrackingComponentPartial", "Doğalgaz Tüketimi Özeti"),
-                ("ADMIN", "AdminLayoutRawmaterialsComponentPartial", "Kimyasal Pulper Tüketim"),
-                ("ADMIN", "AdminLayoutShippingSalesComponentPartial", "Sentez Veri Takip Sistemi"),
+                ("ADMIN", "AdminLayoutRawmaterialsComponentPartial", "Kimyasal Su Arıtma Tüketim"),
+                ("ADMIN", "AdminLayoutShippingSalesComponentPartial", "Satış  Takip Sistemi"),
                 ("ADMIN", "AdminLayoutStanceComponentPartial", "Duruş Özeti"),
                 ("ADMIN", "AdminLayoutStatisticComponentPartial", "Plc Özet Tablosu"),
                 ("ADMIN", "AdminLayoutStockComponentPartial", "Üretim Stok Tablosu"),
@@ -93,9 +92,8 @@ namespace DataAccsessLayer.Seed
                 ("ELEKTRIK", "ElectricMeterLocation", "Sayaç Takip"),
             
                 // ================= OTOMASYON =================
-                ("OTOMASYON", "General", "Otomasyon"),
-                ("OTOMASYON", "PlcMachine", "Otomasyon"),
-                ("OTOMASYON", "PlcMachineTags", "Otomasyon"),
+                ("OTOMASYON", "PlcMachine", "Plc Takip"),
+                ("OTOMASYON", "PlcMachineTags", "Plc Tag Takip"),
             
                 // ================= AYARLAR =================
                 ("AYARLAR", "Users", "Kullanıcı Listesi"),
@@ -103,45 +101,49 @@ namespace DataAccsessLayer.Seed
                 ("AYARLAR", "Shift", "Vardiya Listesi")
             };
 
+            var existing = context.Db_Permission
+                .Select(p => new { p.Module, p.Controller, p.Action })
+                .ToList();
+
+            var existingSet = existing
+                .Select(e => $"{e.Module}|{e.Controller}|{e.Action}")
+                .ToHashSet();
+
             var list = new List<DB_Permission>();
 
             foreach (var m in modules)
             {
-                list.AddRange(new[]
+                var actions = new[]
                 {
-            new DB_Permission
-            {
-                Module = m.Module,
-                Controller = m.Controller,
-                Action = "View",
-                Description = $"{m.Description} - Görüntüleme"
-            },
-            new DB_Permission
-            {
-                Module = m.Module,
-                Controller = m.Controller,
-                Action = "Add",
-                Description = $"{m.Description} - Ekleme"
-            },
-            new DB_Permission
-            {
-                Module = m.Module,
-                Controller = m.Controller,
-                Action = "Update",
-                Description = $"{m.Description} - Güncelleme"
-            },
-            new DB_Permission
-            {
-                Module = m.Module,
-                Controller = m.Controller,
-                Action = "Delete",
-                Description = $"{m.Description} - Silme"
-            }
-        });
+                    ("View", $"{m.Description} - Görüntüleme"),
+                    ("Add", $"{m.Description} - Ekleme"),
+                    ("Update", $"{m.Description} - Güncelleme"),
+                    ("Delete", $"{m.Description} - Silme")
+                };
+
+                foreach (var (action, description) in actions)
+                {
+                    var key = $"{m.Module}|{m.Controller}|{action}";
+
+                    if (existingSet.Contains(key))
+                        continue;
+
+                    list.Add(new DB_Permission
+                    {
+                        Module = m.Module,
+                        Controller = m.Controller,
+                        Action = action,
+                        Description = description
+                    });
+
+                }
             }
 
-            await context.Db_Permission.AddRangeAsync(list);
-            await context.SaveChangesAsync();
+            if (list.Any())
+            {
+                await context.Db_Permission.AddRangeAsync(list);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

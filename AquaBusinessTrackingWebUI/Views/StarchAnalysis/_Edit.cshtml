@@ -31,7 +31,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label">Tarih</label>
-                            <input type="date"
+                            <input type="date" required
                                    asp-for="Entity.StarchAnalysisDetailForm.ReceiptDate"
                                    class="form-control" />
                         </div>
@@ -79,7 +79,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Vardiya</label>
 
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
                                 <option value="">Vardiya Seçiniz</option>

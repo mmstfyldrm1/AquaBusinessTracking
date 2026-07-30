@@ -34,7 +34,7 @@
 
                           <div class="col-md-6">
                             <label class="form-label">Fiş Tarihi</label>
-                            <input type="date" asp-for="Entity.ReceiptDate" class="form-control" />
+                            <input type="date" required asp-for="Entity.ReceiptDate" class="form-control" />
                         </div>
 
                         <div class="col-md-6">
@@ -44,7 +44,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label">Vardiya</label>
-                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                            <select asp-for="Entity.ShiftId" required asp-items="ViewBag.Shifts" class="form-select">
                                 <option value="">Seçiniz</option>
                             </select>
                         </div>

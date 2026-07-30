@@ -2,6 +2,30 @@
 @using DTOLayer.Dtos.KazanDtos.KazanHeadDtos
 @model ModalViewModel<KazanChemicalsHeadDto>
 
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+
+        .select2-container .select2-selection--single {
+            height: calc(2.25rem + 2px) !important;
+            padding: .375rem .75rem;
+            border: 1px solid #ced4da !important;
+            border-radius: .375rem !important;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container .select2-selection__arrow {
+            height: calc(2.25rem + 2px) !important;
+        }
+</style>
+
+
 <div class="modal fade" id="kazanChemicalsModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -34,18 +58,32 @@
 
                     <div class="row g-3 mb-4">
 
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label class="form-label">Stok Kodu</label>
-                            <input type="text"
-                                   asp-for="Entity.InventoryCode"
-                                   class="form-control" />
+
+                            <select asp-for="Entity.InventoryCode"
+                                    id="InventoryCode" required
+                                    class="form-select inventory-select">
+
+                                <option value="">Seçiniz</option>
+
+                                @foreach (var item in ViewBag.InventoryList)
+                                {
+                                    <option value="@item.Value" data-name="@item.Text">
+                                        @item.Value
+                                    </option>
+                                }
+                            </select>
                         </div>
 
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <label class="form-label">Stok Adı</label>
+
                             <input type="text"
                                    asp-for="Entity.InventoryName"
-                                   class="form-control" />
+                                   id="InventoryName"
+                                   class="form-control"
+                                   placeholder="Stok adı giriniz" />
                         </div>
 
                         <div class="col-md-2">
@@ -57,14 +95,14 @@
 
                         <div class="col-md-2">
                             <label class="form-label">Tarih</label>
-                            <input type="date"
+                            <input type="date" required
                                    asp-for="Entity.ReceiptDate"
                                    class="form-control" />
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Vardiya</label>
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
                                 <option value="">Vardiya Seçiniz</option>
@@ -95,7 +133,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Gelen Miktar</label>
-                            <input type="number"
+                            <input type="number" required
                                    step="0.01"
                                    asp-for="Entity.Incoming"
                                    class="form-control" />
@@ -103,7 +141,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Tüketim</label>
-                            <input type="number"
+                            <input type="number" required
                                    step="0.01"
                                    asp-for="Entity.Consumption"
                                    class="form-control" />
@@ -114,6 +152,15 @@
                             <input type="number"
                                    step="0.01"
                                    asp-for="Entity.Remaining"
+                                   readonly
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Stok</label>
+                            <input type="number" required
+                                   step="0.01"
+                                   asp-for="Entity.CurrentStock"
                                    class="form-control" />
                         </div>
 

@@ -90,6 +90,8 @@ namespace DataAccsessLayer
         public DbSet<DB_RawMaterialIntake> Db_RawMaterialIntake { get; set; }
 
         public DbSet<DB_IncomingGoodsTracking> Db_IncomingGoodsTracking { get; set; }
+        public DbSet<DB_ChemicalSupplierProducts> Db_ChemicalSupplierProducts { get; set; }
+
 
     }
 }

@@ -12,13 +12,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
     {
         private readonly IKazanChemicalsHeadService _kazanHead;
         private readonly ILogger<KazanChemicalsController> _logger;
+        private readonly ISentezInventoryQueryService _service;
 
-        public KazanChemicalsController(
-            IKazanChemicalsHeadService kazanHead,
-            ILogger<KazanChemicalsController> logger)
+        public KazanChemicalsController(IKazanChemicalsHeadService kazanHead, ILogger<KazanChemicalsController> logger, ISentezInventoryQueryService service)
         {
             _kazanHead = kazanHead;
             _logger = logger;
+            _service = service;
         }
 
         [HttpGet]
@@ -45,6 +45,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 User?.Identity?.Name);
 
             var result = await _kazanHead.GetWithDetails();
+
+            return Ok(result);
+        }
+
+        [HttpGet("getChemicalInventory")]
+        public async Task<IActionResult> GetChemicalInventory()
+        {
+            _logger.LogInformation(
+                "Kimyasal Malzemeleri  istendi. User={User}",
+                User?.Identity?.Name);
+
+            var result = await _service.GetChemicalInventory();
 
             return Ok(result);
         }

@@ -42,7 +42,19 @@ namespace BusinessLayer.Concrete
 
         public async Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysProductionAsync()
         {
-            var query = BuildProductionQuery();
+            var query = BuildLast7DaysProductionQuery();
+            return await _service.ExecuteQueryAsync<AdminDahboardLast7DaysStock>(query);
+        }
+
+        public async Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysSalesAsync()
+        {
+            var query = BuildLast7DaysSalesQuery();
+            return await _service.ExecuteQueryAsync<AdminDahboardLast7DaysStock>(query);
+        }
+
+        public async Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysRawMaterilsAsync()
+        {
+            var query = BuildLast7DaysRawMaterielsQuery();
             return await _service.ExecuteQueryAsync<AdminDahboardLast7DaysStock>(query);
         }
 
@@ -188,7 +200,83 @@ namespace BusinessLayer.Concrete
 
             return sb.ToString();
         }
-        private string BuildProductionQuery()
+
+        private string BuildLast7DaysRawMaterielsQuery()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"SELECT");
+            sb.AppendLine($"    CONVERT(date, a.Tarih) AS Date,");
+            sb.AppendLine($"    SUM(a.Satis) AS Production,");
+            sb.AppendLine($"    SUM(a.Iade) AS Consumable,");
+            sb.AppendLine($"    SUM(a.Stok) AS Remaining");
+            sb.AppendLine($"FROM");
+            sb.AppendLine($"(");
+            sb.AppendLine($"    SELECT");
+            sb.AppendLine($"        YSATIS.Dates AS Tarih,");
+            sb.AppendLine($"        ISNULL(YSATIS.Quantity,0) AS Satis,");
+            sb.AppendLine($"        ISNULL(YIADE.Quantity,0) AS Iade,");
+            sb.AppendLine($"        ISNULL(YSATIS.Quantity,0) - ISNULL(YIADE.Quantity,0) AS Stok");
+            sb.AppendLine($"    FROM Erp_Inventory i WITH(NOLOCK)");
+            sb.AppendLine($"");
+            sb.AppendLine($"    OUTER APPLY");
+            sb.AppendLine($"    (");
+            sb.AppendLine($"        SELECT");
+            sb.AppendLine($"            CONVERT(date, ir.ReceiptDate) AS Dates,");
+            sb.AppendLine($"            SUM(iri.Quantity) AS Quantity");
+            sb.AppendLine($"        FROM Erp_InventoryReceiptItem iri WITH(NOLOCK)");
+            sb.AppendLine($"        INNER JOIN Erp_InventoryReceipt ir WITH(NOLOCK)");
+            sb.AppendLine($"            ON ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
+            sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
+            sb.AppendLine($"        WHERE ir.CompanyId = 22");
+            sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
+            sb.AppendLine($"          AND ir.ReceiptType = 1");
+            sb.AppendLine($"          and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");
+            sb.AppendLine($"          AND ir.RecId NOT IN (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"          AND iss.InventoryCode = i.InventoryCode");
+            sb.AppendLine($"        GROUP BY CONVERT(date, ir.ReceiptDate)");
+            sb.AppendLine($"    ) YSATIS");
+            sb.AppendLine($"");
+            sb.AppendLine($"    OUTER APPLY");
+            sb.AppendLine($"    (");
+            sb.AppendLine($"        SELECT");
+            sb.AppendLine($"            CONVERT(date, ir.ReceiptDate) AS Dates,");
+            sb.AppendLine($"            SUM(iri.Quantity) AS Quantity");
+            sb.AppendLine($"        FROM Erp_InventoryReceiptItem iri WITH(NOLOCK)");
+            sb.AppendLine($"        INNER JOIN Erp_InventoryReceipt ir WITH(NOLOCK)");
+            sb.AppendLine($"            ON ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
+            sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
+            sb.AppendLine($"        WHERE ir.CompanyId = 22");
+            sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
+            sb.AppendLine($"          AND ir.ReceiptType = 3");
+            sb.AppendLine($"        and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");
+            sb.AppendLine($"          AND ir.RecId NOT IN (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"          AND iss.InventoryCode = i.InventoryCode");
+            sb.AppendLine($"        GROUP BY CONVERT(date, ir.ReceiptDate)");
+            sb.AppendLine($"    ) YIADE");
+            sb.AppendLine($"");
+            sb.AppendLine($"    WHERE i.CompanyId = 22");
+            sb.AppendLine($"      AND i.InventoryCode LIKE '101%'");
+            sb.AppendLine($") a");
+            sb.AppendLine($"GROUP BY CONVERT(date, a.Tarih)");
+            sb.AppendLine($"HAVING SUM(a.Stok) <> 0");
+            sb.AppendLine($"ORDER BY Date;");
+            sb.AppendLine($"");
+
+            return sb.ToString();
+        }
+
+        private string BuildLast7DaysProductionQuery()
         {
             var sb = new StringBuilder();
 
@@ -223,6 +311,80 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"group by ir.ReceiptDate ");
             sb.AppendLine($"");
             sb.AppendLine($"order by ir.ReceiptDate ");
+            return sb.ToString();
+        }
+
+        private string BuildLast7DaysSalesQuery()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"SELECT");
+            sb.AppendLine($"    CONVERT(date, a.Tarih) AS Date,");
+            sb.AppendLine($"    SUM(a.Satis) AS Production,");
+            sb.AppendLine($"    SUM(a.Iade) AS Consumable,");
+            sb.AppendLine($"    SUM(a.Stok) AS Remaining");
+            sb.AppendLine($"FROM");
+            sb.AppendLine($"(");
+            sb.AppendLine($"    SELECT");
+            sb.AppendLine($"        YSATIS.Dates AS Tarih,");
+            sb.AppendLine($"        ISNULL(YSATIS.Quantity,0) AS Satis,");
+            sb.AppendLine($"        ISNULL(YIADE.Quantity,0) AS Iade,");
+            sb.AppendLine($"        ISNULL(YSATIS.Quantity,0) - ISNULL(YIADE.Quantity,0) AS Stok");
+            sb.AppendLine($"    FROM Erp_Inventory i WITH(NOLOCK)");
+            sb.AppendLine($"");
+            sb.AppendLine($"    OUTER APPLY");
+            sb.AppendLine($"    (");
+            sb.AppendLine($"        SELECT");
+            sb.AppendLine($"            CONVERT(date, ir.ReceiptDate) AS Dates,");
+            sb.AppendLine($"            SUM(iri.Quantity) AS Quantity");
+            sb.AppendLine($"        FROM Erp_InventoryReceiptItem iri WITH(NOLOCK)");
+            sb.AppendLine($"        INNER JOIN Erp_InventoryReceipt ir WITH(NOLOCK)");
+            sb.AppendLine($"            ON ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
+            sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
+            sb.AppendLine($"        WHERE ir.CompanyId = 44");
+            sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
+            sb.AppendLine($"          AND ir.ReceiptType = 120");
+            sb.AppendLine($"          and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");
+            sb.AppendLine($"          AND ir.RecId NOT IN (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"          AND iss.InventoryCode = i.InventoryCode");
+            sb.AppendLine($"        GROUP BY CONVERT(date, ir.ReceiptDate)");
+            sb.AppendLine($"    ) YSATIS");
+            sb.AppendLine($"");
+            sb.AppendLine($"    OUTER APPLY");
+            sb.AppendLine($"    (");
+            sb.AppendLine($"        SELECT");
+            sb.AppendLine($"            CONVERT(date, ir.ReceiptDate) AS Dates,");
+            sb.AppendLine($"            SUM(iri.Quantity) AS Quantity");
+            sb.AppendLine($"        FROM Erp_InventoryReceiptItem iri WITH(NOLOCK)");
+            sb.AppendLine($"        INNER JOIN Erp_InventoryReceipt ir WITH(NOLOCK)");
+            sb.AppendLine($"            ON ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
+            sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
+            sb.AppendLine($"        WHERE ir.CompanyId = 44");
+            sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
+            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
+            sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
+            sb.AppendLine($"          AND ir.ReceiptType = 3");
+            sb.AppendLine($"        and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");
+            sb.AppendLine($"          AND ir.RecId NOT IN (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"          AND iss.InventoryCode = i.InventoryCode");
+            sb.AppendLine($"        GROUP BY CONVERT(date, ir.ReceiptDate)");
+            sb.AppendLine($"    ) YIADE");
+            sb.AppendLine($"");
+            sb.AppendLine($"    WHERE i.CompanyId = 44");
+            sb.AppendLine($"      AND i.InventoryCode LIKE '9%'");
+            sb.AppendLine($") a");
+            sb.AppendLine($"GROUP BY CONVERT(date, a.Tarih)");
+            sb.AppendLine($"HAVING SUM(a.Stok) <> 0");
+            sb.AppendLine($"ORDER BY Date;");
+
             return sb.ToString();
         }
 

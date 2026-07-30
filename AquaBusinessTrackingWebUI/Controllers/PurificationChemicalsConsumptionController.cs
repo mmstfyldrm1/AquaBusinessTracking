@@ -1,6 +1,8 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.PurificationChemicalsConsumptionDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
+using DTOLayer.Dtos.SentezProductionDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,16 +36,18 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/PurificationChemicalsConsumption/details");
+
+
             if (!response.IsSuccessStatusCode)
                 return View(new List<PurificationChemicalsConsumptionDto>());
 
             var json = await response.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<PurificationChemicalsConsumptionDto>>(json);
 
+
+
             if (values == null || !values.Any())
                 return View(new List<PurificationChemicalsConsumptionDto>());
-
-
 
             return View(values);
         }
@@ -51,6 +55,20 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var client = _httpClientFactory.CreateClient();
+            var responseInventory = await client.GetAsync($"{_apiSettings.BaseUrl}/PurificationChemicalsConsumption/getChemicalInventory");
+            var jsonInventory = await responseInventory.Content.ReadAsStringAsync();
+            var dtoInventory = JsonConvert.DeserializeObject<SentezIntegrationsResponsoDto<SentezInventoryResponseDto>>(jsonInventory);
+
+            ViewBag.InventoryList = dtoInventory.Data
+               .Select(x => new SelectListItem
+               {
+
+                   Value = x.Code,
+                   Text = x.Name
+               })
+               .ToList();
+
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
@@ -60,7 +78,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
-                var client = _httpClientFactory.CreateClient();
+
                 var response = await client.GetAsync($"{_apiSettings.BaseUrl}/PurificationChemicalsConsumption/getbyid/{id}");
                 if (!response.IsSuccessStatusCode)
                     return RedirectToAction("GetPurificationChemicalsList");

@@ -22,14 +22,14 @@
 
                         <div class="col-md-3">
                             <label class="form-label">Yıl</label>
-                            <input type="number"
+                            <input type="number" required
                                    asp-for="Entity.Year"
                                    class="form-control" />
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Ay</label>
-                            <input type="number"
+                            <input type="number" required
                                    min="1"
                                    max="12"
                                    asp-for="Entity.Month"
@@ -39,7 +39,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Lokasyon</label>
                             <select asp-for="Entity.ElectricMeterLocationId"
-                                    asp-items="ViewBag.Location"
+                                    asp-items="ViewBag.Location" required
                                     class="form-select">
                                 <option value="">Lokasyon Seçiniz</option>
                             </select>
@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Tüketim</label>
                             <div class="input-group">
-                                <input type="number"
+                                <input type="number" required
                                        step="0.01"
                                        asp-for="Entity.Consumption"
                                        class="form-control" />
@@ -68,7 +68,7 @@
                             <label class="form-label">Vardiya</label>
 
                             <select asp-for="Entity.ShiftId"
-                                    asp-items="ViewBag.Shifts"
+                                    asp-items="ViewBag.Shifts" required
                                     class="form-select">
 
                                 <option value="">Vardiya Seçiniz</option>

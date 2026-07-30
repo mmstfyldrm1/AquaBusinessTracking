@@ -25,7 +25,7 @@
                         <!-- Tarih -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Tarih</label>
-                            <input type="date"
+                            <input type="date" required
                                    asp-for="Entity.ReceiptDate"
                                    class="form-control" />
                         </div>
@@ -33,7 +33,7 @@
                         <!-- Vardiya -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Vardiya</label>
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
                                 <option value="">Vardiya Seçiniz</option>

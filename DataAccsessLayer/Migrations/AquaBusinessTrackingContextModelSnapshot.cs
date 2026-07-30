@@ -742,6 +742,75 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_BufferProduction");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ChemicalSupplierProducts", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentAccountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InventoryCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InventoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Product")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_ChemicalSupplierProducts");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_CirculationTankAirPressureMeasurementTurbidity", b =>
                 {
                     b.Property<int>("RecId")
@@ -1425,6 +1494,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("Consumption")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Day")
                         .HasColumnType("nvarchar(max)");
 
@@ -2087,6 +2159,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("ConsumedQuantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
@@ -2341,6 +2416,9 @@ namespace DataAccsessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ConsumedQuantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("CurrentStock")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -3816,6 +3894,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("ConsumedQuantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
@@ -4393,6 +4474,30 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
 
                     b.Navigation("ShiftSupervisorUser");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ChemicalSupplierProducts", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("ChemicalSupplierProducts")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("ChemicalSupplierProducts")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("ChemicalSupplierProducts")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_CirculationTankAirPressureMeasurementTurbidity", b =>
@@ -5450,6 +5555,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("BufferProduction");
 
+                    b.Navigation("ChemicalSupplierProducts");
+
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
                     b.Navigation("CumulativeElectricityConsumption");
@@ -5541,6 +5648,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("BufferGramajProfiles");
 
                     b.Navigation("BufferProduction");
+
+                    b.Navigation("ChemicalSupplierProducts");
 
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
@@ -5651,6 +5760,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("BufferGramajProfiles");
 
                     b.Navigation("BufferProduction");
+
+                    b.Navigation("ChemicalSupplierProducts");
 
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 

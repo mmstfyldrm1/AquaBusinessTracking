@@ -9,5 +9,10 @@ namespace AquaBusinessTrackingWebUI.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> SalesDetails()
+        {
+            return View();
+        }
     }
 }

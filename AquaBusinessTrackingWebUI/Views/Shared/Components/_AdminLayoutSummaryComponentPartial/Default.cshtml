@@ -1,5 +1,27 @@
 ﻿@model AdminDashboardSummaryViewModel
 
+@{
+    var productionDays = Model.GetLast7Days.Data
+        .Select(x => Convert.ToDateTime(x.Date).Date)
+        .ToList();
+
+    var salesLookup = Model.GetLast7Sales.Data
+        .GroupBy(x => Convert.ToDateTime(x.Date).Date)
+        .ToDictionary(g => g.Key, g => g.Sum(x => x.Production));
+
+    var alignedSalesValues = productionDays
+        .Select(d => salesLookup.TryGetValue(d, out var v) ? v : 0m)
+        .ToList();
+
+    var rawMaterialLookup = Model.GetLast7RawMateriels.Data
+    .GroupBy(x => Convert.ToDateTime(x.Date).Date)
+    .ToDictionary(g => g.Key, g => g.Sum(x => x.Production));
+
+    var alignedRawMaterialValues = productionDays
+        .Select(d => rawMaterialLookup.TryGetValue(d, out var v) ? v : 0m)
+        .ToList();
+}
+
 <div class="page-section" id="ozet">
 
     <div class="section-header">
@@ -21,9 +43,9 @@
 
         <!-- DURUŞ -->
         <div class="card chart-card">
-            <div  class="card-title">Duruş Dağılımı</div>
-            <div style="height:250px" class="chart-wrap-small">
-                <canvas id="durusChart"></canvas>
+            <div class="card-title">Üretim Trend</div>
+            <div class="chart-wrap-small">
+                <canvas id="salesProductionChart"></canvas>
             </div>
         </div>
 
@@ -33,74 +55,56 @@
 
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-       document.addEventListener("DOMContentLoaded", function () {
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(productionDays.Select(d => d.ToString("dd.MM"))));
+                                                                                               
+                                                               
+        const productionValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetLast7Days.Data.Select(x => x.Remaning)));
+                                                                                               
+                                                               
+        const salesValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedSalesValues));
 
-        // Duruş grafiği verileri
-        const duruslabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                        Model.DurusDagilim.Select(x => x.Reason)
-                ));
+        const rawMaterialValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedRawMaterialValues));
 
-        const durusdata = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                        Model.DurusDagilim.Select(x => x.TotalDuration)
-                ));
-
-        new Chart(document.getElementById('durusChart'), {
-            type: 'doughnut',
-            data: {
-                labels: duruslabels,
-                datasets: [{
-                    data: durusdata,   // FIX: data -> durusdata
-                        backgroundColor: [
-                                        '#BA7517',
-                                        '#c0392b',
-                                        '#3498db',
-                                        '#2ecc71',
-                                        '#9b59b6',
-                                        '#1abc9c',
-                                        '#e67e22',
-                                        '#34495e'
-                                        ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-
-        // Trend grafiği verileri
-        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                        Model.GetLast7Days.Data.Select(x =>
-                                Convert.ToDateTime(x.Date).ToString("dd.MM")
-                        )
-                ));
-
-        const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                        Model.GetLast7Days.Data.Select(x => x.Remaning)
-                ));
-
+        // 1) Üretim + Hammadde Girişi trendi
         new Chart(document.getElementById('trendChart'), {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'Üretim',
-                    data: values,
-                    borderColor: '#185FA5',
-                    backgroundColor: 'rgba(24,95,165,0.15)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3
-                }]
+                datasets: [
+                    {
+                        label: 'Üretim',
+                        data: productionValues,
+                        borderColor: '#185FA5',
+                        backgroundColor: 'rgba(24,95,165,0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#185FA5'
+                    },
+                    {
+                        label: 'Hammadde Girişi',
+                        data: rawMaterialValues,
+                        borderColor: '#e67e22',
+                        backgroundColor: 'rgba(230,126,34,0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#e67e22'
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true
                     }
                 },
                 scales: {
@@ -116,5 +120,57 @@
             }
         });
 
+        // 2) Üretim + Satış
+        new Chart(document.getElementById('salesProductionChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Üretim',
+                        data: productionValues,
+                        borderColor: '#185FA5',
+                        backgroundColor: 'rgba(24,95,165,0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#185FA5'
+                    },
+                    {
+                        label: 'Satış',
+                        data: salesValues,
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46,204,113,0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#2ecc71'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     });
 </script>

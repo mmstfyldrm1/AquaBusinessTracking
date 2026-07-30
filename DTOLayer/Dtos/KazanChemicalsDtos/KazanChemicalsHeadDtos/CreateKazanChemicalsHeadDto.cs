@@ -35,6 +35,8 @@
 
         public decimal Consumption { get; set; }
 
+        public decimal CurrentStock { get; set; }
+
         public decimal Remaining { get; set; }
     }
 }

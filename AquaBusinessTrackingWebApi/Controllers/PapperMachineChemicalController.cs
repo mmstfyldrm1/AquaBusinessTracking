@@ -12,13 +12,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
     {
         private readonly IPapperMachineChemicalService _service;
         private readonly ILogger<PapperMachineChemicalController> _logger;
+        private readonly ISentezInventoryQueryService _sentez;
 
-        public PapperMachineChemicalController(
-            IPapperMachineChemicalService service,
-            ILogger<PapperMachineChemicalController> logger)
+        public PapperMachineChemicalController(IPapperMachineChemicalService service, ILogger<PapperMachineChemicalController> logger, ISentezInventoryQueryService sentez)
         {
             _service = service;
             _logger = logger;
+            _sentez = sentez;
         }
 
         [HttpGet("getall")]
@@ -37,6 +37,8 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+
+
         [HttpGet("details")]
         public async Task<IActionResult> GetWithDetails()
         {
@@ -46,6 +48,14 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             var result = await _service.GetWithDetails();
 
+            return Ok(result);
+        }
+
+        [HttpGet("getChemicalInventoryList")]
+        public async Task<IActionResult> GetInventoryList()
+        {
+            _logger.LogInformation("Kimyasal Malzemeleri istendi. User={User}", User?.Identity?.Name);
+            var result = await _sentez.GetChemicalInventory();
             return Ok(result);
         }
 

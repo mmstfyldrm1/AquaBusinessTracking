@@ -19,7 +19,6 @@
     .brand-blue {
         color: #0A4E78;
     }
-
 </style>
 
 <aside class="sidebar-wrapper" data-simplebar="true">
@@ -27,7 +26,7 @@
         <div>
             <img src="~/img/logo.png" class="logo-icon" alt="logo icon">
         </div>
-        
+
         <h4 class="logo-text">
             <span class="brand-blue"> AQU<span class="brand-red">A</span>KRAFT</span>
         </h4>
@@ -46,7 +45,7 @@
         @if (!CurrentUser.HasPermission("Admin"))
         {
             <li>
-                <a href="~/UserDashboard/Index">
+                <a href="~/UserDashboard">
                     <div class="parent-icon"><ion-icon name="home-outline"></ion-icon></div>
                     <div class="menu-title">Dashboard</div>
                 </a>
@@ -64,7 +63,7 @@
                     <div class="menu-title">Arıtma</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("ARITMA.AATLabAnalysis.View"))
+                    @if (CurrentUser.HasPermission("ARITMA.Basin.View"))
                     {
                         <li class="d-flex justify-content-between align-items-center">
                             <a href="~/Basin/GetBasinList" class="flex-grow-1">
@@ -73,11 +72,11 @@
                             </a>
                         </li>
                     }
-                    @if (CurrentUser.HasPermission("ARITMA.PurificationChemicalConsumption.View"))
+                    @if (CurrentUser.HasPermission("ARITMA.PurificationChemicalsConsumption.View"))
                     {
                         <li><a href="~/PurificationChemicalsConsumption/GetPurificationChemicalsList"><ion-icon name="ellipse-outline"></ion-icon>Arıtma Kimyasal Tükt.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("ARITMA.IndustrialTest.View"))
+                    @if (CurrentUser.HasPermission("ARITMA.Test.View"))
                     {
                         <li><a href="~/Test/GetTestList"><ion-icon name="ellipse-outline"></ion-icon>End. Deneme İz. Tbl.</a></li>
                     }
@@ -86,7 +85,7 @@
                         <li><a href="~/MassWasteSupplier/GetMassWasteSupplierList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denklik Firma Bz.</a></li>
                     }
 
-                    @if (CurrentUser.HasPermission("ARITMA.MassWasteSupplier.View"))
+                    @if (CurrentUser.HasPermission("ARITMA.MassWasteBalance.View"))
                     {
                         <li><a href="~/MassWasteBalance/GetMassWasteBalanceList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denk. Atık Kodu Bz.</a></li>
                     }
@@ -130,11 +129,11 @@
                     {
                         <li><a href="~/KazanChemicals/GetKazanChemicalsList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Kimysl.Tkp Sis.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KAZAN.CondensateTracking.View"))
+                    @if (CurrentUser.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.View"))
                     {
                         <li><a href="~/BoilerSteamFeedWaterCondensateData/GetCondensateData"><ion-icon name="ellipse-outline"></ion-icon>Kazan Kondens Tkp. Sis.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KAZAN.NaturalGasTracking.View"))
+                    @if (CurrentUser.HasPermission("KAZAN.NaturelGasMeterMonitoring.View"))
                     {
                         <li><a href="~/NaturelGasMeterMonitoring/GetNaturelGasMeterList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Doğal Gaz Tkp. Sis.</a></li>
                     }
@@ -151,7 +150,7 @@
         }
 
 
-        @if (CurrentUser.HasModulePermission("MEKANIK"))
+        @if (CurrentUser.HasModulePermission("MEKANIKBAKIM"))
         {
             <li>
                 <a class="has-arrow" href="javascript:;">
@@ -159,7 +158,10 @@
                     <div class="menu-title">Mekanik Bakım</div>
                 </a>
                 <ul>
-                    <li><a href="#"><ion-icon name="ellipse-outline"></ion-icon>İşlem 1</a></li>
+                    @if (CurrentUser.HasPermission("MEKANIKBAKIM.Maintenance.View"))
+                    {
+                        <li><a href="#"><ion-icon name="ellipse-outline"></ion-icon>İşlem 1</a></li>
+                    }
                 </ul>
             </li>
         }
@@ -194,13 +196,17 @@
                     <div class="menu-title">Kimyasal</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("KIMYASAL.PaperMachineChemical.View"))
+                    @if (CurrentUser.HasPermission("KIMYASAL.PapperMachineChemical.View"))
                     {
                         <li><a href="~/PapperMachineChemical/GetPapperMachineChemicalList"><ion-icon name="ellipse-outline"></ion-icon>Kağıt Makinesi Kim.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.WaterPreparationConsumption.View"))
+                    @if (CurrentUser.HasPermission("KIMYASAL.WaterPreparationAndConsumption.View"))
                     {
                         <li><a href="~/WaterPreparationAndConsumption/GetWaterPreparationAndConsumptionList"><ion-icon name="ellipse-outline"></ion-icon>Su Hazırlama ve Tüketim</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("KIMYASAL.ChemicalSupplierProducts.View"))
+                    {
+                        <li><a href="~/ChemicalSupplierProducts/GetChemicalSupplierProductsList"><ion-icon name="ellipse-outline"></ion-icon>Tedarikçi Kimyasal Ürünleri</a></li>
                     }
 
 
@@ -254,7 +260,10 @@
                     <div class="menu-title">Yaş Kısım</div>
                 </a>
                 <ul>
-                    <li><a href="~/MachineStop/GetMachineStopList"><ion-icon name="ellipse-outline"></ion-icon>Duruş Kayıtları</a></li>
+                    @if (CurrentUser.HasPermission("YASKISIM.MachineStop.View"))
+                    {
+                        <li><a href="~/MachineStop/GetMachineStopList"><ion-icon name="ellipse-outline"></ion-icon>Duruş Kayıtları</a></li>
+                    }
                 </ul>
             </li>
         }
@@ -268,14 +277,17 @@
                     <div class="menu-title">Kuru Kısım</div>
                 </a>
                 <ul>
-                    <li><a href="~/BufferProduction/GetBufferProductionList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Takip</a></li>
+                    @if (CurrentUser.HasPermission("KURUKISIM.BufferProduction.View"))
+                    {
+                        <li><a href="~/BufferProduction/GetBufferProductionList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Takip</a></li>
+                    }
                 </ul>
             </li>
         }
 
 
 
-        @if (CurrentUser.HasModulePermission("KIMYASAL"))
+        @if (CurrentUser.HasModulePermission("KALITE"))
         {
             <li>
                 <a class="has-arrow" href="javascript:;">
@@ -283,32 +295,32 @@
                     <div class="menu-title">Kalite</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.DoughPreparationAnalysisResult.View"))
                     {
                         <li><a href="~/DoughPreparationAnalysisResult/GetDoughPreparationResultList"><ion-icon name="ellipse-outline"></ion-icon>Hamur Analiz Sonucu</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.CirculationTankAirPressureMeasurementTurbidity.View"))
                     {
                         <li><a href="~/CirculationTankAirPressureMeasurementTurbidity/CirculationTankList"><ion-icon name="ellipse-outline"></ion-icon>Devir D. Tankı Snç.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.StarchAnalysis.View"))
                     {
                         <li><a href="~/StarchAnalysis/GetStarchAnalysisList"><ion-icon name="ellipse-outline"></ion-icon>Nişasta Analiz Snç.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.LabWork.View"))
                     {
                         <li><a href="~/LabWork/GetLabWorkList"><ion-icon name="ellipse-outline"></ion-icon>Laboratuvar İş. Takip Sis.</a></li>
                     }
 
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.WaterTreatmentAnalysisResults.View"))
                     {
                         <li><a href="~/WaterTreatmentAnalysisResults/GetWaterAnalysisResults"><ion-icon name="ellipse-outline"></ion-icon>Su Arıtma Analiz Snç.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.BufferAnalysisReport.View"))
                     {
                         <li><a href="~/BufferAnalysisReport/GetBufferAnalysisReportList"><ion-icon name="ellipse-outline"></ion-icon>Tampon Analiz Raporu</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KIMYASAL.VehicleFuelLogs.View"))
+                    @if (CurrentUser.HasPermission("KALITE.OilAnalysisReport.View"))
                     {
                         <li><a href="~/OilAnalysisReport/GetOilAnalysisReport"><ion-icon name="ellipse-outline"></ion-icon>Yağ Analiz Raporu</a></li>
                     }
@@ -379,8 +391,14 @@
                     <div class="menu-title">Planlama</div>
                 </a>
                 <ul>
-                    <li><a href="~/Planning/GetDailyConsumables"><ion-icon name="ellipse-outline"></ion-icon>Genel Sarfiyatlar</a></li>
-                    <li><a href="~/PlanningScorBoardView/GetPlanList"><ion-icon name="ellipse-outline"></ion-icon>Üretim Plan Takibi</a></li>
+                    @if (CurrentUser.HasPermission("PLANLAMA.Planning.View"))
+                    {
+                        <li><a href="~/Planning/GetDailyConsumables"><ion-icon name="ellipse-outline"></ion-icon>Genel Sarfiyatlar</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("PLANLAMA.PlanningScorBoardView.View"))
+                    {
+                        <li><a href="~/PlanningScorBoardView/GetPlanList"><ion-icon name="ellipse-outline"></ion-icon>Üretim Plan Takibi</a></li>
+                    }
                 </ul>
             </li>
         }
@@ -396,7 +414,10 @@
                     <div class="menu-title">Kağıt Kantar</div>
                 </a>
                 <ul>
-                    <li><a href="~/RawMaterials/GetRawMaterialsList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Giriş</a></li>
+                    @if (CurrentUser.HasPermission("KAGITKANTAR.RawMaterials.View"))
+                    {
+                        <li><a href="~/RawMaterials/GetRawMaterialsList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Giriş</a></li>
+                    }
                 </ul>
             </li>
 
@@ -448,7 +469,7 @@
                     {
                         <li><a href="~/PlcMachine/GetMachineList"><ion-icon name="ellipse-outline"></ion-icon>Plc Takip</a></li>
                     }
-                    @if (CurrentUser.HasPermission("OTOMASYON.PlcTags.View"))
+                    @if (CurrentUser.HasPermission("OTOMASYON.PlcMachineTags.View"))
                     {
                         <li><a href="~/PlcMachineTags/GetMachineTagsList"><ion-icon name="ellipse-outline"></ion-icon>Plc Tag Takip</a></li>
                     }
@@ -477,7 +498,7 @@
                     {
                         <li><a href="~/Settings/RolesList"><ion-icon name="ellipse-outline"></ion-icon>Rol Listesi</a></li>
                     }
-                    @if (CurrentUser.HasPermission("AYARLAR.Shifts.View") || CurrentUser.HasRole("Admin"))
+                    @if (CurrentUser.HasPermission("AYARLAR.Shift.View") || CurrentUser.HasRole("Admin"))
                     {
                         <li><a href="~/Shift/GetShiftList"><ion-icon name="ellipse-outline"></ion-icon>Vardiya Listesi</a></li>
                     }
@@ -491,5 +512,3 @@
 
     </ul>
 </aside>
-
-

@@ -17,6 +17,9 @@ namespace EntityLayer.Concrete
         public DB_Department Department { get; set; }
 
         [JsonIgnore]
+        public ICollection<DB_ChemicalSupplierProducts> ChemicalSupplierProducts { get; set; }
+
+        [JsonIgnore]
         public ICollection<DB_IncomingGoodsTracking> IncomingGoodsTracking { get; set; }
 
         [JsonIgnore]

@@ -47,7 +47,7 @@
                             </label>
 
                             <input type="date"
-                                   asp-for="Entity.ReceiptDate"
+                                   asp-for="Entity.ReceiptDate" required
                                    class="form-control shadow-sm"
                                    placeholder="Örn: 120" />
 
@@ -280,7 +280,7 @@
                             </label>
 
                             <select asp-for="Entity.ShiftId"
-                                    asp-items="ViewBag.Shifts"
+                                    asp-items="ViewBag.Shifts" required
                                     class="form-select shadow-sm">
 
                                 <option value="">

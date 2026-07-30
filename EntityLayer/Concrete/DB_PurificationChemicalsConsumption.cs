@@ -21,5 +21,7 @@ namespace EntityLayer.Concrete
 
         public decimal RemainingQuantity { get; set; }
 
+        public decimal CurrentStock { get; set; }
+
     }
 }

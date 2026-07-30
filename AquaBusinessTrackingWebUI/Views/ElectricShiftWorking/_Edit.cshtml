@@ -29,7 +29,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label">Tarih</label>
-                            <input type="text"
+                            <input type="text" required
                                    asp-for="Entity.ReceiptDate"
                                    class="form-control" />
                         </div>
@@ -38,7 +38,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Vardiya</label>
 
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
 
@@ -50,7 +50,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Kullanıcı</label>
 
-                            <select asp-for="Entity.AppUserId"
+                            <select asp-for="Entity.AppUserId" required
                                     asp-items="ViewBag.AppUsers"
                                     class="form-select">
 

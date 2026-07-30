@@ -1,11 +1,13 @@
 ﻿using BusinessLayer.Abstract;
 using DTOLayer.Dtos.BufferProductionDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AquaBusinessTrackingWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BufferProductionController : ControllerBase
     {
         private readonly IBufferProductionService _service;

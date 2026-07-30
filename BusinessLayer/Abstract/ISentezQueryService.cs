@@ -15,6 +15,10 @@ namespace BusinessLayer.Abstract
 
         Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysProductionAsync();
 
+        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysSalesAsync();
+
+        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysRawMaterilsAsync();
+
         Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas30DaysProductionAsync();
 
         Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsStockAsync();

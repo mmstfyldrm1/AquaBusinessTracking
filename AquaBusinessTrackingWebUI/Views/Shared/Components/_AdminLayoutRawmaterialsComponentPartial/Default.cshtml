@@ -7,45 +7,45 @@
 
         <div class="section-header">
             <div>
-                <div class="section-title">Hammadde &amp; Kimyasal</div>
+                <div class="section-title">Su Arıtma &amp; Kimyasal</div>
                 <div class="section-sub">Günlük tüketim ve stok hareketleri</div>
             </div>
         </div>
 
         <div class="row">
 
-            <!-- Hurda Kağıt Tüketim Kartı -->
+            <!-- Su Arıtma Ve Analiz Tüketim -->
             <div class="col-lg-6 mb-3">
                 <div class="card h-100">
                     <div class="card-title p-3">
-                        <i class="ti ti-file-text"></i> Hurda Kağıt Tüketim
+                        <i class="ti ti-file-text"></i> Su Arıtma Ve Analiz Tüketim
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Malzeme</th>
-                                    <th>Balya</th>
-                                    <th>Kg</th>
-                                    <th>Pulper</th>
+                                    <th>Gelen</th>
+                                    <th>Sarf Edilen</th>
+                                    <th>Stok</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.DoughPreparation)
+                                @foreach (var item in Model.WaterPreparationAndConsumption)
                                 {
                                     <tr>
                                         <td>@item.InventoryName</td>
-                                        <td>@item.Bale</td>
-                                        <td>@item.KG.ToString("N2")</td>
-                                        <td>@item.PulperNo</td>
+                                        <td>@item.IncomingQuantity.ToString("N2")</td>
+                                        <td>@item.ConsumedQuantity.ToString("N2")</td>
+                                        <td>@item.CurrentStock.ToString("N2")</td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot class="table-light">
                                 <tr class="fw-bold">
                                     <td>Toplam</td>
-                                    <td>@Model.DoughPreparation.Sum(x => x.Bale)</td>
-                                    <td>@Model.DoughPreparation.Sum(x => x.KG).ToString("N2")</td>
+                                    <td>@Model.WaterPreparationAndConsumption.Sum(x => x.IncomingQuantity).ToString("N2")</td>
+                                    <td>@Model.WaterPreparationAndConsumption.Sum(x => x.ConsumedQuantity).ToString("N2")</td>
                                     <td>-</td>
                                 </tr>
                             </tfoot>
@@ -67,7 +67,7 @@
                                     <th>Malzeme</th>
                                     <th>Gelen</th>
                                     <th>Tüketilen</th>
-                                    <th>Kalan</th>
+                                    <th>Stok</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,7 +77,7 @@
                                         <td>@item.InventoryName</td>
                                         <td>@item.IncomingQuantity.ToString("N2")</td>
                                         <td>@item.ConsumedQuantity.ToString("N2")</td>
-                                        <td>@item.RemainingQuantity.ToString("N2")</td>
+                                        <td>@item.CurrentStock.ToString("N2")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -86,7 +86,7 @@
                                     <td>Toplam</td>
                                     <td>@Model.PapperMachineChemical.Sum(x => x.IncomingQuantity).ToString("N2")</td>
                                     <td>@Model.PapperMachineChemical.Sum(x => x.ConsumedQuantity).ToString("N2")</td>
-                                    <td>@Model.PapperMachineChemical.Sum(x => x.RemainingQuantity).ToString("N2")</td>
+                                    <td>-</td>
                                 </tr>
                             </tfoot>
                         </table>

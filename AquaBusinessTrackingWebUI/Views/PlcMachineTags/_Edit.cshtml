@@ -23,7 +23,7 @@
                         <!-- Machine -->
                         <div class="col-md-6">
                             <label class="form-label">Makine</label>
-                            <select asp-for="Entity.MachineId"
+                            <select asp-for="Entity.MachineId" required
                                     asp-items="ViewBag.Machines"
                                     class="form-select">
                                 <option value="">Makine Seçiniz</option>
@@ -33,7 +33,7 @@
                         <!-- Tag Name -->
                         <div class="col-md-6">
                             <label class="form-label">Tag Adı</label>
-                            <input asp-for="Entity.TagName"
+                            <input asp-for="Entity.TagName" required
                                    class="form-control"
                                    placeholder="Paper_Uretim_Ton" />
                         </div>
@@ -49,7 +49,7 @@
                         <!-- Group -->
                         <div class="col-md-6">
                             <label class="form-label">Grup</label>
-                            <input asp-for="Entity.Group"
+                            <input asp-for="Entity.Group" required
                                    class="form-control"
                                    placeholder="Production / Power / Quality" />
                         </div>
@@ -57,7 +57,7 @@
                         <!-- Data Address -->
                         <div class="col-md-6">
                             <label class="form-label">PLC Adresi</label>
-                            <input asp-for="Entity.DataAddress"
+                            <input asp-for="Entity.DataAddress" required
                                    class="form-control"
                                    placeholder="DB1.DBD0" />
                         </div>

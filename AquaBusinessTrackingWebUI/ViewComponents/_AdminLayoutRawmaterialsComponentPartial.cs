@@ -1,8 +1,8 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.AdminDashboardDtos;
-using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
+using DTOLayer.Dtos.WaterPreparationAndConsumptionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -33,7 +33,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var errorMessage = response.Content.ReadAsStringAsync();
                 return View(new RawMaterialsDto
                 {
-                    DoughPreparation = new List<DoughPreparationDto>(),
+                    WaterPreparationAndConsumption = new List<WaterPreparationAndConsumptionDto>(),
                     PapperMachineChemical = new List<PapperMachineChemicalDto>()
                 });
             }
@@ -44,19 +44,19 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
             if (values == null)
                 return View(new RawMaterialsDto
                 {
-                    DoughPreparation = new List<DoughPreparationDto>(),
+                    WaterPreparationAndConsumption = new List<WaterPreparationAndConsumptionDto>(),
                     PapperMachineChemical = new List<PapperMachineChemicalDto>()
                 });
 
             var model = new RawMaterialsDto
             {
-                DoughPreparation = values.DoughPreparation
-                    .OrderByDescending(x => x.InsertDate)
+                WaterPreparationAndConsumption = values.WaterPreparationAndConsumption
+                    .OrderByDescending(x => x.ReceiptDate)
                     .Take(10)
                     .ToList(),
 
                 PapperMachineChemical = values.PapperMachineChemical
-                    .OrderByDescending(x => x.InsertDate)
+                    .OrderByDescending(x => x.ReceiptDate)
                     .Take(10)
                     .ToList()
             };

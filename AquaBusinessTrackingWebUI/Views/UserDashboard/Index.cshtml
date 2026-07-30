@@ -3,6 +3,94 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
+<style>
+    #todo-container {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+        #todo-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #todo-container::-webkit-scrollbar-thumb {
+            background: #bdbdbd;
+            border-radius: 20px;
+        }
+
+    .card {
+        transition: .25s;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.08) !important;
+        }
+
+    .input-group-text {
+        background: #fff;
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+</style>
 
 @await Component.InvokeAsync("_UserDashboardFavoriteMenuComponentPartial", new { appUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value })
 
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h4 class="fw-bold mb-0">
+                    <i class="bi bi-check2-square text-primary me-2"></i>
+                    To Do List
+                </h4>
+                <small class="text-muted">
+                    Organize your daily tasks
+                </small>
+            </div>
+        </div>
+
+        <hr class="my-3" />
+
+        <!-- Add Todo -->
+        <div class="row g-2 align-items-center">
+            <div class="col-lg-10 col-md-9">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-pencil-square text-secondary"></i>
+                    </span>
+                    <input id="todo-input"
+                           type="text"
+                           class="form-control border-start-0"
+                           placeholder="What do you need to do today?" />
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-3 d-grid">
+                <button type="button"
+                        onclick="CreateTodo();"
+                        class="btn btn-primary fw-semibold">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Add
+                </button>
+            </div>
+        </div>
+
+        <!-- Todo List -->
+        <div class="mt-4">
+            <div id="todo-container"
+                 class="border rounded-3 bg-light p-3"
+                 style="min-height:250px;">
+            </div>
+        </div>
+
+    </div>
+</div>

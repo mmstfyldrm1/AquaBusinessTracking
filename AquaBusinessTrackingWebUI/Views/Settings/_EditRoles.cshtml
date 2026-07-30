@@ -275,6 +275,22 @@
                     var permissions = (List<PermissionDto>)ViewBag.Permissions;
                     var modules = permissions?.GroupBy(x => x.Module);
                     var selectedPermissions = Model.Entity.PermissionIds ?? new List<int>();
+
+                    Func<string, string> GetModuleName = desc =>
+                    {
+                        if (string.IsNullOrWhiteSpace(desc)) return string.Empty;
+                        var trimmed = desc.Trim();
+                        var idx = trimmed.LastIndexOf(' ');
+                        return idx > 0 ? trimmed.Substring(0, idx).Trim() : trimmed;
+                    };
+
+                    Func<string, string> GetActionName = desc =>
+                    {
+                        if (string.IsNullOrWhiteSpace(desc)) return string.Empty;
+                        var trimmed = desc.Trim();
+                        var idx = trimmed.LastIndexOf(' ');
+                        return idx > 0 ? trimmed.Substring(idx + 1).Trim() : trimmed;
+                    };
                 }
 
                 <div class="modal-body modal-scroll">
@@ -284,6 +300,7 @@
                             <label class="field-label">Rol Adı</label>
                             <input asp-for="Entity.Name" class="form-control form-control-sm" />
                         </div>
+
                         <div class="col-md-6">
                             <label class="field-label">Açıklama</label>
                             <input asp-for="Entity.RoleName" class="form-control form-control-sm" />
@@ -300,7 +317,10 @@
                             {
                                 var moduleKey = module.Key.Replace(" ", "_");
                                 var collapseId = "m_" + moduleKey;
-                                var controllerGroups = module.GroupBy(x => x.Controller);
+
+                                // Sadece bu satır değişti
+                                var controllerGroups = module.GroupBy(x => GetModuleName(x.Description));
+
                                 var isModuleChecked = module.Any(x => selectedPermissions.Contains(x.RecId));
 
                                 <div class="accordion-item mb-2">
@@ -362,17 +382,19 @@
                                                                        checked="@isChecked" />
 
                                                                 <label for="@inputId">
-                                                                    @perm.Action
+                                                                    @GetActionName(perm.Description)
                                                                 </label>
                                                             </div>
                                                         }
 
                                                     </div>
+
                                                 </div>
                                             }
 
                                         </div>
                                     </div>
+
                                 </div>
                             }
 
@@ -386,8 +408,13 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Kaydet</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Kaydet
+                    </button>
                 </div>
 
             </form>

@@ -22,7 +22,7 @@
                         <div class="col-12">
                             <label class="form-label">Tarih</label>
                             <input type="text"
-                                   asp-for="Entity.ReceiptDate"
+                                   asp-for="Entity.ReceiptDate" required
                                    class="form-control"
                                    placeholder="Örn: PM-2 Elektrik Odası" />
                         </div>
@@ -44,7 +44,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Vardiya</label>
-                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" class="form-select">
+                            <select asp-for="Entity.ShiftId" required asp-items="ViewBag.Shifts" class="form-select">
                                 <option value="">Vardiya Seçiniz</option>
                             </select>
                         </div>

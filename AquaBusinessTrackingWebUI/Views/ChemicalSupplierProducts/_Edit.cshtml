@@ -1,0 +1,131 @@
+﻿@using DTOLayer.Dtos.ChemicalSupplierProductsDtos
+@model ModalViewModel<ChemicalSupplierProductsDto>
+
+<div class="modal fade" id="chemicalSupplierProductsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/ChemicalSupplierProducts/Edit">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Fiş Tarihi</label>
+                            <input input type="date" asp-for="Entity.ReceiptDate" required
+                                   class="form-control"
+                                   placeholder="Tarih Seçiniz" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Stok Kodu</label>
+                            <input asp-for="Entity.InventoryCode"
+                                   class="form-control"
+                                   placeholder="Stok kodu" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Stok Adı</label>
+                            <input asp-for="Entity.InventoryName"
+                                   class="form-control"
+                                   placeholder="Stok adı" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Cari Hesap</label>
+                            <input asp-for="Entity.CurrentAccountName"
+                                   class="form-control"
+                                   placeholder="Cari hesap" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ürün</label>
+                            <input asp-for="Entity.Product"
+                                   class="form-control"
+                                   placeholder="Ürün adı" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Birim</label>
+                            <input asp-for="Entity.Unit"
+                                   class="form-control"
+                                   placeholder="Örn: Kg, Lt, Adet" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" required
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+
+                        <input type="hidden" asp-for="Entity.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.AppUserId" />
+                        <input type="hidden" asp-for="Entity.InsertDate" />
+                        <input type="hidden" asp-for="Entity.UpdateDate" />
+                        <input type="hidden" asp-for="Entity.DeleteDate" />
+                        <input type="hidden" asp-for="Entity.DeletedBy" />
+                        <input type="hidden" asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+

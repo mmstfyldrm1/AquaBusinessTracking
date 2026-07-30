@@ -2,6 +2,28 @@
 
 @model ModalViewModel<WaterPreparationAndConsumptionDto>
 
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+
+        .select2-container .select2-selection--single {
+            height: calc(2.25rem + 2px) !important;
+            padding: .375rem .75rem;
+            border: 1px solid #ced4da !important;
+            border-radius: .375rem !important;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container .select2-selection__arrow {
+            height: calc(2.25rem + 2px) !important;
+        }
+</style>
+
 
 <div class="modal fade" id="waterPreparationAndConsumptionModal" tabindex="-1">
 
@@ -41,7 +63,7 @@
                                Fiş Tarihi
                             </label>
 
-                            <input type="date"
+                            <input type="date" required
                                    asp-for="Entity.ReceiptDate"
                                    class="form-control"
                                    placeholder="" />
@@ -51,30 +73,31 @@
 
                         <!-- STOK KODU -->
                         <div class="col-md-6">
+                            <label class="form-label">Stok Kodu</label>
 
-                            <label class="form-label">
-                                Stok Kodu
-                            </label>
+                            <select asp-for="Entity.InventoryCode" required
+                                    id="InventoryCode"
+                                    class="form-select inventory-select">
 
-                            <input type="text"
-                                   asp-for="Entity.InventoryCode"
-                                   class="form-control"
-                                   placeholder="Stok kodu giriniz" />
+                                <option value="">Seçiniz</option>
 
+                                @foreach (var item in ViewBag.InventoryList)
+                                {
+                                    <option value="@item.Value" data-name="@item.Text">
+                                        @item.Value
+                                    </option>
+                                }
+                            </select>
                         </div>
 
-                        <!-- STOK ADI -->
                         <div class="col-md-6">
-
-                            <label class="form-label">
-                                Stok Adı
-                            </label>
+                            <label class="form-label">Stok Adı</label>
 
                             <input type="text"
                                    asp-for="Entity.InventoryName"
+                                   id="InventoryName"
                                    class="form-control"
                                    placeholder="Stok adı giriniz" />
-
                         </div>
 
                    
@@ -85,7 +108,7 @@
                                 Gelen Miktar
                             </label>
 
-                            <input type="number"
+                            <input type="number" required
                                    asp-for="Entity.IncomingQuantity"
                                    class="form-control"
                                    placeholder="Gelen miktar giriniz"
@@ -100,7 +123,7 @@
                                 Tüketilen Miktar
                             </label>
 
-                            <input type="number"
+                            <input type="number" required
                                    asp-for="Entity.ConsumedQuantity"
                                    class="form-control"
                                    placeholder="Tüketilen miktar giriniz"
@@ -119,8 +142,24 @@
                                    asp-for="Entity.RemainingQuantity"
                                    class="form-control"
                                    placeholder="Kalan miktarı giriniz"
+                                   readonly
                                    step="0.01"
                                     />
+
+                        </div>
+
+                        <!-- Stok MİKTAR (ReadOnly) -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                               Stok
+                            </label>
+
+                            <input type="number" required
+                                   asp-for="Entity.CurrentStock"
+                                   class="form-control"
+                                   placeholder="Güncel stok miktarı giriniz"
+                                   step="0.01" />
 
                         </div>
 
@@ -135,7 +174,7 @@
                                 Vardiya
                             </label>
 
-                            <select asp-for="Entity.ShiftId"
+                            <select asp-for="Entity.ShiftId" required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
 

@@ -12,13 +12,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
     {
         private readonly IDoughPreparationHeadService _doughPreparationHeadService;
         private readonly ILogger<DoughPreparationController> _logger;
+        private readonly ISentezInventoryQueryService _sentez;
 
-        public DoughPreparationController(
-            IDoughPreparationHeadService doughPreparationHeadService,
-            ILogger<DoughPreparationController> logger)
+        public DoughPreparationController(IDoughPreparationHeadService doughPreparationHeadService, ILogger<DoughPreparationController> logger, ISentezInventoryQueryService sentez)
         {
             _doughPreparationHeadService = doughPreparationHeadService;
             _logger = logger;
+            _sentez = sentez;
         }
 
         [HttpGet("getall")]
@@ -45,6 +45,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 User?.Identity?.Name);
 
             var result = await _doughPreparationHeadService.GetWithDetails();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetRawMaterielsInventory")]
+        public async Task<IActionResult> GetRawMaterielsInventory()
+        {
+            _logger.LogInformation(
+                "Atık Kağıt Malzeme Listesi istendi. User={User}",
+                User?.Identity?.Name);
+
+            var result = await _sentez.GetRawMaterielsInventory();
 
             return Ok(result);
         }

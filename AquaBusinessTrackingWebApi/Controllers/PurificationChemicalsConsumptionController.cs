@@ -12,15 +12,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
     {
         private readonly IPurificationChemicalsConsumptionService _service;
         private readonly ILogger<PurificationChemicalsConsumptionController> _logger;
-
-        public PurificationChemicalsConsumptionController(
-            IPurificationChemicalsConsumptionService service,
-            ILogger<PurificationChemicalsConsumptionController> logger)
+        private readonly ISentezInventoryQueryService _sentezService;
+        public PurificationChemicalsConsumptionController(IPurificationChemicalsConsumptionService service, ILogger<PurificationChemicalsConsumptionController> logger, ISentezInventoryQueryService sentezService)
         {
             _service = service;
             _logger = logger;
+            _sentezService = sentezService;
         }
-
 
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
@@ -39,6 +37,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
 
+
         [HttpGet("details")]
         public async Task<IActionResult> GetWithDetails()
         {
@@ -51,6 +50,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+
+        [HttpGet("getChemicalInventory")]
+        public async Task<IActionResult> GetChemicalInventory()
+        {
+            _logger.LogInformation(
+                "Kimyasal Malzeme Kartları istendi. User={User}",
+                User?.Identity?.Name);
+
+            var result = await _sentezService.GetChemicalInventory();
+
+            return Ok(result);
+        }
 
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)

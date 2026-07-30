@@ -13,7 +13,7 @@
 
         public decimal RemainingQuantity { get; set; }
 
-
+        public decimal CurrentStock { get; set; }
 
         public int DepartmentId { get; set; }
 
