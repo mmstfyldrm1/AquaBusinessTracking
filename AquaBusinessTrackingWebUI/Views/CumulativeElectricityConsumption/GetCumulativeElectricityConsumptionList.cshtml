@@ -172,38 +172,36 @@
 
 <div id="modalContainer"></div>
 
-
 <script>
-           function openModal(id = null) {
-        const url = id
-            ? `/CumulativeElectricityConsumption/Edit/${id}`
-            : `/CumulativeElectricityConsumption/Edit`;
+function openModal(id = null) {
+    const url = id
+        ? `/CumulativeElectricityConsumption/Edit/${id}`
+        : `/CumulativeElectricityConsumption/Edit`;
 
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                document.getElementById('modalContainer').innerHTML = html;
-                const modalEl = document.getElementById('cumulativeElectricityConsumptionModal');
-                const modal = new bootstrap.Modal(modalEl);
+    fetch(url)
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById('modalContainer').innerHTML = html;
+            const modalEl = document.getElementById('cumulativeElectricityConsumptionModal');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
 
-                modal.show();
+            const form = modalEl.querySelector('form');
+            const actionUrl = form.getAttribute('action'); // ← form'un kendi action'ını oku
 
-                const form = modalEl.querySelector('form');
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    fetch('/CumulativeElectricityConsumption/Edit', {
-                        method: 'POST',
-                        body: new FormData(this)
-                    })
-                    .then(r => {
-                        if (r.ok) {
-                            modal.hide();
-                            location.reload();
-                        }
-                    });
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: new FormData(this)
+                })
+                .then(r => {
+                    if (r.ok) {
+                        modal.hide();
+                        location.reload();
+                    }
                 });
             });
-    }
+        });
+}
 </script>
-

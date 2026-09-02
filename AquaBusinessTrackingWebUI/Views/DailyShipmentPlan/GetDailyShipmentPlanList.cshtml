@@ -251,17 +251,43 @@
     }
 
     function initCascadeDropdowns(modalEl) {
-        // --- Cari Hesap alanları ---
-        const txtCompanySearch  = modalEl.querySelector('#txtCompanySearch');
-        const companyDatalist   = modalEl.querySelector('#companyDatalist');
-        const txtCompanyCode    = modalEl.querySelector('#txtCompanyCode');
-        const hdnCompanyName    = modalEl.querySelector('#hdnCompanyName');
-        const hdnCompanyRecId   = modalEl.querySelector('#hdnCompanyRecId');
-        const lblCompanyInvalid = modalEl.querySelector('#lblCompanyInvalid');
+        // --- API bağlantı bilgileri (form'daki data attribute'lardan okunuyor) ---
+        const formEl   = modalEl.querySelector('form');
+        const apiBase  = (formEl.dataset.apiBase || '').replace(/\/$/, ''); // sondaki / varsa temizle
+        const jwtToken = formEl.dataset.jwt || '';
+
+        function apiUrl(path) {
+            return `${apiBase}/DailyShipmentPlan/${path}`;
+        }
+
+        function apiFetch(path) {
+            return fetch(apiUrl(path), {
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                }
+            });
+        }
+
+        // --- Cari Hesap alanları (Select2) ---
+        const ddlCompanyEl   = modalEl.querySelector('#ddlCompany');
+        const txtCompanyCode = modalEl.querySelector('#txtCompanyCode');
+        const hdnCompanyName = modalEl.querySelector('#hdnCompanyName');
+        const $ddlCompany    = $(ddlCompanyEl);
+
+        // Select2'yi başlat. dropdownParent ZORUNLU: modal içindeyken bunu
+        // vermezsen açılır liste modal'ın arkasında/dışında render olabilir.
+        $ddlCompany.select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Cari Seçiniz',
+            width: '100%',
+            dropdownParent: $(modalEl),
+            allowClear: true
+        });
 
         // --- Şehir / İlçe / Adres alanları ---
         const ddlCity     = modalEl.querySelector('#ddlCity');
         const ddlDistrict = modalEl.querySelector('#ddlDistrict');
+        const ddlAddress  = modalEl.querySelector('#ddlAddress');
         const txtAddress  = modalEl.querySelector('#txtAddress');
 
         // --- Yardımcı fonksiyonlar ---
@@ -270,53 +296,46 @@
             selectEl.disabled = true;
         }
 
-        // İsim -> {recId, code, name} eşlemesi (cari arama için bellek içi cache)
-        let companyMap = {};
-
-        // 1) CARİ listesini yükle, datalist'i doldur (sadece isim gösterilir)
-        fetch('/DailyShipmentPlan/currentaccount')
+        // 1) CARİ listesini yükle, Select2'ye option olarak ekle
+        apiFetch('currentaccount')
             .then(r => r.json())
-            .then(data => {
-                companyDatalist.innerHTML = '';
-                companyMap = {};
+            .then(response => {
+                const data = response.data || [];
 
                 data.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.currentAccountName;
-                    companyDatalist.appendChild(opt);
-
-                    companyMap[item.currentAccountName] = {
-                        recId: item.recId,
-                        code: item.currentAccountCode,
-                        name: item.currentAccountName
-                    };
+                    const opt = new Option(item.currentAccountName, item.recId, false, false);
+                    opt.dataset.code = item.currentAccountCode;
+                    opt.dataset.name = item.currentAccountName;
+                    ddlCompanyEl.appendChild(opt);
                 });
+
+                // Select2'ye yeni option'lar eklendiğini bildir
+                $ddlCompany.trigger('change.select2');
             });
 
-        // 2) Cari adı seçilince -> kodu otomatik yaz, şehirleri getir
-        txtCompanySearch.addEventListener('input', function () {
-            const match = companyMap[this.value];
+        // 2) Cari seçilince -> kodu otomatik yaz, şehirleri getir
+        $ddlCompany.on('change', function () {
+            const recId = this.value;
+            const selectedOption = this.options[this.selectedIndex];
 
             resetSelect(ddlCity, 'Önce Cari Seçiniz');
             resetSelect(ddlDistrict, 'Önce Şehir Seçiniz');
+            resetSelect(ddlAddress, 'Önce İlçe Seçiniz');
             txtAddress.value = '';
 
-            if (!match) {
+            if (!recId) {
                 txtCompanyCode.value = '';
                 hdnCompanyName.value = '';
-                hdnCompanyRecId.value = '';
-                lblCompanyInvalid.classList.toggle('d-none', this.value === '');
                 return;
             }
 
-            lblCompanyInvalid.classList.add('d-none');
-            txtCompanyCode.value = match.code;
-            hdnCompanyName.value = match.name;
-            hdnCompanyRecId.value = match.recId;
+            txtCompanyCode.value = selectedOption.dataset.code || '';
+            hdnCompanyName.value = selectedOption.dataset.name || '';
 
-            fetch(`/DailyShipmentPlan/cities/${match.recId}`)
+            apiFetch(`cities/${recId}`)
                 .then(r => r.json())
-                .then(data => {
+                .then(response => {
+                    const data = response.data || [];
                     ddlCity.innerHTML = '<option value="">Şehir Seçiniz</option>';
                     data.forEach(c => {
                         const opt = document.createElement('option');
@@ -333,13 +352,15 @@
         ddlCity.addEventListener('change', function () {
             const selected = this.selectedOptions[0];
             resetSelect(ddlDistrict, 'Önce Şehir Seçiniz');
+            resetSelect(ddlAddress, 'Önce İlçe Seçiniz');
             txtAddress.value = '';
 
             if (!this.value) return;
 
-            fetch(`/DailyShipmentPlan/districts/${selected.dataset.recid}`)
+            apiFetch(`districts/${selected.dataset.recid}`)
                 .then(r => r.json())
-                .then(data => {
+                .then(response => {
+                    const data = response.data || [];
                     ddlDistrict.innerHTML = '<option value="">İlçe Seçiniz</option>';
                     data.forEach(d => {
                         const opt = document.createElement('option');
@@ -352,31 +373,67 @@
                 });
         });
 
-        // 4) İlçe değişince -> Adres bilgisini getir ve textarea'ya yaz
+        // 4) İlçe değişince -> Adres kayıtlarını getir, ddlAddress'i doldur
         ddlDistrict.addEventListener('change', function () {
             const selected = this.selectedOptions[0];
+            resetSelect(ddlAddress, 'Önce İlçe Seçiniz');
             txtAddress.value = '';
 
             if (!this.value) return;
 
-            fetch(`/DailyShipmentPlan/neighborhoods/${selected.dataset.recid}`)
+            apiFetch(`neighborhoods/${ddlCompanyEl.value}`)
                 .then(r => r.json())
-                .then(data => {
-                    const parts = [data.line1, data.line2, data.line3]
-                        .filter(p => p && p.trim() !== '');
-                    txtAddress.value = parts.join(', ');
+                .then(response => {
+                    const inner = response.data;
+                    // API bazen tek obje, bazen liste dönebilir; ikisini de karşıla
+                    const list = Array.isArray(inner) ? inner : (inner ? [inner] : []);
+
+                    ddlAddress.innerHTML = '<option value="">Adres Seçiniz</option>';
+                    list.forEach((item, index) => {
+                        const opt = document.createElement('option');
+                        opt.value = index;
+                        opt.dataset.line1 = item.line1 || '';
+                        opt.dataset.line2 = item.line2 || '';
+                        opt.dataset.line3 = item.line3 || '';
+                        opt.textContent = item.line1 || `Adres ${index + 1}`;
+                        ddlAddress.appendChild(opt);
+                    });
+                    ddlAddress.disabled = list.length === 0;
+
+                    // Tek kayıt varsa otomatik seç ve textarea'yı doldur
+                    if (list.length === 1) {
+                        ddlAddress.selectedIndex = 1;
+                        fillAddressFromOption(ddlAddress.selectedOptions[0]);
+                    }
                 });
         });
 
-        // 5) Submit öncesi: geçerli bir cari seçilmiş mi kontrol et
+        // 5) Kullanıcı adres kaydını değiştirirse -> textarea'yı güncelle (sonradan elle düzenlenebilir)
+        ddlAddress.addEventListener('change', function () {
+            const selected = this.selectedOptions[0];
+            if (!this.value && this.value !== '0') {
+                txtAddress.value = '';
+                return;
+            }
+            fillAddressFromOption(selected);
+        });
+
+        function fillAddressFromOption(opt) {
+            const parts = [opt.dataset.line1, opt.dataset.line2, opt.dataset.line3]
+                .filter(p => p && p.trim() !== '');
+            txtAddress.value = parts.join(', ');
+        }
+
+        // 6) Submit öncesi: geçerli bir cari seçilmiş mi kontrol et
         const form = modalEl.querySelector('form');
         form.addEventListener('submit', function (e) {
-            if (!hdnCompanyRecId.value) {
+            if (!ddlCompanyEl.value) {
                 e.preventDefault();
                 e.stopPropagation();
-                lblCompanyInvalid.classList.remove('d-none');
-                txtCompanySearch.focus();
+                $ddlCompany.select2('open');
             }
         }, true); // capture: true -> openModal içindeki asıl submit handler'dan önce çalışır
     }
 </script>
+
+

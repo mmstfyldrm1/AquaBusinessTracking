@@ -11,36 +11,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form method="post" action="/ElectricConsumption/Edit">
+            <form method="post" action="/CumulativeElectricityConsumption/Edit">
                 <div class="modal-body">
                     <div class="row g-3">
 
-                        @if (Model.IsEdit)
-                        {
-                            <input type="hidden" asp-for="Entity.RecId" />
-                        }
+                        <input type="hidden" asp-for="Entity.RecId" />
 
                         <div class="col-md-6">
                             <label class="form-label">Tarih</label>
-                            <input type="date"
-                                   asp-for="Entity.ReceiptDate"
-                                   class="form-control" />
+                            <input type="date" asp-for="Entity.ReceiptDate" class="form-control" />
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Yıl</label>
-                            <input type="number" required
-                                   asp-for="Entity.Year"
-                                   class="form-control" />
+                            <input type="number" required asp-for="Entity.Year" class="form-control" />
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Ay</label>
-                            <input type="number" required
-                                   min="1"
-                                   max="12"
-                                   asp-for="Entity.Month"
-                                   class="form-control" />
+                            <input type="number" required min="1" max="12" asp-for="Entity.Month" class="form-control" />
                         </div>
 
                         <div class="col-md-6">
@@ -55,10 +44,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Tüketim</label>
                             <div class="input-group">
-                                <input type="number" required
-                                       step="0.01"
-                                       asp-for="Entity.Consumption"
-                                       class="form-control" />
+                                <input type="number" required step="0.01" asp-for="Entity.Consumption" class="form-control" />
                                 <span class="input-group-text">kWh</span>
                             </div>
                         </div>
@@ -66,10 +52,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Endüktif Reaktif %</label>
                             <div class="input-group">
-                                <input type="number" required
-                                       step="0.01"
-                                       asp-for="Entity.InductiveReactive"
-                                       class="form-control" />
+                                <input type="number" required step="0.01" asp-for="Entity.InductiveReactive" class="form-control" />
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
@@ -77,24 +60,16 @@
                         <div class="col-md-6">
                             <label class="form-label">KapasitifReaktif %</label>
                             <div class="input-group">
-                                <input type="number" required
-                                       step="0.01"
-                                       asp-for="Entity.CapacitiveReactive"
-                                       class="form-control" />
+                                <input type="number" required step="0.01" asp-for="Entity.CapacitiveReactive" class="form-control" />
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
 
-                     
-
-                        <!-- VARDIYA -->
                         <div class="col-md-6">
                             <label class="form-label">Vardiya</label>
-
                             <select asp-for="Entity.ShiftId"
                                     asp-items="ViewBag.Shifts" required
                                     class="form-select">
-
                                 <option value="">Vardiya Seçiniz</option>
                             </select>
                         </div>
@@ -105,14 +80,9 @@
                                 <span class="input-group-text">
                                     <ion-icon name="person-outline"></ion-icon>
                                 </span>
-                                <input type="text"
-                                       class="form-control"
-                                       value="@ViewBag.AppUserName"
-                                       disabled />
+                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
                             </div>
                         </div>
-
-                        
 
                         <input type="hidden" asp-for="Entity.InsertDate" />
                         <input type="hidden" asp-for="Entity.UpdateDate" />
@@ -123,16 +93,10 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-light"
-                            data-bs-dismiss="modal">
-                        İptal
-                    </button>
-
-                    <button type="submit"
-                            class="btn btn-success px-4">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success px-4">
                         <ion-icon name="save-outline" class="me-1"></ion-icon>
-                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                        Güncelle
                     </button>
                 </div>
             </form>

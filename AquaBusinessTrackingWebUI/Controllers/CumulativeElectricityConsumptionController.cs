@@ -50,24 +50,22 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
+
             var responseLocationList = await client.GetAsync($"{_apiSettings.BaseUrl}/CumulativeElectricityConsumption/location");
             var jsonLocation = await responseLocationList.Content.ReadAsStringAsync();
             var dtoLocation = JsonConvert.DeserializeObject<List<CumulativeElectricityConsumptionDto>>(jsonLocation);
 
             if (dtoLocation == null || !responseLocationList.IsSuccessStatusCode)
             {
-                var errorMessage = await responseLocationList.Content.ReadAsStringAsync();
                 return RedirectToAction("GetCumulativeElectricityConsumptionList");
             }
-            var Location = dtoLocation?
-                 .Select(x => new SelectListItem
-                 {
-                     Value = x.RecId.ToString(),
-                     Text = x.LocationName
-                 })
-                 .ToList() ?? new();
+
+            var Location = dtoLocation
+                .Select(x => new SelectListItem { Value = x.RecId.ToString(), Text = x.LocationName })
+                .ToList();
 
             ViewBag.Location = Location;
+
             if (id.HasValue)
             {
                 if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.Update"))
@@ -97,14 +95,24 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
-                var model = new ModalViewModel<CumulativeElectricityConsumptionDto>
+
+                var bulkDto = new CumulativeElectricityConsumptionBulkDto
                 {
-                    Entity = new CumulativeElectricityConsumptionDto(),
+                    Rows = dtoLocation.Select(x => new LocationConsumptionRowDto
+                    {
+                        ElectricMeterLocationId = x.RecId,
+                        LocationName = x.LocationName
+                    }).ToList()
+                };
+
+                var model = new ModalViewModel<CumulativeElectricityConsumptionBulkDto>
+                {
+                    Entity = bulkDto,
                     IsEdit = false,
                     ModalTitle = "Kayıt Ekle",
-                    FormAction = "Edit"
+                    FormAction = "EditBulk"
                 };
-                return PartialView("_Edit", model);
+                return PartialView("_AddBulk", model);
             }
         }
 
@@ -169,6 +177,51 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 {
                     var errorMessage = result.Content.ReadAsStringAsync();
                     return PartialView("_Edit", model);
+                }
+            }
+
+            return RedirectToAction("GetCumulativeElectricityConsumptionList");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBulk(ModalViewModel<CumulativeElectricityConsumptionBulkDto> model)
+        {
+            if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.Add"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var departmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
+            var appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var bulk = model.Entity;
+            var rowsToSave = bulk.Rows.Where(r => r.Consumption.HasValue);
+
+            foreach (var row in rowsToSave)
+            {
+                var dto = new CumulativeElectricityConsumptionDto
+                {
+                    ReceiptDate = (DateTime)bulk.ReceiptDate,
+                    Year = bulk.Year,
+                    Month = bulk.Month,
+                    ShiftId = bulk.ShiftId,
+                    ElectricMeterLocationId = row.ElectricMeterLocationId,
+                    Consumption = row.Consumption.Value,
+                    InductiveReactive = (float)row.InductiveReactive,
+                    CapacitiveReactive = (float)row.CapacitiveReactive,
+                    DepartmentId = departmentId,
+                    AppUserId = appUserId
+                };
+
+                var json = JsonConvert.SerializeObject(dto);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var result = await client.PostAsync($"{_apiSettings.BaseUrl}/CumulativeElectricityConsumption/add", content);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var errorMessage = await result.Content.ReadAsStringAsync();
+                    // loglayabilirsin, döngüye devam ediyoruz
                 }
             }
 

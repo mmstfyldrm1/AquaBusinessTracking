@@ -545,6 +545,12 @@
                 // =========================================================
 
                 initializeDetailRows(modalEl);
+
+                // =========================================================
+                // CARİ HESAP SEÇİMİ (Select2)
+                // =========================================================
+
+                initCompanySelect2(modalEl);
             })
             .catch(function (error) {
 
@@ -552,6 +558,92 @@
 
                 alert('Form yüklenirken bir hata oluştu.');
             });
+    }
+
+
+    // =============================================================
+    // CARİ HESAP SEÇİMİ (Select2)
+    // =============================================================
+
+    function initCompanySelect2(modalEl) {
+
+        var ddlCompanyEl = modalEl.querySelector('#ddlCompany');
+
+        // Bu formda cari seçim alanı yoksa sessizce çık
+        if (!ddlCompanyEl) {
+            return;
+        }
+
+        var formEl        = modalEl.querySelector('form');
+        var apiBase        = (formEl.dataset.apiBase || '').replace(/\/$/, '');
+        var jwtToken        = formEl.dataset.jwt || '';
+        var txtCompanyCode  = modalEl.querySelector('#txtCompanyCode');
+        var hdnCompanyName  = modalEl.querySelector('#hdnCompanyName');
+        var hdnCompanyRecId = modalEl.querySelector('#hdnCompanyRecId');
+        var $ddlCompany     = $(ddlCompanyEl);
+
+        function apiFetch(path) {
+            // NOT: cari listesi endpoint'i DailyShipmentPlan controller'ında
+            // tanımlı (paylaşılan Sentez entegrasyonu). Kendi projende bu
+            // endpoint farklı bir controller'daysa "DailyShipmentPlan"
+            // kısmını ona göre değiştir.
+            return fetch(`${apiBase}/DailyShipmentPlan/${path}`, {
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                }
+            });
+        }
+
+        // Select2'yi başlat. dropdownParent ZORUNLU: modal içindeyken
+        // bunu vermezsen açılır liste modal'ın arkasında/dışında render olabilir.
+        $ddlCompany.select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Cari Seçiniz',
+            width: '100%',
+            dropdownParent: $(modalEl),
+            allowClear: true
+        });
+
+        // Cari listesini yükle
+        apiFetch('currentaccount')
+            .then(function (r) { return r.json(); })
+            .then(function (response) {
+
+                var data = response.data || [];
+
+                data.forEach(function (item) {
+                    var opt = new Option(item.currentAccountName, item.recId, false, false);
+                    opt.dataset.code = item.currentAccountCode;
+                    opt.dataset.name = item.currentAccountName;
+                    ddlCompanyEl.appendChild(opt);
+                });
+
+                $ddlCompany.trigger('change.select2');
+
+                // Düzenleme (edit) modunda zaten kayıtlı bir cari varsa
+                // (hidden alanda recId doluysa) Select2'de otomatik seçili göster
+                if (hdnCompanyRecId && hdnCompanyRecId.value) {
+                    $ddlCompany.val(hdnCompanyRecId.value).trigger('change');
+                }
+            });
+
+        // Cari seçilince -> kodu ve hidden recId'yi otomatik doldur
+        $ddlCompany.on('change', function () {
+
+            var recId = this.value;
+            var selectedOption = this.options[this.selectedIndex];
+
+            if (!recId) {
+                if (txtCompanyCode) txtCompanyCode.value = '';
+                if (hdnCompanyName) hdnCompanyName.value = '';
+                if (hdnCompanyRecId) hdnCompanyRecId.value = '';
+                return;
+            }
+
+            if (txtCompanyCode)  txtCompanyCode.value  = selectedOption.dataset.code || '';
+            if (hdnCompanyName)  hdnCompanyName.value  = selectedOption.dataset.name || '';
+            if (hdnCompanyRecId) hdnCompanyRecId.value = recId;
+        });
     }
 
 

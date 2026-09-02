@@ -2,6 +2,98 @@
 
 @model ModalViewModel<DailyShipmentPlanDto>
 
+<style>
+    /* --- Select2 kutusunun kendisi: Bootstrap form-control ile aynı yükseklik/hizada --- */
+    #DailyShipmentPlanModal .select2-container {
+        width: 100% !important;
+    }
+
+        #DailyShipmentPlanModal .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            padding: 0 0.75rem;
+        }
+
+            #DailyShipmentPlanModal .select2-container .select2-selection--single .select2-selection__rendered {
+                line-height: normal;
+                padding: 0;
+                color: #212529;
+            }
+
+            #DailyShipmentPlanModal .select2-container .select2-selection--single .select2-selection__arrow {
+                height: 36px;
+                right: 8px;
+            }
+
+    #DailyShipmentPlanModal .select2-container--focus .select2-selection--single,
+    #DailyShipmentPlanModal .select2-container--open .select2-selection--single {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    /* --- Açılır liste: modal'ın üstünde, düzgün gölgeli, kesin scroll'lu --- */
+    .select2-container--open .select2-dropdown {
+        z-index: 1200; /* Bootstrap modal (1055) üzerinde kalsın */
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    /* Arama kutusu (dropdown'ın en üstü) */
+    .select2-container--open .select2-search--dropdown {
+        padding: 0.5rem;
+    }
+
+        .select2-container--open .select2-search--dropdown .select2-search__field {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            outline: none;
+        }
+
+    /* Sonuç listesi: sabit maksimum yükseklik + dikey scroll garanti */
+    .select2-results__options {
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+        /* Scrollbar'ı biraz daha zarif göster (WebKit tarayıcılar: Chrome/Edge) */
+        .select2-results__options::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .select2-results__options::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 4px;
+        }
+
+        .select2-results__options::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+    /* Satır hover/seçili renkleri Bootstrap primary ile uyumlu */
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+    }
+
+    .select2-results__option[aria-selected="true"] {
+        background-color: #e7f1ff;
+    }
+
+    /* Uzun firma adları taşmasın, ... ile kessin */
+    .select2-results__option {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+
 <div class="modal fade" id="DailyShipmentPlanModal" tabindex="-1">
 
     <div class="modal-dialog modal-lg">
@@ -22,8 +114,9 @@
             </div>
 
             <form method="post"
-                  action="/DailyShipmentPlan/Edit">
-
+                  action="/DailyShipmentPlan/Edit"
+                  data-api-base="@ViewBag.ApiBaseUrl"
+                  data-jwt="@ViewBag.JwtToken">
                 <div class="modal-body">
 
                     <div class="row g-3">
@@ -71,21 +164,10 @@
                         <!-- FİRMA ADI -->
                         <div class="col-md-8">
                             <label class="form-label">Cari Hesap Adı</label>
-                            <input type="text"
-                                   id="txtCompanySearch"
-                                   class="form-control"
-                                   list="companyDatalist"
-                                   placeholder="Cari adı yazarak arayınız..."
-                                   autocomplete="off"
-                                   required />
-                            <datalist id="companyDatalist"></datalist>
-
+                            <select id="ddlCompany" class="form-select" style="width:100%;" required>
+                                <option value="">Cari Seçiniz</option>
+                            </select>
                             <input type="hidden" asp-for="Entity.CompanyName" id="hdnCompanyName" />
-                            <input type="hidden" id="hdnCompanyRecId" />
-
-                            <small class="text-danger d-none" id="lblCompanyInvalid">
-                                Lütfen listeden geçerli bir cari seçiniz.
-                            </small>
                         </div>
 
                         <!-- ÜLKE -->

@@ -1,0 +1,86 @@
+﻿@using AquaBusinessTrackingWebUI.Models
+@using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos
+@model ModalViewModel<CumulativeElectricityConsumptionBulkDto>
+
+<div class="modal fade" id="cumulativeElectricityConsumptionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/CumulativeElectricityConsumption/EditBulk">
+                <div class="modal-body">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Tarih</label>
+                            <input type="date" asp-for="Entity.ReceiptDate" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Yıl</label>
+                            <input type="number" asp-for="Entity.Year" required class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Ay</label>
+                            <input type="number" asp-for="Entity.Month" min="1" max="12" required class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.ShiftId" asp-items="ViewBag.Shifts" required class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h6 class="mb-2">Lokasyon Bazlı Tüketimler</h6>
+
+                    <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Lokasyon</th>
+                                    <th style="width:140px">Tüketim (kWh)</th>
+                                    <th style="width:140px">End. Reaktif %</th>
+                                    <th style="width:140px">Kap. Reaktif %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Entity.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Model.Entity.Rows[i].LocationName
+                                            <input type="hidden" asp-for="Entity.Rows[i].ElectricMeterLocationId" />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" asp-for="Entity.Rows[i].Consumption" class="form-control form-control-sm" />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" asp-for="Entity.Rows[i].InductiveReactive" class="form-control form-control-sm" />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" asp-for="Entity.Rows[i].CapacitiveReactive" class="form-control form-control-sm" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        Kaydet
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

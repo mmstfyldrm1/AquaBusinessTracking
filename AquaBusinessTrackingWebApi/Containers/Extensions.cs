@@ -55,6 +55,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityRepository, CirculationTankAirPressureMeasurementTurbidityRepository>();
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityService, CirculationTankAirPressureMeasurementTurbidityManager>();
             Services.AddScoped<ILogisticsTrackingReportRepository, LogisticsTrackingReportRepository>();
+            Services.AddScoped<ISentezCurrentAccountQueryService, SentezCurrentAccountQueryService>();
             Services.AddScoped<ILogisticsTrackingReportService, LogisticsTrackingReportManager>();
             Services.AddScoped<INaturelGasMeterMonitoringRepository, NaturelGasMeterMonitoringRepository>();
             Services.AddScoped<INaturelGasMeterMonitoringService, NaturelGasMeterMonitoringManager>();

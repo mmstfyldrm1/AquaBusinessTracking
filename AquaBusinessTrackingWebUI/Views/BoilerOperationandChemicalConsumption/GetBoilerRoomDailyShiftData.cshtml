@@ -403,122 +403,36 @@
 
 <script>
 
-    function openModal(id = null) {
-
+       function openModal(id = null) {
         const url = id
             ? `/BoilerOperationandChemicalConsumption/Edit/${id}`
             : `/BoilerOperationandChemicalConsumption/Edit`;
 
         fetch(url)
-            .then(response => {
-
-                if (!response.ok) {
-                    throw new Error(
-                        `Modal yüklenemedi. HTTP: ${response.status}`
-                    );
-                }
-
-                return response.text();
-
-            })
+            .then(r => r.text())
             .then(html => {
-
-                document.getElementById("modalContainer").innerHTML = html;
-
-                const modalEl =
-                    document.getElementById(
-                        "boilerOperationandChemicalConsumptionModal"
-                    );
-
-                if (!modalEl) {
-
-                    throw new Error(
-                        "Modal bulunamadı. ID: boilerOperationandChemicalConsumptionModal"
-                    );
-
-                }
-
-                const modal =
-                    bootstrap.Modal.getOrCreateInstance(modalEl);
-
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('boilerOperationandChemicalConsumptionModal');
+                const modal = new bootstrap.Modal(modalEl);
                 modal.show();
 
+                const form = modalEl.querySelector('form');
+                const actionUrl = form.getAttribute('action'); // Edit ya da EditBulk, formdan geliyor
 
-                const form = modalEl.querySelector("form");
-
-                if (!form) {
-
-                    throw new Error(
-                        "Modal içerisindeki form bulunamadı."
-                    );
-
-                }
-
-
-                form.addEventListener("submit", function (e) {
-
+                form.addEventListener('submit', function (e) {
                     e.preventDefault();
-
-                    fetch(
-                        "/BoilerOperationandChemicalConsumption/Edit",
-                        {
-                            method: "POST",
-                            body: new FormData(this)
-                        }
-                    )
-                    .then(response => {
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                "Kayıt işlemi başarısız."
-                            );
-
-                        }
-
-                        return response;
-
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        body: new FormData(this)
                     })
-                    .then(() => {
-
-                        modal.hide();
-
-                        setTimeout(() => {
-
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
                             location.reload();
-
-                        }, 300);
-
-                    })
-                    .catch(error => {
-
-                        console.error(
-                            "Kayıt hatası:",
-                            error
-                        );
-
-                        alert(
-                            error.message
-                        );
-
+                        }
                     });
-
                 });
-
-            })
-            .catch(error => {
-
-                console.error(
-                    "Modal hatası:",
-                    error
-                );
-
-                alert(
-                    error.message
-                );
-
             });
-
     }
 
 </script>

@@ -26,7 +26,7 @@ namespace BusinessLayer.Concrete
             var sb = new StringBuilder();
             sb.AppendLine($"select ");
             sb.AppendLine($"");
-            sb.AppendLine($"c.RecId [CityId]");
+            sb.AppendLine($"cu.RecId [CityId]");
             sb.AppendLine($",c.CityName [CityName]");
             sb.AppendLine($"");
             sb.AppendLine($"");
@@ -39,7 +39,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<SentezIntegrationsResponsoDto<SentezCurrentAccountResponse>?> GetCurrentAccountCodeAndName()
         {
-            var query = "Select RecId, CurrentAccountCode, CurrentAccountName From Erp_CurrentAccount where CompanyId=22";
+            var query = "Select RecId, CurrentAccountCode, CurrentAccountName From Erp_CurrentAccount where CurrentAccountCode Like  'M%' and  CompanyId=22";
             return await _service.ExecuteQueryAsync<SentezCurrentAccountResponse>(query);
         }
 
@@ -48,7 +48,7 @@ namespace BusinessLayer.Concrete
             var sb = new StringBuilder();
             sb.AppendLine($"select ");
             sb.AppendLine($"");
-            sb.AppendLine($"d.RecId [CityId]");
+            sb.AppendLine($"d.RecId [DistrictId]");
             sb.AppendLine($",d.DistrictName [DistrictName]");
             sb.AppendLine($"");
             sb.AppendLine($"");

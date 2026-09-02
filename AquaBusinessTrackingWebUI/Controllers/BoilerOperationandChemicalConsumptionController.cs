@@ -98,18 +98,34 @@ namespace AquaBusinessTrackingWebUI.Controllers
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
 
-                var dto = new BoilerOperationandChemicalConsumptionDto
+                // ConsumptionPlaces listesini ViewBag'den değil, direkt API'den çekip Rows'a dolduruyoruz
+                var kazanResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanEnergyConsumption/details");
+                var kazanJson = await kazanResponse.Content.ReadAsStringAsync();
+                var kazanList = JsonConvert.DeserializeObject<List<KazanEnergyConsumptionDto>>(kazanJson);
+
+                if (kazanList == null || !kazanResponse.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("GetBoilerRoomDailyShiftData");
+                }
+
+                var bulkDto = new BoilerOperationandChemicalConsumptionBulkDto
                 {
                     ReceiptDate = DateTime.Now,
+                    Rows = kazanList.Select(x => new ConsumptionPlaceRow
+                    {
+                        ConsumptionPlaceId = x.RecId,
+                        ConsumptionPlaceName = x.ConsumptionPlace
+                    }).ToList()
                 };
-                var editModel = new ModalViewModel<BoilerOperationandChemicalConsumptionDto>
+
+                var bulkModel = new ModalViewModel<BoilerOperationandChemicalConsumptionBulkDto>
                 {
-                    Entity = dto,
+                    Entity = bulkDto,
                     IsEdit = false,
                     ModalTitle = "Kayıt Ekle",
-                    FormAction = "Edit"
+                    FormAction = "EditBulk"
                 };
-                return PartialView("_Edit", editModel);
+                return PartialView("_AddBulk", bulkModel);
             }
         }
 
@@ -178,6 +194,55 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var values = JsonConvert.DeserializeObject<List<BoilerOperationandChemicalConsumptionDto>>(json);
 
             return Json(values ?? new List<BoilerOperationandChemicalConsumptionDto>());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBulk(ModalViewModel<BoilerOperationandChemicalConsumptionBulkDto> model)
+        {
+            if (!_currentUserService.HasPermission("KAZAN.BoilerOperationandChemicalConsumption.Add"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var departmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
+            var appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var bulk = model.Entity;
+            var rowsToSave = bulk.Rows.Where(r => r.ConsumptionQuantity.HasValue);
+
+            int failCount = 0;
+
+            foreach (var row in rowsToSave)
+            {
+                var dto = new BoilerOperationandChemicalConsumptionDto
+                {
+                    ReceiptDate = bulk.ReceiptDate ?? DateTime.Now,
+                    ScalePlaceId = bulk.ScalePlaceId,
+                    ShiftId = bulk.ShiftId,
+                    InUse = 1,
+                    ConsumptionPlaceId = row.ConsumptionPlaceId,
+                    ConsumptionQuantity = row.ConsumptionQuantity.Value,
+                    Explanation = row.Explanation,
+                    DepartmentId = departmentId,
+                    AppUserId = appUserId,
+                    InsertDate = DateTime.Now
+                };
+
+                var json = JsonConvert.SerializeObject(dto);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var result = await client.PostAsync($"{_apiSettings.BaseUrl}/BoilerOperationandChemicalConsumption/add", content);
+                if (!result.IsSuccessStatusCode)
+                {
+                    failCount++;
+                }
+            }
+
+            if (failCount > 0)
+                TempData["Warning"] = $"{failCount} kayıt için ekleme başarısız oldu.";
+
+            return RedirectToAction("GetBoilerRoomDailyShiftData");
         }
 
         [HttpPost]

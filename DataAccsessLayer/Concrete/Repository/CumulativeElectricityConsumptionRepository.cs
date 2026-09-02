@@ -42,7 +42,6 @@ namespace DataAccsessLayer.Concrete.Repository
                  .Include(x => x.AppUser)
                  .Include(x => x.ElectricMeterLocation)
                  .OrderByDescending(x => x.RecId)
-                 .OrderBy(x => x.RecId)
                  .Take(700)
                  .AsNoTracking()
                  .ToListAsync();
@@ -58,9 +57,6 @@ namespace DataAccsessLayer.Concrete.Repository
                 .Include(x => x.AppUser)
                 .Include(x => x.ElectricMeterLocation)
                 .Where(x => x.ReceiptDate >= StartDate && x.ReceiptDate < EndDate);
-
-            var sql = query.ToQueryString();
-            Console.WriteLine(sql);
 
             return await query.ToListAsync();
         }
