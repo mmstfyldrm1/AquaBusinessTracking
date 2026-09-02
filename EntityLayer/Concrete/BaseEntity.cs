@@ -14,7 +14,6 @@
         public DB_Department? Department { get; set; }
         public DB_Shift? Shift { get; set; }
         public DB_AppUser? AppUser { get; set; }
-
         public DateTime? InsertDate { get; set; }
 
         public DateTime? UpdateDate { get; set; }

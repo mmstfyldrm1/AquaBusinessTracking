@@ -7,5 +7,7 @@ namespace BusinessLayer.Abstract
         public Task<List<PapperMachineChemicalDto>> GetWithDetails();
 
         public Task<List<PapperMachineChemicalDto>> GetPreviousDay();
+
+        public Task<List<PapperMachineChemicalDto>> GetWithSearchDetails(DateTime startDate, DateTime endDate);
     }
 }

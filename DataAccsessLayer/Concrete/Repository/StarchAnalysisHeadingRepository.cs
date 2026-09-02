@@ -18,6 +18,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_StarchAnalysisHeading
                 .Include(x => x.Department)
                 .Include(x => x.AppUser)
+                 .OrderByDescending(x => x.RecId)
                 .ToListAsync();
         }
     }

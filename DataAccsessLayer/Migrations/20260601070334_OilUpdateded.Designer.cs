@@ -2521,7 +2521,7 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_VechileFuelLogs");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
                 {
                     b.Property<int>("RecId")
                         .ValueGeneratedOnAdd()
@@ -2609,7 +2609,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("Db_WarehouseRequestWait");
+                    b.ToTable("Db_DailyShipmentPlan");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_WastePaperControl", b =>
@@ -4058,22 +4058,22 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -4355,7 +4355,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 
@@ -4429,7 +4429,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 
@@ -4506,7 +4506,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 

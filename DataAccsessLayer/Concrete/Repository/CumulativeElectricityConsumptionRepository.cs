@@ -41,8 +41,28 @@ namespace DataAccsessLayer.Concrete.Repository
                  .Include(x => x.Shift)
                  .Include(x => x.AppUser)
                  .Include(x => x.ElectricMeterLocation)
-                .AsNoTracking()
+                 .OrderByDescending(x => x.RecId)
+                 .OrderBy(x => x.RecId)
+                 .Take(700)
+                 .AsNoTracking()
                  .ToListAsync();
+
+
+        }
+
+        public async Task<List<DB_CumulativeElectricityConsumption>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+
+            var query = _context.Db_CumulativeElectricityConsumption
+                .Include(x => x.Shift)
+                .Include(x => x.AppUser)
+                .Include(x => x.ElectricMeterLocation)
+                .Where(x => x.ReceiptDate >= StartDate && x.ReceiptDate < EndDate);
+
+            var sql = query.ToQueryString();
+            Console.WriteLine(sql);
+
+            return await query.ToListAsync();
         }
 
         public async Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable()

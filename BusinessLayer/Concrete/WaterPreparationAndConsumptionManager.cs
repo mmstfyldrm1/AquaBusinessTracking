@@ -29,6 +29,13 @@ namespace BusinessLayer.Concrete
             return dtos;
         }
 
+        public async Task<List<WaterPreparationAndConsumptionDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+            var entities = await _repo.GetWithSearchDetails(StartDate, EndDate);
+            var dtos = _mapper.Map<List<WaterPreparationAndConsumptionDto>>(entities);
+            return dtos;
+        }
+
 
     }
 }

@@ -30,7 +30,24 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_PapperMachineChemical
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
+                .OrderByDescending(x => x.RecId)
+                .Take(200)
                 .ToListAsync();
+
+        }
+
+        public async Task<List<DB_PapperMachineChemical>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+
+            var query = _context.Db_PapperMachineChemical
+                .Include(x => x.Shift)
+                .Include(x => x.AppUser)
+                .Where(x => x.ReceiptDate >= StartDate && x.ReceiptDate < EndDate);
+
+            var sql = query.ToQueryString();
+            Console.WriteLine(sql);
+
+            return await query.ToListAsync();
         }
     }
 }

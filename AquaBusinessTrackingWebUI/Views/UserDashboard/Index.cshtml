@@ -1,96 +1,226 @@
-﻿
+﻿@using System.Globalization
+@using System.Security.Claims
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/_UserLayout/Index.cshtml";
+
+    var userName = User.Identity?.Name ?? "Kullanıcı";
+    var culture = new CultureInfo("tr-TR");
+    var now = DateTime.Now;
+
+    var day = culture.TextInfo.ToTitleCase(
+        now.ToString("dddd", culture)
+    );
+
+    var date = now.ToString("dd MMMM yyyy", culture);
+    var time = now.ToString("HH:mm");
 }
+
 <style>
-    #todo-container {
-        max-height: 500px;
-        overflow-y: auto;
+
+    /* Dashboard Header */
+
+    .dashboard-header {
+        padding: 10px 2px 24px;
+        border-bottom: 1px solid #e9ecef;
     }
 
-        #todo-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #todo-container::-webkit-scrollbar-thumb {
-            background: #bdbdbd;
-            border-radius: 20px;
-        }
-
-    .card {
-        transition: .25s;
+    .dashboard-welcome {
+        font-size: 1.45rem;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 5px;
     }
 
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.08) !important;
-        }
+    .dashboard-description {
+        font-size: .88rem;
+        color: #6c757d;
+    }
 
-    .input-group-text {
+    .dashboard-user-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f6f8;
+        color: #495057;
+        border-radius: 10px;
+        font-size: 21px;
+    }
+
+    .dashboard-time {
+        text-align: right;
+        padding-left: 30px;
+        border-left: 1px solid #e9ecef;
+    }
+
+    .dashboard-time-value {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .dashboard-date-value {
+        font-size: .78rem;
+        color: #868e96;
+        margin-top: 2px;
+    }
+
+
+    /* Section */
+
+    .dashboard-section {
+        padding-top: 26px;
+    }
+
+    .section-header {
+        margin-bottom: 15px;
+    }
+
+    .section-title {
+        font-size: .95rem;
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .section-description {
+        font-size: .78rem;
+        color: #868e96;
+        margin-top: 3px;
+    }
+
+
+    /* Favoriler */
+
+    .favorite-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .favorite-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 14px;
         background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        color: #343a40;
+        text-decoration: none;
+        font-size: .84rem;
+        font-weight: 500;
+        transition: all .2s ease;
     }
 
-    .btn-primary {
-        border-radius: 10px;
+        .favorite-item i {
+            font-size: 18px;
+            color: #6c757d;
+        }
+
+        .favorite-item:hover {
+            border-color: #ced4da;
+            background: #f8f9fa;
+            color: #212529;
+            transform: translateY(-1px);
+        }
+
+            .favorite-item:hover i {
+                color: #f0ad00;
+            }
+
+
+    @@media (max-width: 576px) {
+
+        .dashboard-time {
+            margin-top: 15px;
+            padding-left: 0;
+            padding-top: 12px;
+            border-left: 0;
+            border-top: 1px solid #e9ecef;
+            text-align: left;
+            width: 100%;
+        }
     }
 
-    .form-control {
-        border-radius: 10px;
-    }
 </style>
 
-@await Component.InvokeAsync("_UserDashboardFavoriteMenuComponentPartial", new { appUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value })
 
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-4">
+<!-- Dashboard Header -->
 
-        <!-- Header -->
-        <div class="d-flex align-items-center justify-content-between mb-3">
+<div class="dashboard-header">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+        <div class="d-flex align-items-center">
+
+            <div class="dashboard-user-icon me-3">
+                <i class="bx bx-user"></i>
+            </div>
+
             <div>
-                <h4 class="fw-bold mb-0">
-                    <i class="bi bi-check2-square text-primary me-2"></i>
-                    To Do List
-                </h4>
-                <small class="text-muted">
-                    Organize your daily tasks
-                </small>
-            </div>
-        </div>
 
-        <hr class="my-3" />
-
-        <!-- Add Todo -->
-        <div class="row g-2 align-items-center">
-            <div class="col-lg-10 col-md-9">
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-pencil-square text-secondary"></i>
-                    </span>
-                    <input id="todo-input"
-                           type="text"
-                           class="form-control border-start-0"
-                           placeholder="What do you need to do today?" />
+                <div class="dashboard-welcome">
+                    Hoş Geldiniz, @userName
                 </div>
+
+                <div class="dashboard-description">
+                    MES Yönetim Paneli
+                    <span class="mx-1">•</span>
+                    @day
+                </div>
+
             </div>
 
-            <div class="col-lg-2 col-md-3 d-grid">
-                <button type="button"
-                        onclick="CreateTodo();"
-                        class="btn btn-primary fw-semibold">
-                    <i class="bi bi-plus-circle me-1"></i>
-                    Add
-                </button>
-            </div>
         </div>
 
-        <!-- Todo List -->
-        <div class="mt-4">
-            <div id="todo-container"
-                 class="border rounded-3 bg-light p-3"
-                 style="min-height:250px;">
+
+        <!-- Saat -->
+
+        <div class="dashboard-time">
+
+            <div class="dashboard-time-value">
+                <i class="bx bx-time-five me-1"></i>
+                @time
             </div>
+
+            <div class="dashboard-date-value">
+                @date
+            </div>
+
         </div>
 
     </div>
+
+</div>
+
+
+<!-- Favoriler -->
+
+<div class="dashboard-section">
+
+    <div class="section-header">
+
+        <div class="section-title">
+            <i class="bx bxs-star text-warning me-1"></i>
+            Favori Modüllerim
+        </div>
+
+        <div class="section-description">
+            Sık kullandığınız modüllere hızlı erişim
+        </div>
+
+    </div>
+
+
+    @await Component.InvokeAsync(
+    "_UserDashboardFavoriteMenuComponentPartial",
+        new
+        {
+            appUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+        }
+        )
+
 </div>

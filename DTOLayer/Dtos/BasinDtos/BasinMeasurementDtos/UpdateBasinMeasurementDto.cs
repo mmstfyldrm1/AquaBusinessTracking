@@ -2,7 +2,7 @@
 {
     public class UpdateBasinMeasurementDto
     {
-        public int Id { get; set; }
+        public int RecId { get; set; }
         public int BasinId { get; set; }
         public decimal? EnteranceAKM { get; set; }
         public decimal? OutAKM { get; set; }
@@ -18,5 +18,15 @@
 
         public string StartHours { get; set; }
         public string EndHours { get; set; }
+
+
+        public int DepartmentId { get; set; }
+        public int AppUserId { get; set; }
+        public int ShiftId { get; set; }
+        public DateTime InsertDate { get; set; } = DateTime.Now;
+        public DateTime? UpdateDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
+
+        public DateTime ReceiptDate { get; set; }
     }
 }

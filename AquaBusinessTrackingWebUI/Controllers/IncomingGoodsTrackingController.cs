@@ -2,6 +2,7 @@
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.IncomingGoodsTrackingDtos;
 using DTOLayer.Dtos.ShiftDtos;
+using DTOLayer.Dtos.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -46,6 +47,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             await LoadShiftListAsync();
+            await LoadUserListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
             if (id.HasValue)
@@ -163,5 +165,25 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
         }
 
+
+        private async Task LoadUserListAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Auth/GetAllUsers");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+
+                var users = JsonConvert.DeserializeObject<List<GetListUserDto>>(jsonData);
+
+                ViewBag.Users = users.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.UserName
+                }).ToList();
+            }
+        }
     }
 }

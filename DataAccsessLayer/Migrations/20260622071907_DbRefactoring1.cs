@@ -285,7 +285,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "ShiftId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
@@ -293,7 +293,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "AppUserId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
@@ -301,7 +301,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ReceiptDate",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "datetime2",
                 nullable: true);
 
@@ -1220,7 +1220,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ReceiptDate",
-                table: "Db_WarehouseRequestWait");
+                table: "Db_DailyShipmentPlan");
 
             migrationBuilder.DropColumn(
                 name: "ReceiptDate",
@@ -1552,7 +1552,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "ShiftId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: false,
                 defaultValue: 0,
@@ -1562,7 +1562,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "AppUserId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: false,
                 defaultValue: 0,

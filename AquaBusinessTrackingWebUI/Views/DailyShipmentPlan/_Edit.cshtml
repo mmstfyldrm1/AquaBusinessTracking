@@ -1,0 +1,205 @@
+﻿@using DTOLayer.Dtos.DailyShipmentPlanDtos
+
+@model ModalViewModel<DailyShipmentPlanDto>
+
+<div class="modal fade" id="DailyShipmentPlanModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post"
+                  action="/DailyShipmentPlan/Edit">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <input type="hidden" asp-for="Entity.RecId" />
+
+                        <!-- TARİHİ -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tarihi
+                            </label>
+
+                            <input type="date"
+                                   asp-for="Entity.ReceiptDate"
+                                   class="form-control"
+                                   required />
+
+                        </div>
+                        <!-- Plan  KODU -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Sevkiyat No
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.ShipmentNo"
+                                   class="form-control"
+                                   placeholder="Sevkiyat No giriniz" required />
+                            
+                        </div>
+
+                        <!-- FİRMA KODU -->
+                        <div class="col-md-4">
+                            <label class="form-label">Cari Kodu</label>
+                            <input type="text"
+                                   asp-for="Entity.CompanyCode"
+                                   id="txtCompanyCode"
+                                   class="form-control"
+                                   readonly
+                                   placeholder="Cari seçilince otomatik dolar" />
+                        </div>
+
+                        <!-- FİRMA ADI -->
+                        <div class="col-md-8">
+                            <label class="form-label">Cari Hesap Adı</label>
+                            <input type="text"
+                                   id="txtCompanySearch"
+                                   class="form-control"
+                                   list="companyDatalist"
+                                   placeholder="Cari adı yazarak arayınız..."
+                                   autocomplete="off"
+                                   required />
+                            <datalist id="companyDatalist"></datalist>
+
+                            <input type="hidden" asp-for="Entity.CompanyName" id="hdnCompanyName" />
+                            <input type="hidden" id="hdnCompanyRecId" />
+
+                            <small class="text-danger d-none" id="lblCompanyInvalid">
+                                Lütfen listeden geçerli bir cari seçiniz.
+                            </small>
+                        </div>
+
+                        <!-- ÜLKE -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Ülke
+                            </label>
+
+                            <input type="text"
+                                   asp-for="Entity.Country"
+                                   class="form-control"
+                                   placeholder="Ülke giriniz" required />
+
+                        </div>
+
+                        <!-- ŞEHİR -->
+                        <div class="col-md-4">
+                            <label class="form-label">Şehir</label>
+                            <select asp-for="Entity.City" id="ddlCity" class="form-select" required disabled>
+                                <option value="">Önce Cari Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">İlçe</label>
+                            <select asp-for="Entity.District" id="ddlDistrict" class="form-select" required disabled>
+                                <option value="">Önce Şehir Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <!-- ADRES -->
+                        <div class="col-md-4">
+                            <label class="form-label">Kayıtlı Adresler</label>
+                            <select id="ddlAddress" class="form-select" disabled>
+                                <option value="">Önce İlçe Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Adres</label>
+                            <textarea asp-for="Entity.Address" id="txtAddress" required
+                                      class="form-control" rows="2"
+                                      placeholder="Adres giriniz"></textarea>
+                        </div>
+
+                        <!-- VARDİYA -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- DURUM -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"
+                                  class="me-1">
+                        </ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

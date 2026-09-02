@@ -1,6 +1,5 @@
 ﻿using BusinessLayer.Abstract;
 using DTOLayer.Dtos.BasinDtos.BasinDto;
-using DTOLayer.Dtos.BasinDtos.BasinMeasurement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +11,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
     public class BasinController : ControllerBase
     {
         private readonly IBasinService _basinService;
-        private readonly IBasinMeasurementService _measurementService;
         private readonly ILogger<BasinController> _logger;
 
         public BasinController(
             IBasinService basinService,
-            IBasinMeasurementService measurementService,
             ILogger<BasinController> logger)
         {
             _basinService = basinService;
-            _measurementService = measurementService;
             _logger = logger;
         }
 
@@ -117,81 +113,6 @@ namespace AquaBusinessTrackingWebApi.Controllers
             _logger.LogWarning(
                 "Havuz silindi. Id={Id}",
                 id);
-
-            return Ok();
-        }
-
-        [HttpGet("{basinId}/measurements")]
-        public async Task<IActionResult> GetMeasurements(int basinId)
-        {
-            _logger.LogInformation(
-                "Havuz ölçümleri istendi. BasinId={BasinId}",
-                basinId);
-
-            var all = await _measurementService.GetList();
-            var result = all.Where(x => x.BasinId == basinId).ToList();
-
-            _logger.LogInformation(
-                "{Count} adet ölçüm döndürüldü. BasinId={BasinId}",
-                result.Count,
-                basinId);
-
-            return Ok(result);
-        }
-
-        [HttpPost("{basinId}/measurement")]
-        public async Task<IActionResult> AddMeasurement(
-            int basinId,
-            [FromBody] CreateBasinMeasurementDto dto)
-        {
-            _logger.LogInformation(
-                "Yeni havuz ölçümü ekleniyor. BasinId={BasinId}",
-                basinId);
-
-            dto.BasinId = basinId;
-
-            await _measurementService.Add(dto);
-
-            _logger.LogInformation(
-                "Havuz ölçümü eklendi. BasinId={BasinId}",
-                basinId);
-
-            return Ok();
-        }
-
-        [HttpPut("{basinId}/measurement")]
-        public async Task<IActionResult> UpdateMeasurement(
-            int basinId,
-            [FromBody] UpdateBasinMeasurementDto dto)
-        {
-            _logger.LogInformation(
-                "Havuz ölçümü güncelleniyor. MeasurementId={MeasurementId}",
-                dto.Id);
-
-            await _measurementService.Update(dto);
-
-            _logger.LogInformation(
-                "Havuz ölçümü güncellendi. MeasurementId={MeasurementId}",
-                dto.Id);
-
-            return Ok();
-        }
-
-        [HttpDelete("{basinId}/measurement/{measurementId}")]
-        public async Task<IActionResult> DeleteMeasurement(
-            int basinId,
-            int measurementId)
-        {
-            _logger.LogWarning(
-                "Havuz ölçümü siliniyor. BasinId={BasinId}, MeasurementId={MeasurementId}",
-                basinId,
-                measurementId);
-
-            await _measurementService.Delete(measurementId);
-
-            _logger.LogWarning(
-                "Havuz ölçümü silindi. MeasurementId={MeasurementId}",
-                measurementId);
 
             return Ok();
         }

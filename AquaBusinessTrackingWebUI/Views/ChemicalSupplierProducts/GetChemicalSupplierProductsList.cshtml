@@ -8,6 +8,41 @@
 
 @model IEnumerable<ChemicalSupplierProductsDto>
 
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
+
+
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Kimyasal Tedarikçi Ürünleri</h6>
 
@@ -46,8 +81,8 @@
                         <th>Vardiya</th>
                         <th>Aktif</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
+
                     </tr>
                 </thead>
 
@@ -100,35 +135,35 @@
                                 @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
                             </td>
 
-                            <td class="text-center">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
 
-                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
-                                        onclick="openModal(@item.RecId)">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
 
-                                    <i class="bi bi-pencil-square fs-6"></i>
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
 
-                                </button>
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
 
+                                    </form>
+
+                                </div>
                             </td>
 
-                            <td class="text-center">
-
-                                <form method="post"
-                                      asp-action="Delete"
-                                      asp-route-id="@item.RecId"
-                                      style="display:inline;">
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Silinsin mi?');">
-
-                                        <ion-icon name="trash-outline"></ion-icon>
-
-                                    </button>
-
-                                </form>
-
-                            </td>
 
                         </tr>
 
@@ -151,8 +186,8 @@
                         <th>Vardiya</th>
                         <th>Aktif</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
+                        
                     </tr>
 
                 </tfoot>

@@ -11,7 +11,9 @@ namespace EntityLayer.Concrete
 
         public decimal Consumption { get; set; }
 
+        public float InductiveReactive { get; set; }
 
+        public float CapacitiveReactive { get; set; }
 
         public int ElectricMeterLocationId { get; set; }
         public DB_ElectricMeterLocation ElectricMeterLocation { get; set; }

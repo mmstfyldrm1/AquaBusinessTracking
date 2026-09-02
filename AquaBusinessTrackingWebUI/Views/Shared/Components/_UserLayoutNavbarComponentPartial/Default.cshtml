@@ -93,44 +93,31 @@
                 </div>
             </li>
 
-           @*  <li class="nav-item dropdown dropdown-large">
+            <li class="nav-item dropdown dropdown-large">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
                     <div class="position-relative">
-                        <span class="notify-badge">8</span>
+                        <span class="notify-badge d-none" id="notifBadge">0</span>
                         <ion-icon name="notifications-outline"></ion-icon>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="javascript:;">
                         <div class="msg-header">
-                            <p class="msg-header-title">Notifications</p>
-                            <p class="msg-header-clear ms-auto">Marks all as read</p>
+                            <p class="msg-header-title">Bildirimler</p>
+                            <p class="msg-header-clear ms-auto" id="notifMarkAllBtn">Tümünü okundu olrk işrt.</p>
                         </div>
                     </a>
-                    <div class="header-notifications-list">
-                        <a class="dropdown-item" href="javascript:;">
-                            <div class="d-flex align-items-center">
-                                <div class="notify text-primary">
-                                    <ion-icon name="cart-outline"></ion-icon>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="msg-name">
-                                        New Orders <span class="msg-time float-end">
-                                            2 min
-                                            ago
-                                        </span>
-                                    </h6>
-                                    <p class="msg-info">You have recived new orders</p>
-                                </div>
-                            </div>
-                        </a>
 
+                    <div class="header-notifications-list" id="notifList">
+                        <!-- JS ile dolacak -->
                     </div>
+
                     <a href="javascript:;">
-                        <div class="text-center msg-footer">View All Notifications</div>
+                        <div class="text-center msg-footer">Tüm Bildirimler</div>
                     </a>
                 </div>
-            </li> *@
+            </li>
+
 
             <li class="nav-item dropdown dropdown-user-setting">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
@@ -159,7 +146,7 @@
                                 <div class="">
                                     <ion-icon name="person-outline"></ion-icon>
                                 </div>
-                                <div class="ms-3"><span>Profile</span></div>
+                                <div class="ms-3"><span>Profilim</span></div>
                             </div>
                         </a>
                     </li>
@@ -223,7 +210,7 @@
                                     <div>
                                         <ion-icon name="log-out-outline"></ion-icon>
                                     </div>
-                                    <div class="ms-3"><span>Logout</span></div>
+                                    <div class="ms-3"><span>Çıkış Yap</span></div>
                                 </div>
                             </button>
                         </form>
@@ -235,6 +222,171 @@
 
     </div>
 </nav>
+
+<script>
+    (function () {
+        const notifJwtToken = "@ViewBag.JwtToken";
+        const notifApiBaseUrl = "@ViewBag.ApiBaseUrl";
+        const notifCurrentUserId = "@ViewBag.CurrentUserId";
+
+        if (!notifJwtToken || !notifCurrentUserId) {
+            console.warn("Notification: JWT veya CurrentUserId bulunamadı, bildirim sistemi başlatılmadı.");
+            return;
+        }
+
+        const notifHubBaseUrl = notifApiBaseUrl.replace(/\/api\/?$/, "");
+
+        function loadUnreadNotifications() {
+            fetch(`${notifApiBaseUrl}/notification/unread/${notifCurrentUserId}`, {
+                headers: { "Authorization": "Bearer " + notifJwtToken }
+            })
+                .then(r => r.json())
+                .then(list => {
+                    const container = document.getElementById('notifList');
+                    const badge = document.getElementById('notifBadge');
+                    container.innerHTML = '';
+
+                    if (list.length === 0) {
+                        container.innerHTML = `<p class="text-center text-muted py-3 mb-0">Bildirim yok</p>`;
+                        badge.classList.add('d-none');
+                        return;
+                    }
+
+                    badge.textContent = list.length;
+                    badge.classList.remove('d-none');
+                    list.forEach(n => appendNotification(n));
+                })
+                .catch(err => console.error("Bildirim yükleme hatası:", err));
+        }
+
+        function appendNotification(n) {
+            document.getElementById('notifList').insertAdjacentHTML('beforeend', buildNotificationHtml(n));
+        }
+
+        function prependNotification(n) {
+            const container = document.getElementById('notifList');
+            const empty = container.querySelector('.text-muted');
+            if (empty) container.innerHTML = '';
+            container.insertAdjacentHTML('afterbegin', buildNotificationHtml(n));
+        }
+
+        function buildNotificationHtml(n) {
+           return `
+        <a class="dropdown-item" href="javascript:;" data-notif-id="${n.recId}" data-notif-url="${n.url || ''}">
+            <div class="d-flex align-items-center">
+                <div class="notify text-${n.color}">
+                    <ion-icon name="${n.icon}"></ion-icon>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="msg-name">
+                        ${n.title} <span class="msg-time float-end">${timeAgo(n.insertDate)}</span>
+                    </h6>
+                    <p class="msg-info">${n.message}</p>
+                </div>
+            </div>
+        </a>`;
+        }
+
+        function markAsRead(id, url) {
+            fetch(`${notifApiBaseUrl}/notification/mark-as-read/${id}`, {
+                method: 'POST',
+                headers: { "Authorization": "Bearer " + notifJwtToken }
+            }).then(() => {
+                if (url) window.location.href = url;
+            });
+        }
+
+        function incrementBadge() {
+            const badge = document.getElementById('notifBadge');
+            const current = parseInt(badge.textContent) || 0;
+            badge.textContent = current + 1;
+            badge.classList.remove('d-none');
+        }
+
+        function timeAgo(dateStr) {
+            const diff = Math.floor((new Date() - new Date(dateStr)) / 1000);
+            if (diff < 60) return "az önce";
+            if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`;
+            return `${Math.floor(diff / 86400)} gün önce`;
+        }
+
+        document.getElementById('notifList').addEventListener('click', function (e) {
+            const item = e.target.closest('[data-notif-id]');
+            if (item) markAsRead(item.dataset.notifId, item.dataset.notifUrl);
+        });
+
+        document.getElementById('notifMarkAllBtn').addEventListener('click', function () {
+            fetch(`${notifApiBaseUrl}/notification/mark-all-as-read/${notifCurrentUserId}`, {
+                method: 'POST',
+                headers: { "Authorization": "Bearer " + notifJwtToken }
+            }).then(() => loadUnreadNotifications());
+        });
+
+       
+        loadUnreadNotifications();
+
+
+        function initNotificationHub() {
+            if (typeof signalR === 'undefined') {
+                setTimeout(initNotificationHub, 50); 
+                return;
+            }
+
+            const notifConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`${notifHubBaseUrl}/notificationHub?access_token=${notifJwtToken}`)
+                .withAutomaticReconnect()
+                .build();
+
+            notifConnection.on("ReceiveNotification", function (n) {
+                prependNotification(n);
+                incrementBadge();
+            });
+
+            notifConnection.start().catch(err => console.error("Notification SignalR hatası:", err));
+        }
+
+        window.addEventListener('load', initNotificationHub);
+
+            function markAsRead(id, url) {
+        fetch(`${notifApiBaseUrl}/notification/mark-as-read/${id}`, {
+            method: 'POST',
+            headers: { "Authorization": "Bearer " + notifJwtToken }
+        }).then(() => {
+            removeNotificationFromList(id);
+
+            if (url) {
+                window.location.href = url;
+            }
+        }).catch(err => console.error("Okundu işaretleme hatası:", err));
+    }
+
+    function removeNotificationFromList(id) {
+        const item = document.querySelector(`[data-notif-id="${id}"]`);
+        if (item) item.remove();
+
+        decrementBadge();
+
+        const container = document.getElementById('notifList');
+        if (container.children.length === 0) {
+            container.innerHTML = `<p class="text-center text-muted py-3 mb-0">Bildirim yok</p>`;
+        }
+    }
+
+    function decrementBadge() {
+        const badge = document.getElementById('notifBadge');
+        const current = parseInt(badge.textContent) || 0;
+        const next = current - 1;
+
+        if (next <= 0) {
+            badge.textContent = '0';
+            badge.classList.add('d-none');
+        } else {
+            badge.textContent = next;
+        }
+    }
+    })();
+</script>
 
 
 

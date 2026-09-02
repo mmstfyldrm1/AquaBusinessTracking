@@ -7,6 +7,39 @@
     Layout = "~/Views/_UserLayout/Index.cshtml";
 }
 
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
 
 <h6 class="mb-0 text-uppercase">Kullanıcı Listesi</h6>
 <hr />
@@ -26,8 +59,7 @@
                         <th>Email</th>
                         <th>Telefon</th>
                         <th>Departman</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 
@@ -53,27 +85,32 @@
                             <td>@item.PhoneNumber</td>
                             <td>@item.DepartmentName</td>
 
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
-                                        onclick="openModal(@item.Id)">
-                                    <i class="bi bi-pencil-square fs-6"></i>
-                                </button>
-                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.Id)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
 
-                            <td class="text-center">
-                                <form method="post"
-                                      asp-action="DeleteUser"
-                                      asp-route-id="@item.Id"
-                                      style="display:inline;">
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="DeleteUser"
+                                          asp-route-id="@item.Id"
+                                          style="display:inline;">
 
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger px-2 py-1"
-                                            onclick="return confirm('Silinsin mi?');">
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
 
-                                        <i class="bi bi-trash3 fs-6"></i>
+                                    </form>
 
-                                    </button>
-                                </form>
+                                </div>
                             </td>
                         </tr>
 
@@ -91,8 +128,7 @@
                         <th>Email</th>
                         <th>Telefon</th>
                         <th>Departman</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
             </table>

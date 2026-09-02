@@ -1,0 +1,213 @@
+﻿@using DTOLayer.Dtos.BasinDtos.BasinMeasurement
+@model List<BasinMeasurementDto>
+@{
+    ViewData["Title"] = "GetMeasurementList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+    int counter = 1;
+    var controller = "BasinMeasurement/GetMeasurementList";
+}
+
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-uppercase">AAT Laboratuvar Ölçüm Defteri Tüketimleri</h6>
+
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+    </a>
+</div>
+
+<br />
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example2" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Havuz</th>
+                        <th>Tarih</th>
+                        <th>Vardiya</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
+                        <th>Giriş AKM</th>
+                        <th>Çıkış AKM</th>
+                        <th>Giriş KOİ</th>
+                        <th>Çıkış KOİ</th>
+                        <th>TN</th>
+                        <th>Fosfat</th>
+                        <th>pH</th>
+                        <th>Renk</th>
+                        <th>DO</th>
+                        <th>Imhoff</th>
+                        <th>Kullanıcı</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+                            <td>@item.BasinName</td>
+                            <td>@item.ReceiptDate.ToString("dd.MM.yyyy")</td>
+                            <td>@item.ShiftName</td>
+                            <td>@item.StartHours</td>
+                            <td>@item.EndHours</td>
+                            <td>@item.EnteranceAKM</td>
+                            <td>@item.OutAKM</td>
+                            <td>@item.EnteranceKOI</td>
+                            <td>@item.OutKOI</td>
+                            <td>@item.TN</td>
+                            <td>@item.Fosfat</td>
+                            <td>@item.pH</td>
+                            <td>@item.Renk</td>
+                            <td>@item.DO</td>
+                            <td>@item.Imhoff</td>
+                            <td>@item.CreatedByName</td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+
+
+
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
+
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        counter++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Havuz</th>
+                        <th>Tarih</th>
+                        <th>Vardiya</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
+                        <th>Giriş AKM</th>
+                        <th>Çıkış AKM</th>
+                        <th>Giriş KOİ</th>
+                        <th>Çıkış KOİ</th>
+                        <th>TN</th>
+                        <th>Fosfat</th>
+                        <th>pH</th>
+                        <th>Renk</th>
+                        <th>DO</th>
+                        <th>Imhoff</th>
+                        <th>Kullanıcı</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <button class="btn btn-primary shadow-sm" onclick="openModal()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Yeni Kayıt Ekle
+        </button>
+
+        <a href="/BasinMeasurement/GetWithSearchDetails" class="btn btn-outline-secondary shadow-sm">
+            <ion-icon name="document-text-outline" class="me-1"></ion-icon>
+            Tüm Detayları Gör
+        </a>
+    </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+    function openModal(id = null) {
+        const url = id
+            ? `/BasinMeasurement/Edit/${id}`
+            : `/BasinMeasurement/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('basinMeasurementModal');
+                const modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch('/BasinMeasurement/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload(null, false);
+                        }
+                    });
+                });
+            });
+    }
+</script>
+

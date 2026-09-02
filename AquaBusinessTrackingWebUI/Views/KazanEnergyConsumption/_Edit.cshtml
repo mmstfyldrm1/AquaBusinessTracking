@@ -1,0 +1,212 @@
+﻿@using DTOLayer.Dtos.KazanEnergyConsumptionDtos
+@using AquaBusinessTrackingWebUI.Models
+
+@model ModalViewModel<KazanEnergyConsumptionDto>
+
+<div class="modal fade" id="kazanEnergyConsumptionModal" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <!-- Modal Başlık -->
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="post"
+                  action="/ConsumptionPlace/Edit">
+
+                <div class="modal-body">
+
+                    <!-- Edit Kontrolü -->
+                    <input type="hidden"
+                           name="IsEdit"
+                           value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden"
+                               asp-for="Entity.RecId" />
+                    }
+
+                    <div class="row g-3">
+
+                        <!-- Tüketim Yeri -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tüketim Yeri
+                            </label>
+
+                            <input asp-for="Entity.ConsumptionPlace"
+                                   class="form-control"
+                                   required
+                                   placeholder="Tüketim yeri giriniz" />
+
+                        </div>
+
+
+                        <!-- Tüketim Birimi -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tüketim Birimi
+                            </label>
+
+                            <input asp-for="Entity.ConsumptionUnit"
+                                   class="form-control"
+                                   placeholder="Örn: kWh, m³, kg" />
+
+                        </div>
+
+
+                        <!-- Vardiya -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    asp-items="ViewBag.Shifts"
+                                    class="form-select"
+                                    required>
+
+                                <option value="">
+                                    Vardiya Seçiniz
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Aktif / Pasif -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Durum
+                            </label>
+
+                            <select asp-for="Entity.InUse"
+                                    class="form-select">
+
+                                <option value="1">
+                                    Aktif
+                                </option>
+
+                                <option value="0">
+                                    Pasif
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12">
+
+                            <label class="form-label">
+                                Açıklama
+                            </label>
+
+                            <textarea asp-for="Entity.Explanation"
+                                      rows="4"
+                                      class="form-control"
+                                      placeholder="Açıklama giriniz...">
+                            </textarea>
+
+                        </div>
+
+
+                        <!-- Kayıt Eden -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Kayıt Eden
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+
+                                <input class="form-control"
+                                       value="@ViewBag.AppUserName"
+                                       disabled />
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Gizli Alanlar -->
+
+                        <input type="hidden"
+                               asp-for="Entity.DepartmentId" />
+
+                        <input type="hidden"
+                               asp-for="Entity.AppUserId" />
+
+                        <input type="hidden"
+                               asp-for="Entity.InsertDate" />
+
+                        <input type="hidden"
+                               asp-for="Entity.UpdateDate" />
+
+                        <input type="hidden"
+                               asp-for="Entity.DeleteDate" />
+
+                        <input type="hidden"
+                               asp-for="Entity.DeletedBy" />
+
+                        <input type="hidden"
+                               asp-for="Entity.UpdatedBy" />
+
+                    </div>
+
+                </div>
+
+
+                <!-- Footer -->
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        İptal
+
+                    </button>
+
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <ion-icon name="save-outline"></ion-icon>
+
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

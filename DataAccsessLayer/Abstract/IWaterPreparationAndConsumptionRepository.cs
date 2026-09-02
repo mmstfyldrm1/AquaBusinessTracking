@@ -8,6 +8,8 @@ namespace DataAccsessLayer.Abstract
 
         public Task<List<DB_WaterPreparationAndConsumption>> GetPreviousDay();
 
+        public Task<List<DB_WaterPreparationAndConsumption>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
 
     }
 }

@@ -151,8 +151,7 @@ builder.Services.AddAuthentication(options =>
             var accessToken = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
 
-            if (!string.IsNullOrEmpty(accessToken) &&
-                path.StartsWithSegments("/messageHub"))
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/messageHub") || path.StartsWithSegments("/notificationHub"))
             {
                 context.Token = accessToken;
             }
@@ -227,6 +226,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapHub<PlcHub>("/hubs/plc");
 app.MapHub<MessageHub>("/messageHub");
+app.MapHub<NotificationHub>("/notificationHub");
 
 //app.UseHttpsRedirection();
 app.UseAuthentication();

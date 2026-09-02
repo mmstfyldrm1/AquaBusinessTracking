@@ -71,7 +71,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("ELK.ElectricShiftWorking.Update"))
+                if (!_currentUserService.HasPermission("ELEKTRIK.ElectricShiftWorking.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -93,7 +93,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ELK.ElectricShiftWorking.Add"))
+                if (!_currentUserService.HasPermission("ELEKTRIK.ElectricShiftWorking.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -146,7 +146,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteShiftWork(int id)
         {
-            if (!_currentUserService.HasPermission("ELK.ElectricShiftWorking.Delete"))
+            if (!_currentUserService.HasPermission("ELEKTRIK.ElectricShiftWorking.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

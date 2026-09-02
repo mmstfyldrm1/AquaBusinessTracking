@@ -133,7 +133,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("ELEKTRIK.ElectricMotorTracking.Delete"))
+            if (!_currentUserService.HasPermission("ELEKTRIK.ElectricMeterLocation.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
 

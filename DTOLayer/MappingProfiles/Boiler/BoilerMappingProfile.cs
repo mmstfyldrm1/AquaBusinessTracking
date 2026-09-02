@@ -2,6 +2,7 @@
 using DTOLayer.Dtos.BoilerRoomDailyShiftMonitoringDtos;
 using DTOLayer.Dtos.BoilerSteamFeedWaterCondensateDataDtos;
 using DTOLayer.Dtos.KazanDtos.KazanHeadDtos;
+using DTOLayer.Dtos.KazanEnergyConsumptionDtos;
 using DTOLayer.Dtos.NaturelGasMeterMonitoringDtos;
 using EntityLayer.Concrete;
 
@@ -39,17 +40,43 @@ namespace DTOLayer.MappingProfiles.Boiler
 
             #endregion
 
-            #region Boiler Room Daily Shift Monitoring
+            #region Boiler Operation and ChemicalConsumption
 
-            CreateMap<DB_BoilerRoomDailyShiftMonitoring, CreateBoilerRoomDailyShiftMonitoringDto>().ReverseMap();
-            CreateMap<DB_BoilerRoomDailyShiftMonitoring, UpdateBoilerRoomDailyShiftMonitoringDto>().ReverseMap();
-            CreateMap<DB_BoilerRoomDailyShiftMonitoring, BoilerRoomDailyShiftMonitoringDto>().ReverseMap();
+            CreateMap<DB_BoilerOperationandChemicalConsumption, CreateBoilerOperationandChemicalConsumptionDto>().ReverseMap();
+            CreateMap<DB_BoilerOperationandChemicalConsumption, UpdateBoilerOperationandChemicalConsumptionDto>().ReverseMap();
 
-            CreateMap<DB_BoilerRoomDailyShiftMonitoring, BoilerRoomDailyShiftMonitoringDto>()
+
+            CreateMap<DB_BoilerOperationandChemicalConsumption, BoilerOperationandChemicalConsumptionDto>()
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
-                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                .ForMember(x => x.ConsumptionPlace,
+                    x => x.MapFrom(s => s.KazanEnergyConsumption != null ? s.KazanEnergyConsumption.ConsumptionPlace : null))
+                .ForMember(x => x.ScalePlaceName,
+                    x => x.MapFrom(s => s.ScalePlace != null ? s.ScalePlace.DepartmentName : null))
+                 .ForMember(x => x.DepartmentName,
+                    x => x.MapFrom(s => s.Department != null ? s.Department.DepartmentName : null))
+
+
+
+
+            ;
+
+            #endregion
+
+            #region Kazan Energy Consumption
+
+            CreateMap<DB_KazanEnergyConsumption, CreateKazanEnergyConsumptionDto>().ReverseMap();
+            CreateMap<DB_KazanEnergyConsumption, UpdateKazanEnergyConsumptionDto>().ReverseMap();
+            CreateMap<DB_KazanEnergyConsumption, KazanEnergyConsumptionDto>().ReverseMap();
+
+            CreateMap<DB_KazanEnergyConsumption, KazanEnergyConsumptionDto>()
+                .ForMember(x => x.ShiftName,
+                    x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName,
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                ;
 
             #endregion
 

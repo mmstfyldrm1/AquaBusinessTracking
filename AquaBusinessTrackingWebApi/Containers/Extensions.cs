@@ -23,6 +23,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IElectricMotorTrackingRepository, ElectricMotorTrackingRepository>();
             Services.AddScoped<IElectricMotorTrackingService, ElectricMotorTrackingManager>();
             Services.AddScoped<IShiftService, ShiftManager>();
+            Services.AddScoped<IShiftRepository, ShiftRepository>();
             Services.AddScoped<ISalesScaleRepository, SalesScaleRepository>();
             Services.AddScoped<ISalesScaleService, SalesScaleManager>();
             Services.AddScoped<IDepartmentService, DepartmentManager>();
@@ -73,8 +74,8 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IWaterPreparationAndConsumptionRepository, WaterPreparationAndConsumptionRepository>();
             Services.AddScoped<IVechileFuelLogsRepository, VechileFuelLogsRepository>();
             Services.AddScoped<IVechileFuelLogsService, VechileFuelLogsManager>();
-            Services.AddScoped<IWarehouseRequestWaitRepository, WarehouseRequestWaitRepository>();
-            Services.AddScoped<IWarehouseRequestWaitService, WarehouseRequestWaitManager>();
+            Services.AddScoped<IDailyShipmentPlanRepository, DailyShipmentPlanRepository>();
+            Services.AddScoped<IDailyShipmentPlanService, DailyShipmentPlanManager>();
             Services.AddScoped<ITestHeadRepository, TestHeadRepository>();
             Services.AddScoped<ITestHeadService, TestHeadManager>();
             Services.AddScoped<ITestDetailRepository, TestDetailRepository>();
@@ -97,10 +98,12 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IElectricMeterLocationService, ElectricMeterLocationManager>();
             Services.AddScoped<ICumulativeElectricityConsumptionRepository, CumulativeElectricityConsumptionRepository>();
             Services.AddScoped<ICumulativeElectricityConsumptionService, CumulativeElectricityConsumptionManager>();
-            Services.AddScoped<IBoilerRoomDailyShiftMonitoringService, BoilerRoomDailyShiftMonitoringManager>();
-            Services.AddScoped<IBoilerRoomDailyShiftMonitoringRepository, BoilerRoomDailyShiftMonitoringRepository>();
+            Services.AddScoped<IBoilerOperationandChemicalConsumptionService, BoilerOperationandChemicalConsumption>();
+            Services.AddScoped<IBoilerOperationandChemicalConsumptionRepository, BoilerOperationandChemicalConsumptionRepository>();
             Services.AddScoped<IPlanningScorBoardViewRepository, PlanningScorBoardViewRepository>();
             Services.AddScoped<IPlanningScorBoardViewService, PlanningScorBoardViewManager>();
+            Services.AddScoped<IKazanEnergyConsumptionRepository, KazanEnergyConsumptionRepository>();
+            Services.AddScoped<IKazanEnergyConsumptionService, KazanEnergyConsumptionManager>();
             Services.AddScoped<IMachineStopRepository, MachineStopRepository>();
             Services.AddScoped<IMachineStopService, MachineStopManager>();
             Services.AddScoped<IBufferProductionRepository, BufferProductionRepository>();
@@ -130,6 +133,12 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<ISentezInventoryQueryService, SentezInventoryQueryManager>();
             Services.AddScoped<IChemicalSupplierProductsRepository, ChemicalSupplierProductsRepository>();
             Services.AddScoped<IChemicalSupplierProductsService, ChemicalSupplierProductsManager>();
+            Services.AddScoped<INotificationRepository, NotificationRepository>();
+            Services.AddScoped<INotificationService, NotificationManager>();
+            Services.AddScoped<IShipmentOrderPlanRepository, ShipmentOrderPlanRepository>();
+            Services.AddScoped<IShipmentOrderPlanService, ShipmentOrderPlanManager>();
+            Services.AddScoped<IShipmentOrderPlanDetailRepository, ShipmentOrderPlanDetailRepository>();
+            Services.AddScoped<IShipmentOrderPlanDetailService, ShipmentOrderPlanDetailManager>();
             Services.AddScoped<GenerateTokenService>();
             Services.AddScoped<IQueryService, QueryManager>();
             Services.AddScoped<IQueryRepository, QueryRepository>();

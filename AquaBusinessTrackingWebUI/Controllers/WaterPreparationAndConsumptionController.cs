@@ -48,6 +48,39 @@ namespace AquaBusinessTrackingWebUI.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetWithSearchDetails()
+        {
+            ViewData["Title"] = "Su Hazırlama ve Tüketim  Kimyasal Arama";
+            return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetWithSearchDetailsJson(DateTime StartDate, DateTime EndDate)
+        {
+            if (!_currentUserService.HasPermission("KIMYASAL.WaterPreparationAndConsumption.View"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+            if (StartDate == default || EndDate == default)
+            {
+                return Json(new { success = false, message = "Başlangıç ve bitiş tarihleri geçerli olmalıdır." });
+            }
+            var startDateStr = StartDate.ToString("yyyy-MM-dd");
+            var endDateStr = EndDate.ToString("yyyy-MM-dd");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/WaterPreparationAndConsumption/search?startDate={startDateStr}&endDate={endDateStr}");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<WaterPreparationAndConsumptionDto>());
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<WaterPreparationAndConsumptionDto>>(json);
+            if (values == null || !values.Any())
+                return Json(new List<WaterPreparationAndConsumptionDto>());
+
+            return Json(values ?? new List<WaterPreparationAndConsumptionDto>());
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             var client = _httpClientFactory.CreateClient();

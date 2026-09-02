@@ -71,9 +71,11 @@
                             <input asp-for="Entity.Plate" class="form-control" />
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label class="form-label">Operatör</label>
-                            <input asp-for="Entity.Operator" class="form-control" />
+                            <select asp-for="Entity.OperatorId" required asp-items="ViewBag.Users" class="form-select">
+                                <option value="">Operatör Seçiniz</option>
+                            </select>
                         </div>
 
                         <div class="col-md-3">
@@ -87,7 +89,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Dolu Ağırlık</label>
                             <input asp-for="Entity.FilledQuantity"
-                                   id="filledQuantity"
+                                  
                                    class="form-control"
                                    type="number"
                                    step="0.01" />
@@ -96,7 +98,7 @@
                         <div class="col-md-3">
                             <label class="form-label">Boş Ağırlık</label>
                             <input asp-for="Entity.EmptyQuantity"
-                                   id="emptyQuantity"
+                                   
                                    class="form-control"
                                    type="number"
                                    step="0.01" />
@@ -106,10 +108,10 @@
                             <label class="form-label">Net Ağırlık</label>
                             <input type="number"
                                    asp-for="Entity.NetQuantity"
-                                   id="netQuantity"
+                                   
                                    class="form-control"
                                    step="0.01"
-                                   readonly data-diff-a="filledQuantity" data-diff-b="emptyQuantity" />
+                                   readonly  />
                         </div>
 
                         <div class="col-md-12">

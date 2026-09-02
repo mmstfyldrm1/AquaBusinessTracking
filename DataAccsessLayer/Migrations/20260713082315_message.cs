@@ -76,7 +76,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "DepartmentId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
@@ -517,7 +517,7 @@ namespace DataAccsessLayer.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "DepartmentId",
-                table: "Db_WarehouseRequestWait",
+                table: "Db_DailyShipmentPlan",
                 type: "int",
                 nullable: false,
                 defaultValue: 0,

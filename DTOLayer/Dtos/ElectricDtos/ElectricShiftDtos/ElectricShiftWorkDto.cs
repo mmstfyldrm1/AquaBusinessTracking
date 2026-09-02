@@ -9,7 +9,7 @@
         public string CreatedByName { get; set; }
         public string ShiftName { get; set; }
         public int DepartmentId { get; set; }
-        public DateTime? InsertDate { get; set; }
+        public DateTime? InsertDate { get; set; } = DateTime.Now;
         public DateTime? UpdateDate { get; set; }
         public DateTime? DeleteDate { get; set; }
     }

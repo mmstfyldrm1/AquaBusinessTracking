@@ -18,8 +18,9 @@
 
         public string Plate { get; set; }
 
-        public string Operator { get; set; }
+        public int OperatorId { get; set; }
 
+        public string OperatorName { get; set; }
         public string Unit { get; set; }
 
         public decimal? WaybillQuantity { get; set; }

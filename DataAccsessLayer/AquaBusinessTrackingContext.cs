@@ -47,50 +47,38 @@ namespace DataAccsessLayer
         public DbSet<DB_TestDetail> Db_TestDetail { get; set; }
         public DbSet<DB_TestHeader> Db_TestHeader { get; set; }
         public DbSet<DB_VechileFuelLogs> Db_VechileFuelLogs { get; set; }
-        public DbSet<DB_WarehouseRequestWait> Db_WarehouseRequestWait { get; set; }
+        public DbSet<DB_DailyShipmentPlan> Db_DailyShipmentPlan { get; set; }
         public DbSet<DB_WastePaperControl> Db_WastePaperControl { get; set; }
         public DbSet<DB_WastePaperCost> Db_WastePaperCost { get; set; }
         public DbSet<DB_WaterPreparationAndConsumption> Db_WaterPreparationAndConsumption { get; set; }
         public DbSet<DB_WaterTreatmentAnalysisResults> Db_WaterTreatmentAnalysisResults { get; set; }
         public DbSet<DB_WinderCoilLengthControl> Db_WinderCoilLengthControl { get; set; }
         public DbSet<DB_WinderCoilTracking> Db_WinderCoilTracking { get; set; }
-
         public DbSet<DB_KazanChemicalsHead> Db_KazanChemicalsHead { get; set; }
         public DbSet<DB_SteamConsumption> Db_SteamConsumption { get; set; }
-
         public DbSet<DB_DoughPreparation> Db_DoughPreparation { get; set; }
-
         public DbSet<DB_RetentionAnalysisHead> Db_RetentionAnalysisHead { get; set; }
-
         public DbSet<DB_RetantionAnalysisDetail> Db_RetantionAnalysisDetail { get; set; }
-
         public DbSet<DB_Permission> Db_Permission { get; set; }
-
         public DbSet<DB_RolePermission> Db_RolePermission { get; set; }
-
         public DbSet<DB_PlcTags> Db_PlcTags { get; set; }
-
         public DbSet<DB_PlcMachine> Db_PlcMachine { get; set; }
-
         public DbSet<DB_PlcReading> Db_PlcReading { get; set; }
-
         public DbSet<DB_ElectricMeterLocation> Db_ElectricMeterLocation { get; set; }
         public DbSet<DB_CumulativeElectricityConsumption> Db_CumulativeElectricityConsumption { get; set; }
-
-        public DbSet<DB_BoilerRoomDailyShiftMonitoring> Db_BoilerRoomDailyShiftMonitoring { get; set; }
-
+        public DbSet<DB_BoilerOperationandChemicalConsumption> Db_BoilerOperationandChemicalConsumption { get; set; }
         public DbSet<DB_BufferProduction> Db_BufferProduction { get; set; }
-
         public DbSet<DB_MachineStop> Db_MachineStop { get; set; }
-
         public DbSet<DB_PlanningScorBoardView> Db_PlanningScorBoardView { get; set; }
-
         public DbSet<DB_FavoriteMenuItem> Db_FavoriteMenuItem { get; set; }
         public DbSet<DB_Message> Db_Message { get; set; }
         public DbSet<DB_RawMaterialIntake> Db_RawMaterialIntake { get; set; }
-
         public DbSet<DB_IncomingGoodsTracking> Db_IncomingGoodsTracking { get; set; }
         public DbSet<DB_ChemicalSupplierProducts> Db_ChemicalSupplierProducts { get; set; }
+        public DbSet<DB_Notification> Db_Notification { get; set; }
+        public DbSet<DB_KazanEnergyConsumption> Db_KazanEnergyConsumption { get; set; }
+        public DbSet<DB_ShipmentOrderPlan> Db_ShipmentOrderPlan { get; set; }
+        public DbSet<DB_ShipmentOrderPlanDetail> Db_ShipmentOrderPlanDetail { get; set; }
 
 
     }

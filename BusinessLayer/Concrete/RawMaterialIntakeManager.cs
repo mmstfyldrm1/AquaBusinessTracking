@@ -21,5 +21,12 @@ namespace BusinessLayer.Concrete
             var dtos = _mapper.Map<List<RawMaterialIntakesDto>>(entities);
             return dtos;
         }
+
+        public async Task<List<RawMaterialIntakesDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+            var entities = await _repo.GetWithSearchDetails(StartDate, EndDate);
+            var dtos = _mapper.Map<List<RawMaterialIntakesDto>>(entities);
+            return dtos;
+        }
     }
 }

@@ -58,6 +58,26 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearchDetails([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        {
+            _logger.LogInformation(
+                "Kağıt Makinesi Kimyasal Detay Sayfası {StartDate} - {EndDate} istendi.",
+                StartDate,
+                EndDate);
+
+
+            var result = await _service.GetWithSearchDetails(StartDate, EndDate);
+
+            _logger.LogInformation(
+              "Kağıt Makinesi Kimyasal Detay Sayfası {StartDate} - {EndDate} başarıyla getirildi.",
+              StartDate,
+              EndDate);
+
+
+            return Ok(result);
+        }
+
         [HttpGet("getChemicalInventory")]
         public async Task<IActionResult> GetChemicalInventory()
         {

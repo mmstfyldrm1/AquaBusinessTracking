@@ -1,0 +1,382 @@
+﻿@using DTOLayer.Dtos.DailyShipmentPlanDtos
+
+@{
+    ViewData["Title"] = "GetDailyShipmentPlanList";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+    var controller = "DailyShipmentPlan/GetDailyShipmentPlanList";
+}
+
+@model IEnumerable<DailyShipmentPlanDto>
+
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
+
+
+
+<div class="d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-uppercase">Günlük Sevkiyat Sipariş Listesi</h6>
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+    </a>
+</div>
+
+<hr />
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table id="example2"
+                   class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Plan Tarihi</th>
+                        <th>Firma Kodu</th>
+                        <th>Firma Adı</th>
+                        <th>Ülke</th>
+                        <th>Şehir</th>
+                        <th>Adres</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int counter = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@counter</td>
+
+                            <td>
+                                @item.ReceiptDate.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                @(item.CompanyCode ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.CompanyName ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.Country ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.City ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.Address ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.CreatedByName ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.ShiftName ?? "-")
+                            </td>
+
+                            <td>
+
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Pasif</span>
+                                }
+
+                            </td>
+
+                            <td>
+                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
+
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        counter++;
+                    }
+
+                </tbody>
+
+                <tfoot>
+
+                    <tr>
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Firma Kodu</th>
+                        <th>Firma Adı</th>
+                        <th>Ülke</th>
+                        <th>Şehir</th>
+                        <th>Adres</th>
+                        <th>Kullanıcı</th>
+                        <th>Vardiya</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+        <button class="btn btn-primary shadow-sm"
+                onclick="openModal()">
+
+            <ion-icon name="add-circle-outline"></ion-icon>
+
+            Yeni Kayıt Ekle
+
+        </button>
+
+    </div>
+
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+    function openModal(id = null) {
+        const url = id
+            ? `/DailyShipmentPlan/Edit/${id}`
+            : `/DailyShipmentPlan/Edit`;
+
+        fetch(url)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                const modalEl = document.getElementById('DailyShipmentPlanModal');
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+
+                initCascadeDropdowns(modalEl);
+
+                const form = modalEl.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    fetch('/DailyShipmentPlan/Edit', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    })
+                    .then(r => {
+                        if (r.ok) {
+                            modal.hide();
+                            location.reload();
+                        }
+                    });
+                });
+            });
+    }
+
+    function initCascadeDropdowns(modalEl) {
+        // --- Cari Hesap alanları ---
+        const txtCompanySearch  = modalEl.querySelector('#txtCompanySearch');
+        const companyDatalist   = modalEl.querySelector('#companyDatalist');
+        const txtCompanyCode    = modalEl.querySelector('#txtCompanyCode');
+        const hdnCompanyName    = modalEl.querySelector('#hdnCompanyName');
+        const hdnCompanyRecId   = modalEl.querySelector('#hdnCompanyRecId');
+        const lblCompanyInvalid = modalEl.querySelector('#lblCompanyInvalid');
+
+        // --- Şehir / İlçe / Adres alanları ---
+        const ddlCity     = modalEl.querySelector('#ddlCity');
+        const ddlDistrict = modalEl.querySelector('#ddlDistrict');
+        const txtAddress  = modalEl.querySelector('#txtAddress');
+
+        // --- Yardımcı fonksiyonlar ---
+        function resetSelect(selectEl, placeholder) {
+            selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+            selectEl.disabled = true;
+        }
+
+        // İsim -> {recId, code, name} eşlemesi (cari arama için bellek içi cache)
+        let companyMap = {};
+
+        // 1) CARİ listesini yükle, datalist'i doldur (sadece isim gösterilir)
+        fetch('/DailyShipmentPlan/currentaccount')
+            .then(r => r.json())
+            .then(data => {
+                companyDatalist.innerHTML = '';
+                companyMap = {};
+
+                data.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.currentAccountName;
+                    companyDatalist.appendChild(opt);
+
+                    companyMap[item.currentAccountName] = {
+                        recId: item.recId,
+                        code: item.currentAccountCode,
+                        name: item.currentAccountName
+                    };
+                });
+            });
+
+        // 2) Cari adı seçilince -> kodu otomatik yaz, şehirleri getir
+        txtCompanySearch.addEventListener('input', function () {
+            const match = companyMap[this.value];
+
+            resetSelect(ddlCity, 'Önce Cari Seçiniz');
+            resetSelect(ddlDistrict, 'Önce Şehir Seçiniz');
+            txtAddress.value = '';
+
+            if (!match) {
+                txtCompanyCode.value = '';
+                hdnCompanyName.value = '';
+                hdnCompanyRecId.value = '';
+                lblCompanyInvalid.classList.toggle('d-none', this.value === '');
+                return;
+            }
+
+            lblCompanyInvalid.classList.add('d-none');
+            txtCompanyCode.value = match.code;
+            hdnCompanyName.value = match.name;
+            hdnCompanyRecId.value = match.recId;
+
+            fetch(`/DailyShipmentPlan/cities/${match.recId}`)
+                .then(r => r.json())
+                .then(data => {
+                    ddlCity.innerHTML = '<option value="">Şehir Seçiniz</option>';
+                    data.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.cityName;
+                        opt.dataset.recid = c.cityId;
+                        opt.textContent = c.cityName;
+                        ddlCity.appendChild(opt);
+                    });
+                    ddlCity.disabled = data.length === 0;
+                });
+        });
+
+        // 3) Şehir değişince -> İlçeleri getir
+        ddlCity.addEventListener('change', function () {
+            const selected = this.selectedOptions[0];
+            resetSelect(ddlDistrict, 'Önce Şehir Seçiniz');
+            txtAddress.value = '';
+
+            if (!this.value) return;
+
+            fetch(`/DailyShipmentPlan/districts/${selected.dataset.recid}`)
+                .then(r => r.json())
+                .then(data => {
+                    ddlDistrict.innerHTML = '<option value="">İlçe Seçiniz</option>';
+                    data.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d.districtName;
+                        opt.dataset.recid = d.districtId;
+                        opt.textContent = d.districtName;
+                        ddlDistrict.appendChild(opt);
+                    });
+                    ddlDistrict.disabled = data.length === 0;
+                });
+        });
+
+        // 4) İlçe değişince -> Adres bilgisini getir ve textarea'ya yaz
+        ddlDistrict.addEventListener('change', function () {
+            const selected = this.selectedOptions[0];
+            txtAddress.value = '';
+
+            if (!this.value) return;
+
+            fetch(`/DailyShipmentPlan/neighborhoods/${selected.dataset.recid}`)
+                .then(r => r.json())
+                .then(data => {
+                    const parts = [data.line1, data.line2, data.line3]
+                        .filter(p => p && p.trim() !== '');
+                    txtAddress.value = parts.join(', ');
+                });
+        });
+
+        // 5) Submit öncesi: geçerli bir cari seçilmiş mi kontrol et
+        const form = modalEl.querySelector('form');
+        form.addEventListener('submit', function (e) {
+            if (!hdnCompanyRecId.value) {
+                e.preventDefault();
+                e.stopPropagation();
+                lblCompanyInvalid.classList.remove('d-none');
+                txtCompanySearch.focus();
+            }
+        }, true); // capture: true -> openModal içindeki asıl submit handler'dan önce çalışır
+    }
+</script>

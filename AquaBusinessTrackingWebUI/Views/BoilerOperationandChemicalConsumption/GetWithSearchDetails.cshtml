@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewData["Title"] = "GetWithSearchDetails";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h4 class="mb-0"><i class="bi bi-search"></i> Kazan Dairesi Çalışma ve Kimyasal Tüketim Arama</h4>
+    </div>
+    <div class="card-body">
+
+        <!-- Filtre Alanı -->
+        <div class="row g-3 align-items-end mb-4">
+            <div class="col-md-3">
+                <label for="startDate" class="form-label fw-semibold">Başlangıç Tarihi</label>
+                <input type="date" id="startDate" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="endDate" class="form-label fw-semibold">Bitiş Tarihi</label>
+                <input type="date" id="endDate" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <button id="btnSearch" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Ara
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button id="btnReset" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-counterclockwise"></i> Sıfırla
+                </button>
+            </div>
+        </div>
+
+        <div id="dateWarning" class="alert alert-warning d-none" role="alert">
+            Lütfen başlangıç ve bitiş tarihlerini seçin.
+        </div>
+
+        <!-- Özet kartları -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light">
+                    <div class="text-muted small">Toplam Kayıt</div>
+                    <div class="fs-4 fw-bold" id="totalRecords">0</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light">
+                    <div class="text-muted small">Toplam Tüketim Miktarı</div>
+                    <div class="fs-4 fw-bold" id="totalConsumption">0</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light">
+                    <div class="text-muted small">Tüketim Yeri Sayısı</div>
+                    <div class="fs-4 fw-bold" id="totalConsumptionPlaces">0</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-light">
+                    <div class="text-muted small">Kantar Yeri Sayısı</div>
+                    <div class="fs-4 fw-bold" id="totalScalePlaces">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablo -->
+        <div class="table-responsive">
+            <table id="boilerTable" class="table table-striped table-hover align-middle w-100">
+                <thead class="table-light">
+                    <tr>
+                        <th>Kayıt No</th>
+                        <th>Fiş Tarihi</th>
+                        <th>Tüketim Yeri</th>
+                        <th>Kantar Yeri</th>
+                        <th>Tüketim Miktarı</th>
+                        <th>Açıklama</th>
+                        <th>Departman</th>
+                        <th>Vardiya</th>
+                        <th>Oluşturan</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Güncelleme Tarihi</th>
+                    </tr>
+                    <tr>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                        <th><input type="text" class="form-control form-control-sm column-filter" /></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables Buttons eklentisi (Excel/PDF/Print export için) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            $('#startDate').val(firstDay.toISOString().split('T')[0]);
+            $('#endDate').val(today.toISOString().split('T')[0]);
+
+            function fmtDate(d) {
+                return d ? new Date(d).toLocaleDateString('tr-TR') : '';
+            }
+            function fmtDateTime(d) {
+                return d ? new Date(d).toLocaleString('tr-TR') : '-';
+            }
+            function fmtNumber(n) {
+                return (n ?? 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            const table = $('#boilerTable').DataTable({
+                stateSave: true,
+                scrollX: true,
+                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json' },
+                dom: '<"d-flex justify-content-between align-items-center mb-2"lBf>rtip',
+                buttons: [
+                    { extend: 'excelHtml5', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-sm btn-outline-success' },
+                    { extend: 'pdfHtml5', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-sm btn-outline-danger', orientation: 'landscape' },
+                    { extend: 'print', text: '<i class="bi bi-printer"></i> Yazdır', className: 'btn btn-sm btn-outline-secondary' }
+                ],
+                columns: [
+                    { data: 'recId' },
+                    { data: 'receiptDate', render: fmtDate },
+                    { data: 'consumptionPlace', defaultContent: '-' },
+                    { data: 'scalePlaceName', defaultContent: '-' },
+                    { data: 'consumptionQuantity', render: fmtNumber, className: 'text-end' },
+                    { data: 'explanation', defaultContent: '-' },
+                    { data: 'departmentName', defaultContent: '-' },
+                    { data: 'shiftName', defaultContent: '-' },
+                    { data: 'createdByName', defaultContent: '-' },
+                    { data: 'insertDate', render: fmtDateTime },
+                    { data: 'updateDate', render: fmtDateTime }
+                ],
+                order: [[1, 'desc']],
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100]
+            });
+
+            $('.column-filter').on('keyup change', function () {
+                const idx = $('.column-filter').index(this);
+                table.column(idx).search(this.value).draw();
+            });
+
+            $('#btnSearch').on('click', function () {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+
+                if (!startDate || !endDate) {
+                    $('#dateWarning').removeClass('d-none');
+                    return;
+                }
+                $('#dateWarning').addClass('d-none');
+
+                if (new Date(startDate) > new Date(endDate)) {
+                    alert('Başlangıç tarihi bitiş tarihinden büyük olamaz.');
+                    return;
+                }
+                loadData(startDate, endDate);
+            });
+
+            $('#btnReset').on('click', function () {
+                $('#startDate').val(firstDay.toISOString().split('T')[0]);
+                $('#endDate').val(today.toISOString().split('T')[0]);
+                $('.column-filter').val('');
+                table.columns().search('').draw();
+                loadData($('#startDate').val(), $('#endDate').val());
+            });
+
+            function updateSummary(data) {
+                const totalConsumption = data.reduce((sum, r) => sum + (r.consumptionQuantity || 0), 0);
+                const consumptionPlaces = new Set(data.map(r => r.consumptionPlaceId));
+                const scalePlaces = new Set(data.map(r => r.scalePlaceId));
+
+                $('#totalRecords').text(data.length);
+                $('#totalConsumption').text(fmtNumber(totalConsumption));
+                $('#totalConsumptionPlaces').text(consumptionPlaces.size);
+                $('#totalScalePlaces').text(scalePlaces.size);
+            }
+
+            function loadData(startDate, endDate) {
+                table.clear().draw();
+                $.ajax({
+                    url: '/BoilerOperationandChemicalConsumption/GetWithSearchDetailsJson',
+                    type: 'GET',
+                    data: { StartDate: startDate, EndDate: endDate },
+                    beforeSend: function () {
+                        $('#btnSearch').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Aranıyor...');
+                    },
+                    success: function (response) {
+                        // Controller "success:false" ile hata mesajı da döndürebiliyor,
+                        // bu yüzden gelen veriyi kontrol ediyoruz.
+                        if (response && response.success === false) {
+                            alert(response.message || 'Veri alınamadı.');
+                            table.clear().draw();
+                            updateSummary([]);
+                            return;
+                        }
+                        const data = Array.isArray(response) ? response : [];
+                        table.rows.add(data).draw();
+                        updateSummary(data);
+                    },
+                    error: function (xhr, status, err) {
+                        console.error('AJAX hatası:', xhr.status, xhr.responseText);
+                        alert('Veriler alınırken bir hata oluştu.');
+                    },
+                    complete: function () {
+                        $('#btnSearch').prop('disabled', false).html('<i class="bi bi-search"></i> Ara');
+                    }
+                });
+            }
+
+            loadData($('#startDate').val(), $('#endDate').val());
+        });
+    </script>
+}
+
+

@@ -1,5 +1,6 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.DailyShipmentPlanDtos;
 using DTOLayer.Dtos.LogisticsTrackingReportDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetLogisticsTrackingReportList()
         {
-            if (!_currentUserService.HasPermission("MALZEMEDEPO.LogisticsTrackingReport.View"))
+            if (!_currentUserService.HasPermission("M2KANTAR.LogisticsTrackingReport.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -46,16 +47,45 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var client = _httpClientFactory.CreateClient();
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
+            var user = HttpContext.User;
+            var token = Request.Cookies["AuthToken"];
+            var currentUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var responsePlan = await client.GetAsync($"{_apiSettings.BaseUrl}/DailyShipmentPlan/getActivePlan");
+
+            if (!responsePlan.IsSuccessStatusCode)
+                return RedirectToAction("GetLogisticsTrackingReportList");
+
+            var jsonPlan = await responsePlan.Content.ReadAsStringAsync();
+            var dtoPlan = JsonConvert.DeserializeObject<List<DailyShipmentPlanDto>>(jsonPlan);
+
+            if (dtoPlan == null || !responsePlan.IsSuccessStatusCode)
+            {
+                var errorMessage = await responsePlan.Content.ReadAsStringAsync();
+                return Json("Önce Makine Girişi Yapmanız Gerekmekedir");
+            }
+
+            var plans = dtoPlan?.Select(x => new SelectListItem
+            {
+                Value = x.RecId.ToString(),
+                Text = x.ShipmentNo.ToString(),
+            })
+                 .ToList() ?? new();
+
+            ViewBag.Plans = plans;
+
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("MALZEMEDEPO.LogisticsTrackingReport.Update"))
+                if (!_currentUserService.HasPermission("M2KANTAR.LogisticsTrackingReport.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
-                var client = _httpClientFactory.CreateClient();
+
                 var response = await client.GetAsync($"{_apiSettings.BaseUrl}/LogisticsTrackingReport/getbyid/{id}");
                 if (!response.IsSuccessStatusCode)
                     return RedirectToAction("GetLogisticsTrackingReportList");
@@ -74,10 +104,13 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("MALZEMEDEPO.LogisticsTrackingReport.Add"))
+                if (!_currentUserService.HasPermission("M2KANTAR.LogisticsTrackingReport.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
+
+
+
                 var model = new ModalViewModel<LogisticsTrackingReportDto>
                 {
                     Entity = new LogisticsTrackingReportDto(),
@@ -120,6 +153,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
                     var errorMessage = await result.Content.ReadAsStringAsync();
                     return PartialView("_Edit", result);
                 }
+
+                var UpdatePlanId = await client.PutAsync($"{_apiSettings.BaseUrl}/DailyShipmentPlan/updateIsStatus/{model.Entity.ShipmentPlanId}", null);
+                if (!UpdatePlanId.IsSuccessStatusCode)
+                {
+                    var errorMessage = await UpdatePlanId.Content.ReadAsStringAsync();
+                    return PartialView("_Edit", result);
+                }
+
             }
 
             return RedirectToAction("GetLogisticsTrackingReportList");
@@ -129,7 +170,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("MALZEMEDEPO.LogisticsTrackingReport.Delete"))
+            if (!_currentUserService.HasPermission("M2KANTAR.LogisticsTrackingReport.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

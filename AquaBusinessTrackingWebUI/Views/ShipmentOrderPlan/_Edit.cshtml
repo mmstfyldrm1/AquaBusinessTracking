@@ -1,0 +1,162 @@
+﻿@using DTOLayer.Dtos.ShipmentOrderPlan
+@using DTOLayer.Dtos.ShipmentOrderPlanDtos.ShipmentOrderPlanDetailDtos
+@using AquaBusinessTrackingWebUI.Models
+@using AquaBusinessTrackingWebUI.Controllers
+@model ModalViewModel<ShipmentOrderPlanEditVm>
+
+<div class="modal fade" id="shipmentOrderPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="/ShipmentOrderPlan/Edit" id="shipmentOrderPlanModal">
+                <div class="modal-body">
+
+                    <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+
+                    @if (Model.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Entity.Plan.RecId" />
+                    }
+
+                    <h6 class="text-muted mb-3">Plan Bilgileri</h6>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-2">
+                            <label class="form-label">Cari No</label>
+                            <input type="number" asp-for="Entity.Plan.CurrentAccountId" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cari Kodu</label>
+                            <input type="text" asp-for="Entity.Plan.CurrentAccountCode" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Cari Adı (Firma)</label>
+                            <input type="text" required asp-for="Entity.Plan.CurrentAccountName" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Vardiya</label>
+                            <select asp-for="Entity.Plan.ShiftId" required asp-items="ViewBag.Shifts" class="form-select">
+                                <option value="">Vardiya Seçiniz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Plan Tarihi</label>
+                            <input type="date" required asp-for="Entity.Plan.PlanDate" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Teslim Tarihi</label>
+                            <input type="date" required asp-for="Entity.Plan.ReceiptDate" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Durum</label>
+                            <select asp-for="Entity.Plan.Status" class="form-select">
+                                <option value="0">Beklemede</option>
+                                <option value="1">Onaylandı</option>
+                                <option value="2">Sevk Edildi</option>
+                            </select>
+                            <div class="form-text">Durum kodlarını kendi iş kuralınıza göre güncelleyin.</div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Kayıt Eden</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </span>
+                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
+                            </div>
+                        </div>
+
+                        <input type="hidden" asp-for="Entity.Plan.DepartmentId" />
+                        <input type="hidden" asp-for="Entity.Plan.AppUserId" />
+                        <input type="hidden" asp-for="Entity.Plan.InsertDate" />
+
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="text-muted mb-0">Detay Satırları</h6>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="addDetailRowBtn">
+                            <ion-icon name="add-outline" class="me-1"></ion-icon>
+                            Satır Ekle
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle" id="detailRowsTable">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:120px">Sipariş No</th>
+                                    <th style="min-width:130px">Kağıt Cinsi</th>
+                                    <th style="min-width:100px">Gramaj</th>
+                                    <th style="min-width:100px">En</th>
+                                    <th style="min-width:100px">Tonaj</th>
+                                    <th style="min-width:130px">İrsaliye No</th>
+                                    <th class="text-center">Checklist</th>
+                                    <th class="text-center">Sevk Edildi</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailRowsBody">
+                                @for (int i = 0; i < Model.Entity.Details.Count; i++)
+                                {
+                                    <tr class="detail-row">
+                                        <td>
+                                            <input type="hidden" asp-for="Entity.Details[i].RecId" />
+                                            <input type="text" asp-for="Entity.Details[i].OrderNo" class="form-control form-control-sm" />
+                                        </td>
+                                        <td><input type="text" asp-for="Entity.Details[i].PaperType" class="form-control form-control-sm" /></td>
+                                        <td><input type="number" step="0.01" asp-for="Entity.Details[i].Grammage" class="form-control form-control-sm" /></td>
+                                        <td><input type="number" step="0.01" asp-for="Entity.Details[i].Width" class="form-control form-control-sm" /></td>
+                                        <td><input type="number" step="0.01" asp-for="Entity.Details[i].Tonnage" class="form-control form-control-sm" /></td>
+                                        <td><input type="text" asp-for="Entity.Details[i].DeliveryNoteNo" class="form-control form-control-sm" /></td>
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   asp-for="Entity.Details[i].Checklist"
+                                                   class="form-check-input" />
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   asp-for="Entity.Details[i].Shipped"
+                                                   class="form-check-input" />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-danger remove-detail-row" data-recid="@Model.Entity.Details[i].RecId">
+                                                <ion-icon name="trash-outline"></ion-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="deletedDetailIdsContainer"></div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        @(Model.IsEdit ? "Güncelle" : "Kaydet")
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityLayer.Concrete
 {
-    public class DB_BasinMeasurement
+    public class DB_BasinMeasurement : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int RecId { get; set; }
         public int BasinId { get; set; }
         public DB_Basin Basin { get; set; }
         public decimal? EnteranceAKM { get; set; }

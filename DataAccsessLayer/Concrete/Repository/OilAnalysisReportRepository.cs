@@ -18,6 +18,7 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_OilAnalysisReport
                 .Include(x => x.Shift)
                 .Include(x => x.AppUser)
+                 .OrderByDescending(x => x.RecId)
                 .ToListAsync();
         }
     }

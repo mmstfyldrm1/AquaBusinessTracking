@@ -2,6 +2,8 @@
 using DTOLayer.Dtos.PlanningScorBoardViewDto;
 using DTOLayer.Dtos.PlanningScorBoardViewDtos;
 using DTOLayer.Dtos.SentezAllDataDtos;
+using DTOLayer.Dtos.ShipmentOrderPlan;
+using DTOLayer.Dtos.ShipmentOrderPlanDtos.ShipmentOrderPlanDetailDtos;
 using EntityLayer.Concrete;
 
 namespace DTOLayer.MappingProfiles.Planning
@@ -37,6 +39,26 @@ namespace DTOLayer.MappingProfiles.Planning
                     x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
 
             #endregion
+
+            #region ShipmentOrderPlan - Detail
+            CreateMap<DB_ShipmentOrderPlan, CreateShipmentOrderPlanDto>().ReverseMap();
+            CreateMap<DB_ShipmentOrderPlan, UpdateShipmentOrderPlanDto>().ReverseMap();
+            CreateMap<DB_ShipmentOrderPlan, ShipmentOrderPlanDto>().ReverseMap();
+
+            CreateMap<DB_ShipmentOrderPlan, ShipmentOrderPlanDto>()
+                .ForMember(x => x.ShiftName,
+                    x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
+                .ForMember(x => x.CreatedByName,
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+
+
+            CreateMap<DB_ShipmentOrderPlanDetail, CreateShipmentOrderPlanDetailDto>().ReverseMap();
+            CreateMap<DB_ShipmentOrderPlanDetail, UpdateShipmentOrderPlanDetailDto>().ReverseMap();
+            CreateMap<DB_ShipmentOrderPlanDetail, ShipmentOrderPlanDetailDto>().ReverseMap();
+
+            #endregion
+
+
         }
     }
 }

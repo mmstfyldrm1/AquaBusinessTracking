@@ -25,6 +25,13 @@ namespace DataAccsessLayer.Configurations
             .WithMany(x => x.LogisticsTrackingReports)
             .HasForeignKey(x => x.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder
+            .HasOne(x => x.DailyShipmentPlan)
+            .WithMany(x => x.LogisticsTrackingReport)
+            .HasForeignKey(x => x.ShipmentPlanId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -11,20 +11,24 @@ namespace DataAccsessLayer.Seed
             {
                 // ================= ARITMA =================
                 ("ARITMA", "Basin", "AAT Lab. Analiz Defteri"),
+                ("ARITMA", "BasinMeasurement", "AAT Lab. Analiz Tüketimleri"),
                 ("ARITMA", "PurificationChemicalsConsumption", "Arıtma Kimyasal Tüketim"),
                 ("ARITMA", "Test", "Endüstriyel Deneme İzleme"),
-                ("ARITMA", "MassWasteSupplier", "Kütle Denklik Firma Bazlı"),
-                ("ARITMA", "MassWasteBalance", "Kütle Denklik Atık Kodu Bazlı"),
+
             
                 // ================= M2 KANTAR =================
                 ("M2KANTAR", "SalesScale", "Araç Listesi"),
                 ("M2KANTAR", "IncomingGoodsTracking", "Gelen Malzeme Takibi"),
+                ("M2KANTAR", "DailyShipmentPlan", "Günlük Sevkiyat Listesi"),
+                ("M2KANTAR", "LogisticsTrackingReport", "Lojistik Takip Raporu"),
+                ("M2KANTAR", "ShipmentOrderPlan", "Sevkiyat Planları"),
             
                 // ================= KAZAN =================
                 ("KAZAN", "KazanChemicals", "Kazan Kimyasal Takip Sistemi"),
                 ("KAZAN", "BoilerSteamFeedWaterCondensateData", "Kazan Kondens Takip Sistemi"),
                 ("KAZAN", "NaturelGasMeterMonitoring", "Kazan Doğalgaz Takip Sistemi"),
-                ("KAZAN", "BoilerRoomDailyShiftMonitoring", "Kazan Vardiya Takip Sistemi"),
+                ("KAZAN", "BoilerOperationandChemicalConsumption", "Kazan İşletme ve Kimyasal Tüketim"),
+                ("KAZAN", "KazanEnergyConsumption", "Kazan Enerji Tüketim Yerleri"),
             
                 // ================= MEKANIK BAKIM =================
                 ("MEKANIKBAKIM", "Maintenance", "Mekanik Bakım"),
@@ -38,8 +42,6 @@ namespace DataAccsessLayer.Seed
                 ("KIMYASAL", "ChemicalSupplierProducts", "Tedarikçi Kimyasal Ürünleri"),
             
                 // ================= MALZEME DEPO =================
-                ("MALZEMEDEPO", "WarehouseRequestWait", "Depo Talep Bekleyen"),
-                ("MALZEMEDEPO", "LogisticsTrackingReport", "Lojistik Takip Raporu"),
                 ("MALZEMEDEPO", "SentezNotOrders", "Sentezde Siparişi Olmayanlar"),
                 ("MALZEMEDEPO", "VehicleFuelLogs", "Araç Yakıt Takip Raporu"),
             
@@ -77,6 +79,8 @@ namespace DataAccsessLayer.Seed
                 // ================= KAĞIT SATIN ALMA =================
                 ("KAGITSATINALMA", "WastePaperControl", "Hammadde Kontrol"),
                 ("KAGITSATINALMA", "WastePaperCost", "Hammadde Maliyet"),
+                ("KAGITSATINALMA", "MassWasteSupplier", "Kütle Denklik Firma Bazlı"),
+                ("KAGITSATINALMA", "MassWasteBalance", "Kütle Denklik Atık Kodu Bazlı"),
             
                 // ================= PLANLAMA =================
                 ("PLANLAMA", "Planning", "Dün Sarf Edilenler"),

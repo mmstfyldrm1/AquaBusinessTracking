@@ -1,0 +1,524 @@
+﻿@using DTOLayer.Dtos.BoilerRoomDailyShiftMonitoringDtos
+@model AquaBusinessTrackingWebUI.Models.BoilerRoomDailyShiftViewModel
+
+@{
+    ViewData["Title"] = "GetBoilerRoomDailyShiftData";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+
+    int counter = 1;
+
+    var controller =
+        "BoilerOperationandChemicalConsumption/GetBoilerRoomDailyShiftData";
+}
+
+<style>
+
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+
+    .energy-status-table {
+        font-size: 0.85rem;
+    }
+
+        .energy-status-table th {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            color: #6c757d;
+            font-weight: 600;
+            border-bottom-width: 1px;
+        }
+
+        .energy-status-table td,
+        .energy-status-table th {
+            padding: 0.45rem 0.6rem;
+            vertical-align: middle;
+        }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+    }
+
+        .status-pill.recorded {
+            background-color: #d1f5e0;
+            color: #15803d;
+        }
+
+        .status-pill.not-recorded {
+            background-color: #fde2e1;
+            color: #b91c1c;
+        }
+
+        .status-pill ion-icon {
+            font-size: 0.9rem;
+        }
+
+</style>
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <h6 class="mb-0 text-uppercase">
+        Kazan Vardiya Devir Teslim Takip Sistemi
+    </h6>
+
+    <a asp-controller="UserDashboard"
+       asp-action="AddFavorite"
+       asp-route-url="@controller"
+       class="btn btn-light btn-sm border rounded-pill px-3">
+
+        <i class="bx bx-star text-warning me-1"></i>
+        Favorilere Ekle
+
+    </a>
+
+</div>
+
+<hr />
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table id="example2"
+                   class="table table-striped table-bordered">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Ölçüm Yeri</th>
+                        <th>Tüketim Tipi</th>
+                        <th>Açıklama</th>
+                        <th>Vardiya</th>
+                        <th>Tüketim Miktarı</th>
+                        <th>Aktif</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>İşlemler</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model.BoilerList)
+                    {
+                        <tr>
+
+
+                            <td>@counter</td>
+
+
+
+                            <td>
+                                @item.ReceiptDate.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                @item.ScalePlaceName
+                            </td>
+
+
+
+                            <td>
+                                @(item.ConsumptionPlace ?? "-")
+                            </td>
+
+
+
+                            <td>
+                                @(item.Explanation ?? "-")
+                            </td>
+
+
+
+                            <td>
+                                @(item.ShiftName ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.ConsumptionQuantity)
+                            </td>
+
+
+
+                            <td>
+
+                                @if (item.InUse == 1)
+                                {
+                                    <span class="badge bg-success">
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Pasif
+                                    </span>
+                                }
+
+                            </td>
+
+
+
+                            <td>
+                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.CreatedByName ?? "-")
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex align-items-center gap-3">
+
+
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+
+                                        <ion-icon name="pencil-outline"></ion-icon>
+
+                                    </a>
+
+
+
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Bu kayıt silinsin mi?');"
+                                                title="Sil">
+
+                                            <ion-icon name="trash-outline"></ion-icon>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        counter++;
+                    }
+
+                </tbody>
+
+
+                <tfoot>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Tarih</th>
+                        <th>Ölçüm Yeri</th>
+                        <th>Tüketim Tipi</th>
+                        <th>Açıklama</th>
+                        <th>Vardiya</th>
+                        <th>Tüketim Miktarı</th>
+                        <th>Aktif</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Kayıt Eden</th>
+                        <th>İşlemler</th>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+
+        <button class="btn btn-primary shadow-sm"
+                onclick="openModal()">
+
+            <ion-icon name="add-circle-outline"></ion-icon>
+
+            Yeni Kayıt Ekle
+
+        </button>
+
+        <a href="/BoilerOperationandChemicalConsumption/GetWithSearchDetails" class="btn btn-outline-secondary shadow-sm">
+            <ion-icon name="document-text-outline" class="me-1"></ion-icon>
+            Tüm Detayları Gör
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="my-4" />
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+
+    <h6 class="mb-0 fw-bold small text-uppercase text-muted">
+        <ion-icon name="flash-outline" class="me-1 align-middle"></ion-icon>
+        Kazan Lokasyon Kayıt Takip
+    </h6>
+
+    @if (Model.EnergyStatus != null && Model.EnergyStatus.Any())
+    {
+        var activeShiftName = Model.EnergyStatus.First().ShiftName;
+        <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle rounded-pill px-3 py-1">
+            @(activeShiftName ?? "Aktif Vardiya")
+        </span>
+    }
+
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-sm table-hover align-middle mb-0 energy-status-table">
+
+            <thead class="table-light">
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th>Lokasyon</th>
+                    <th>Vardiya</th>
+                    <th>Tarih</th>
+                    <th class="text-center" style="width:130px;">Durum</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model.EnergyStatus != null && Model.EnergyStatus.Any())
+                {
+                    var statusCounter = 1;
+
+                    foreach (var status in Model.EnergyStatus)
+                    {
+                        <tr>
+
+                            <td class="text-muted">@statusCounter</td>
+
+                            <td class="fw-semibold">
+                                @status.EnergyConsumptionPlace
+                            </td>
+
+                            <td>
+                                @(status.ShiftName ?? "-")
+                            </td>
+
+                            <td class="text-muted">
+                                @(status.ReceiptDate?.ToString("dd.MM.yyyy") ?? "-")
+                            </td>
+
+                            <td class="text-center">
+
+                                @if (status.IsRecorded)
+                                {
+                                    <span class="status-pill recorded">
+                                        <ion-icon name="checkmark-circle"></ion-icon>
+                                        Kayıtlı
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill not-recorded">
+                                        <ion-icon name="close-circle"></ion-icon>
+                                        Eksik
+                                    </span>
+                                }
+
+                            </td>
+
+                        </tr>
+
+                        statusCounter++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5"
+                            class="text-center text-muted py-3 small">
+
+                            <ion-icon name="information-circle-outline"
+                                      class="fs-5 align-middle me-1">
+                            </ion-icon>
+
+                            Energy Consumption kaydı bulunamadı.
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+
+<div id="modalContainer"></div>
+
+
+<script>
+
+    function openModal(id = null) {
+
+        const url = id
+            ? `/BoilerOperationandChemicalConsumption/Edit/${id}`
+            : `/BoilerOperationandChemicalConsumption/Edit`;
+
+        fetch(url)
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Modal yüklenemedi. HTTP: ${response.status}`
+                    );
+                }
+
+                return response.text();
+
+            })
+            .then(html => {
+
+                document.getElementById("modalContainer").innerHTML = html;
+
+                const modalEl =
+                    document.getElementById(
+                        "boilerOperationandChemicalConsumptionModal"
+                    );
+
+                if (!modalEl) {
+
+                    throw new Error(
+                        "Modal bulunamadı. ID: boilerOperationandChemicalConsumptionModal"
+                    );
+
+                }
+
+                const modal =
+                    bootstrap.Modal.getOrCreateInstance(modalEl);
+
+                modal.show();
+
+
+                const form = modalEl.querySelector("form");
+
+                if (!form) {
+
+                    throw new Error(
+                        "Modal içerisindeki form bulunamadı."
+                    );
+
+                }
+
+
+                form.addEventListener("submit", function (e) {
+
+                    e.preventDefault();
+
+                    fetch(
+                        "/BoilerOperationandChemicalConsumption/Edit",
+                        {
+                            method: "POST",
+                            body: new FormData(this)
+                        }
+                    )
+                    .then(response => {
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                "Kayıt işlemi başarısız."
+                            );
+
+                        }
+
+                        return response;
+
+                    })
+                    .then(() => {
+
+                        modal.hide();
+
+                        setTimeout(() => {
+
+                            location.reload();
+
+                        }, 300);
+
+                    })
+                    .catch(error => {
+
+                        console.error(
+                            "Kayıt hatası:",
+                            error
+                        );
+
+                        alert(
+                            error.message
+                        );
+
+                    });
+
+                });
+
+            })
+            .catch(error => {
+
+                console.error(
+                    "Modal hatası:",
+                    error
+                );
+
+                alert(
+                    error.message
+                );
+
+            });
+
+    }
+
+</script>

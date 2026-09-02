@@ -7,7 +7,39 @@
     int counter = 0;
 }
 @model List<PlanningScorBoardViewDto>
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
 
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Plan Listesi</h6>
     <a asp-controller="UserDashboard"
@@ -35,9 +67,7 @@
                         <th>Plan</th>
                         <th>Kayıt Tarihi</th>
                         <th>Kayıt Eden</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
-                        <th>Detay</th>
+                        <th>İşlemler</th>
 
                     </tr>
                 </thead>
@@ -46,7 +76,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                           
+
                             <td>@counter</td>
 
                             <td>@item.PlanNo</td>
@@ -57,7 +87,7 @@
 
                             <td>@item.UploadPdf</td>
 
-                          
+
 
                             <td>
                                 @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
@@ -65,33 +95,42 @@
 
                             <td>@item.CreatedByName</td>
 
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning"
-                                        onclick="openModal(@item.RecId)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                            </td>
+                            <td>
 
-                            <td class="text-center">
-                                <form method="post"
-                                      asp-action="Delete"
-                                      asp-route-id="@item.RecId"
-                                      onsubmit="return confirm('Silinsin mi?');">
-
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-
-                                </form>
-                            </td>
-
-                            <td class="text-center">
                                 <a href="/PlanningScorBoardView/ViewPlan/@item.RecId"
                                    class="btn btn-sm btn-outline-info"
                                    title="Detay Gör">
                                     <ion-icon name="eye-outline"></ion-icon>
                                 </a>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
+
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+
+                                </div>
                             </td>
+
+
                         </tr>
 
                         counter++;
@@ -106,9 +145,7 @@
                         <th>Plan</th>
                         <th>Kayıt Tarihi</th>
                         <th>Kayıt Eden</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
-                        <th>Detay</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
 

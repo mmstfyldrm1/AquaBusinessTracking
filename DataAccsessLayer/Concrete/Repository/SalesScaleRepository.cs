@@ -16,9 +16,11 @@ namespace DataAccsessLayer.Concrete.Repository
         public async Task<List<DB_SalesScale>> GetWithDetails()
         {
             return await _context.Db_SalesScale
-                .Include(x => x.Shift)
-                .Include(x => x.AppUser)
-                .ToListAsync();
+              .Include(x => x.Shift)
+              .Include(x => x.AppUser)
+              .OrderByDescending(x => x.RecId)
+                .Take(200)
+              .ToListAsync();
         }
 
         public async Task<decimal> GetPreviousTodaySales()
@@ -33,6 +35,18 @@ namespace DataAccsessLayer.Concrete.Repository
 
         }
 
+        public async Task<List<DB_SalesScale>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
 
+            var query = _context.Db_SalesScale
+                .Include(x => x.Shift)
+                .Include(x => x.AppUser)
+                .Where(x => x.ScaleDate >= StartDate && x.ScaleDate < EndDate);
+
+            var sql = query.ToQueryString();
+            Console.WriteLine(sql);
+
+            return await query.ToListAsync();
+        }
     }
 }

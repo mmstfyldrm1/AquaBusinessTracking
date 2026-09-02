@@ -7,9 +7,40 @@
 }
 
 @model List<PlcMachineTagsDto>
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
 
-<h6 class="mb-0 text-uppercase">PLC Makine Tag Listesi</h6>
-<hr />
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
+
 
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">PLC Makine Tag Listesi</h6>
@@ -39,8 +70,7 @@
                         <th>Data Address</th>
                         <th>Data Type</th>
                         <th>Durum</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 
@@ -81,22 +111,32 @@
                                 }
                             </td>
 
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning"
-                                        onclick="openModal(@item.RecId)">
-                                    ✏️
-                                </button>
-                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
 
-                            <td class="text-center">
-                                <form method="post"
-                                      asp-action="Delete"
-                                      asp-route-id="@item.RecId"
-                                      onsubmit="return confirm('Silinsin mi?');">
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        🗑
-                                    </button>
-                                </form>
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+
+                                </div>
                             </td>
                         </tr>
 
@@ -115,8 +155,7 @@
                         <th>Data Address</th>
                         <th>Data Type</th>
                         <th>Durum</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
 

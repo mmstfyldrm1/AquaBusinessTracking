@@ -2,6 +2,7 @@
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.RawMaterialIntakesDtos;
 using DTOLayer.Dtos.ShiftDtos;
+using DTOLayer.Dtos.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -43,14 +44,49 @@ namespace AquaBusinessTrackingWebUI.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetWithSearchDetails()
+        {
+            ViewData["Title"] = "Kantar Satış Arama";
+            return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetWithSearchDetailsJson(DateTime StartDate, DateTime EndDate)
+        {
+            if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterials.View"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+            if (StartDate == default || EndDate == default)
+            {
+                return Json(new { success = false, message = "Başlangıç ve bitiş tarihleri geçerli olmalıdır." });
+            }
+            var startDateStr = StartDate.ToString("yyyy-MM-dd");
+            var endDateStr = EndDate.ToString("yyyy-MM-dd");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/RawMaterialIntake/search?startDate={startDateStr}&endDate={endDateStr}");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<RawMaterialIntakesDto>());
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<RawMaterialIntakesDto>>(json);
+            if (values == null || !values.Any())
+                return Json(new List<RawMaterialIntakesDto>());
+
+            return Json(values ?? new List<RawMaterialIntakesDto>());
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            await LoadUserListAsync();
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterialIntake.Update"))
+                if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterials.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -73,7 +109,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterialIntake.Add"))
+                if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterials.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -124,7 +160,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterialIntake.Delete"))
+            if (!_currentUserService.HasPermission("KAGITKANTAR.RawMaterials.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -161,6 +197,26 @@ namespace AquaBusinessTrackingWebUI.Controllers
                         Text = r.ShiftName.ToString()
                     }).ToList();
                 }
+            }
+        }
+
+        private async Task LoadUserListAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Auth/GetAllUsers");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+
+                var users = JsonConvert.DeserializeObject<List<GetListUserDto>>(jsonData);
+
+                ViewBag.Users = users.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.UserName
+                }).ToList();
             }
         }
     }

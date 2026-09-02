@@ -1,7 +1,10 @@
-﻿using BusinessLayer.Abstract;
+﻿using AquaBusinessTrackingWebApi.Services;
+using BusinessLayer.Abstract;
+using DTOLayer.Dtos.NotificationDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace AquaBusinessTrackingWebApi.Controllers
 {
@@ -13,12 +16,16 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly IPapperMachineChemicalService _service;
         private readonly ILogger<PapperMachineChemicalController> _logger;
         private readonly ISentezInventoryQueryService _sentez;
+        private readonly INotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _hub;
 
-        public PapperMachineChemicalController(IPapperMachineChemicalService service, ILogger<PapperMachineChemicalController> logger, ISentezInventoryQueryService sentez)
+        public PapperMachineChemicalController(IPapperMachineChemicalService service, ILogger<PapperMachineChemicalController> logger, ISentezInventoryQueryService sentez, INotificationService notificationService, IHubContext<NotificationHub> hub)
         {
             _service = service;
             _logger = logger;
             _sentez = sentez;
+            _notificationService = notificationService;
+            _hub = hub;
         }
 
         [HttpGet("getall")]
@@ -59,6 +66,26 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearchDetails([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        {
+            _logger.LogInformation(
+                "Elektrik Detay Sayfası {StartDate} - {EndDate} istendi.",
+                StartDate,
+                EndDate);
+
+
+            var result = await _service.GetWithSearchDetails(StartDate, EndDate);
+
+            _logger.LogInformation(
+              "Elektrik Detay Sayfası {StartDate} - {EndDate} başarıyla getirildi.",
+              StartDate,
+              EndDate);
+
+
+            return Ok(result);
+        }
+
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -87,18 +114,30 @@ namespace AquaBusinessTrackingWebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] CreatePapperMachineChemicalDto dto)
         {
-            _logger.LogInformation(
-                "Yeni Kağıt Makinesi Kimyasal kaydı ekleniyor. User={User}",
-                User?.Identity?.Name);
 
-            dto.InsertDate = DateTime.Now;
-
+            _logger.LogInformation("Yeni Kağıt Makinesi Kimyasal kaydı ekleniyor. User={User}", User?.Identity?.Name); dto.InsertDate = DateTime.Now;
             var result = await _service.Add(dto);
 
-            _logger.LogInformation(
-                "Kağıt Makinesi Kimyasal kaydı başarıyla eklendi.");
+            _logger.LogInformation("Kağıt Makinesi Kimyasal kaydı başarıyla eklendi.");
+
+            var notifDto = new CreateNotificationDto
+            {
+                UserId = 5,
+                Title = "Yeni Kimyasal Girişi",
+                Message = $"{dto.InventoryName} malzemesi  için  {dto.IncomingQuantity} gelen {dto.ConsumedQuantity} sarf ve stok {dto.CurrentStock} ",
+                Url = "/PapperMachineChemical/GetPapperMachineChemicalList",
+                Icon = "cube-outline",
+                Color = "warning",
+                IsRead = false
+            };
+
+            var savedNotif = await _notificationService.SendAsync(notifDto);
+            await _hub.Clients.Group($"user-{notifDto.UserId}")
+                .SendAsync("ReceiveNotification", savedNotif);
 
             return Ok(result);
+
+
         }
 
         [HttpPut("update/{id}")]

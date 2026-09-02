@@ -30,7 +30,7 @@ namespace EntityLayer.Concrete
 
         public int? ScaleGap { get; set; } // Fark
 
-        public string GapSuperVisior { get; set; }
+        public int GapSuperVisiorId { get; set; }
 
         public string GapDesicion { get; set; }
 

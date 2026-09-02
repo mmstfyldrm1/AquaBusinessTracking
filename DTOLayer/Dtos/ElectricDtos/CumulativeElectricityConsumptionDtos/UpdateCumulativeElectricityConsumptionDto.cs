@@ -10,6 +10,10 @@
 
         public DateTime ReceiptDate { get; set; }
 
+        public float InductiveReactive { get; set; }
+
+        public float CapacitiveReactive { get; set; }
+
         public int DepartmentId { get; set; }
 
         public int ShiftId { get; set; }

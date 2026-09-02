@@ -28,6 +28,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "AquaAuth";
     });
 
+builder.Services.AddScoped<InjectAuthViewDataFilter>();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<InjectAuthViewDataFilter>();
+});
+
 builder.Services.AddAuthorization();
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Aqua\DataProtection-Keys"))

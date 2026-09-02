@@ -82,7 +82,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 User?.Identity?.Name);
 
             dto.InsertDate = DateTime.Now;
-
+            dto.NetQuantity = dto.FilledQuantity - dto.EmptyQuantity;
             var result = await _service.Add(dto);
 
             _logger.LogInformation(
@@ -100,6 +100,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             dto.RecId = id;
             dto.UpdateDate = DateTime.Now;
+            dto.NetQuantity = dto.FilledQuantity - dto.EmptyQuantity;
 
             await _service.Update(dto);
 

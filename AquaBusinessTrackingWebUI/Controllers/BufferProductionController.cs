@@ -30,7 +30,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         public async Task<IActionResult> GetBufferProductionList()
         {
             var client = _httpClientFactory.CreateClient();
-            if (!_currentUserService.HasPermission("YASKISIM.BufferProduction.View"))
+            if (!_currentUserService.HasPermission("KURUKISIM.BufferProduction.View"))
             {
                 return Json(new { success = false, message = "Bu işlemi gerçekleştirmek için gerekli izniniz bulunmamaktadır." });
             }
@@ -54,7 +54,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("YASKISIM.BufferProduction.Update"))
+                if (!_currentUserService.HasPermission("KURUKISIM.BufferProduction.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -81,7 +81,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("YASKISIM.BufferProduction.Add"))
+                if (!_currentUserService.HasPermission("KURUKISIM.BufferProduction.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -132,7 +132,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("YASKISIM.BufferProduction.Delete"))
+            if (!_currentUserService.HasPermission("KURUKISIM.BufferProduction.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

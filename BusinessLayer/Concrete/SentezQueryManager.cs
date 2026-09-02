@@ -93,7 +93,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"select");
             sb.AppendLine($"'Yıllık' Tip");
             sb.AppendLine($",4 Type");
-            sb.AppendLine($",CONVERT(VARCHAR, DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE() - 1), 0), 104) +' - '+ CONVERT(VARCHAR, GETDATE() - 1, 104) Tarih");
+            sb.AppendLine($",CONVERT(VARCHAR, DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE()), 0), 104) +' - '+ CONVERT(VARCHAR, GETDATE(), 104) Tarih");
             sb.AppendLine($",i.InventoryName as Explanation ");
             sb.AppendLine($"");
             sb.AppendLine($",isnull(YSATİS.Quantity,0) Satıs");
@@ -105,10 +105,10 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 ");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (1)");
-            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'--DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE() - 1), 0)");
+            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'--DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE()), 0)");
             sb.AppendLine($"	AND ir.ReceiptDate < CAST(GETDATE() AS DATE)");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
             sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
@@ -117,10 +117,10 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 ");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (122)");
-            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'--DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE() - 1), 0)");
+            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'--DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE()), 0)");
             sb.AppendLine($"	AND ir.ReceiptDate < CAST(GETDATE() AS DATE)");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
             sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
@@ -168,8 +168,8 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 ");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 ");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (1)");
             sb.AppendLine($"	AND convert(Date, ir.ReceiptDate)= convert(Date ,GETDATE() - 1)");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
@@ -179,8 +179,8 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 ");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 ");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (122)");
             sb.AppendLine($"	AND convert(Date, ir.ReceiptDate) = convert(Date ,GETDATE() - 1)");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
@@ -231,9 +231,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
             sb.AppendLine($"        WHERE ir.CompanyId = 22");
             sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
-            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
             sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
-            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
             sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
             sb.AppendLine($"          AND ir.ReceiptType = 1");
             sb.AppendLine($"          and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");
@@ -254,9 +252,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"            ON iss.RecId = iri.InventoryId");
             sb.AppendLine($"        WHERE ir.CompanyId = 22");
             sb.AppendLine($"          AND ISNULL(ir.IsCancelled,0)=0");
-            sb.AppendLine($"          AND ISNULL(ir.IsApproved,1)=1");
             sb.AppendLine($"          AND ISNULL(iri.IsCancelled,0)=0");
-            sb.AppendLine($"          AND ISNULL(iri.IsApproved,1)=1");
             sb.AppendLine($"          AND ISNULL(ir.IsTransportReceipt,0)=0");
             sb.AppendLine($"          AND ir.ReceiptType = 3");
             sb.AppendLine($"        and cast(ir.ReceiptDate as date) >= cast(DATEADD(day, -7, GETDATE()) as date) -- tarih");

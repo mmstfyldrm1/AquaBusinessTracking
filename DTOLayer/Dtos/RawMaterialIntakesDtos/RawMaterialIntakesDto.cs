@@ -14,6 +14,7 @@
 
         public string Operator { get; set; }
 
+        public int OperatorId { get; set; }
         public decimal WaybillQuantity { get; set; }
 
         public decimal FilledQuantity { get; set; }

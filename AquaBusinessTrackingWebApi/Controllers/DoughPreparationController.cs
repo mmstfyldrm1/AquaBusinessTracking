@@ -49,7 +49,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetRawMaterielsInventory")]
+        [HttpGet("getRawMaterielsInventory")]
         public async Task<IActionResult> GetRawMaterielsInventory()
         {
             _logger.LogInformation(

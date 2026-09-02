@@ -271,7 +271,7 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_BasinMeasurement");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerOperationandChemicalConsumption", b =>
                 {
                     b.Property<int>("RecId")
                         .ValueGeneratedOnAdd()
@@ -3457,7 +3457,7 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_VechileFuelLogs");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
                 {
                     b.Property<int>("RecId")
                         .ValueGeneratedOnAdd()
@@ -3548,7 +3548,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("Db_WarehouseRequestWait");
+                    b.ToTable("Db_DailyShipmentPlan");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_WastePaperControl", b =>
@@ -4270,20 +4270,20 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Basin");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerOperationandChemicalConsumption", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -5215,20 +5215,20 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
-                        .WithMany("WarehouseRequestWaits")
+                        .WithMany("DailyShipmentPlans")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -5443,7 +5443,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5509,7 +5509,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 
@@ -5535,7 +5535,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5599,7 +5599,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 
@@ -5645,7 +5645,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5709,7 +5709,7 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("VechileFuelLogs");
 
-                    b.Navigation("WarehouseRequestWaits");
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("WastePaperControls");
 

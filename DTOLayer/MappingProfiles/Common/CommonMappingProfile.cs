@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOLayer.Dtos.DepartmentDtos;
 using DTOLayer.Dtos.MessageDtos;
+using DTOLayer.Dtos.NotificationDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using DTOLayer.Dtos.UserDashboardDtos;
 using DTOLayer.Dtos.UserDtos;
@@ -51,6 +52,15 @@ namespace DTOLayer.MappingProfiles.Common
 
             CreateMap<DB_FavoriteMenuItem, UserDashboardFavoriteMenuDto>().ReverseMap();
             CreateMap<DB_FavoriteMenuItem, UserDashboardAddFavoriteModuleDto>().ReverseMap();
+
+            #endregion
+
+            #region Notification
+
+            CreateMap<DB_Notification, NotificationDto>().ReverseMap();
+            CreateMap<DB_Notification, CreateNotificationDto>().ReverseMap();
+            CreateMap<DB_Notification, UpdateNotificationDto>().ReverseMap();
+
 
             #endregion
         }

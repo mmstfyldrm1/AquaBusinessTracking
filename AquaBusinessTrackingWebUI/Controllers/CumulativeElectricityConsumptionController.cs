@@ -28,7 +28,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCumulativeElectricityConsumptionList()
         {
-            if (!_currentUserService.HasPermission("ELEKTIRIK.CumulativeElectricityConsumption.View"))
+            if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -70,7 +70,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             ViewBag.Location = Location;
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("ELEKTIRIK.CumulativeElectricityConsumption.Update"))
+                if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -93,7 +93,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ELEKTIRIK.CumulativeElectricityConsumption.Add"))
+                if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -106,6 +106,39 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 };
                 return PartialView("_Edit", model);
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetWithSearchDetails()
+        {
+            ViewData["Title"] = "Elektrik Tüketim  Arama";
+            return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetWithSearchDetailsJson(DateTime StartDate, DateTime EndDate)
+        {
+            if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.View"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+            if (StartDate == default || EndDate == default)
+            {
+                return Json(new { success = false, message = "Başlangıç ve bitiş tarihleri geçerli olmalıdır." });
+            }
+            var startDateStr = StartDate.ToString("yyyy-MM-dd");
+            var endDateStr = EndDate.ToString("yyyy-MM-dd");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/CumulativeElectricityConsumption/search?startDate={startDateStr}&endDate={endDateStr}");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<CumulativeElectricityConsumptionDto>());
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<CumulativeElectricityConsumptionDto>>(json);
+            if (values == null || !values.Any())
+                return Json(new List<CumulativeElectricityConsumptionDto>());
+
+            return Json(values ?? new List<CumulativeElectricityConsumptionDto>());
         }
 
         [HttpPost]
@@ -144,7 +177,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("ELEKTIRIK.CumulativeElectricityConsumption.Delete"))
+            if (!_currentUserService.HasPermission("ELEKTRIK.CumulativeElectricityConsumption.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

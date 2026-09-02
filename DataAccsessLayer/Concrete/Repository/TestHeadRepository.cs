@@ -19,6 +19,7 @@ namespace DataAccsessLayer.Concrete.Repository
                 .Include(x => x.Department)
                 .Include(x => x.AppUser)
                 .Include(x => x.Shift)
+                 .OrderByDescending(x => x.RecId)
                 .ToListAsync();
         }
     }

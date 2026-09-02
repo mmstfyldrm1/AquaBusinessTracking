@@ -1523,7 +1523,7 @@ namespace DataAccsessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Db_WarehouseRequestWait",
+                name: "Db_DailyShipmentPlan",
                 columns: table => new
                 {
                     RecId = table.Column<int>(type: "int", nullable: false)
@@ -1552,21 +1552,21 @@ namespace DataAccsessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Db_WarehouseRequestWait", x => x.RecId);
+                    table.PrimaryKey("PK_Db_DailyShipmentPlan", x => x.RecId);
                     table.ForeignKey(
-                        name: "FK_Db_WarehouseRequestWait_AspNetUsers_AppUserId",
+                        name: "FK_Db_DailyShipmentPlan_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Db_WarehouseRequestWait_Db_Department_DepartmentId",
+                        name: "FK_Db_DailyShipmentPlan_Db_Department_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Db_Department",
                         principalColumn: "RecId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Db_WarehouseRequestWait_Db_Shift_ShiftId",
+                        name: "FK_Db_DailyShipmentPlan_Db_Shift_ShiftId",
                         column: x => x.ShiftId,
                         principalTable: "Db_Shift",
                         principalColumn: "RecId",
@@ -2485,18 +2485,18 @@ namespace DataAccsessLayer.Migrations
                 column: "ShiftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Db_WarehouseRequestWait_AppUserId",
-                table: "Db_WarehouseRequestWait",
+                name: "IX_Db_DailyShipmentPlan_AppUserId",
+                table: "Db_DailyShipmentPlan",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Db_WarehouseRequestWait_DepartmentId",
-                table: "Db_WarehouseRequestWait",
+                name: "IX_Db_DailyShipmentPlan_DepartmentId",
+                table: "Db_DailyShipmentPlan",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Db_WarehouseRequestWait_ShiftId",
-                table: "Db_WarehouseRequestWait",
+                name: "IX_Db_DailyShipmentPlan_ShiftId",
+                table: "Db_DailyShipmentPlan",
                 column: "ShiftId");
 
             migrationBuilder.CreateIndex(
@@ -2690,7 +2690,7 @@ namespace DataAccsessLayer.Migrations
                 name: "Db_VechileFuelLogs");
 
             migrationBuilder.DropTable(
-                name: "Db_WarehouseRequestWait");
+                name: "Db_DailyShipmentPlan");
 
             migrationBuilder.DropTable(
                 name: "Db_WastePaperControl");

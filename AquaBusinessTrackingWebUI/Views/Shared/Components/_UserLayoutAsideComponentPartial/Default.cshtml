@@ -67,8 +67,18 @@
                     {
                         <li class="d-flex justify-content-between align-items-center">
                             <a href="~/Basin/GetBasinList" class="flex-grow-1">
-                                <ion-icon name="flask-outline"></ion-icon>
+                                <ion-icon name="ellipse-outline"></ion-icon>
                                 AAT Lab. Analiz Defteri
+                            </a>
+                        </li>
+                    }
+
+                    @if (CurrentUser.HasPermission("ARITMA.BasinMeasurement.View"))
+                    {
+                        <li class="d-flex justify-content-between align-items-center">
+                            <a href="~/BasinMeasurement/GetBasinMeasurementList" class="flex-grow-1">
+                                <ion-icon name="ellipse-outline"></ion-icon>
+                                AAT Lab. Analiz Tüketimleri 
                             </a>
                         </li>
                     }
@@ -80,15 +90,7 @@
                     {
                         <li><a href="~/Test/GetTestList"><ion-icon name="ellipse-outline"></ion-icon>End. Deneme İz. Tbl.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("ARITMA.MassWasteSupplier.View"))
-                    {
-                        <li><a href="~/MassWasteSupplier/GetMassWasteSupplierList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denklik Firma Bz.</a></li>
-                    }
-
-                    @if (CurrentUser.HasPermission("ARITMA.MassWasteBalance.View"))
-                    {
-                        <li><a href="~/MassWasteBalance/GetMassWasteBalanceList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denk. Atık Kodu Bz.</a></li>
-                    }
+                   
                 </ul>
             </li>
         }
@@ -110,6 +112,18 @@
                     @if (CurrentUser.HasPermission("M2KANTAR.IncomingGoodsTracking.View"))
                     {
                         <li><a href="~/IncomingGoodsTracking/GetIncomingGoodsTrackingList"><ion-icon name="ellipse-outline"></ion-icon>Gelen Malzeme Takibi</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("M2KANTAR.DailyShipmentPlan.View"))
+                    {
+                        <li><a href="~/DailyShipmentPlan/GetDailyShipmentPlanList"><ion-icon name="ellipse-outline"></ion-icon>Günlük Sevkiyat Sipariş Listesi</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("M2KANTAR.LogisticsTrackingReport.View"))
+                    {
+                        <li><a href="~/LogisticsTrackingReport/GetLogisticsTrackingReportList"><ion-icon name="ellipse-outline"></ion-icon>Lojistik Takip Raporu</a></li>
+                    }
+                    @if (CurrentUser.HasPermission("M2KANTAR.ShipmentOrderPlan.View"))
+                    {
+                        <li><a href="~/ShipmentOrderPlan/GetPlanList"><ion-icon name="ellipse-outline"></ion-icon>Sevkiyat Planları</a></li>
                     }
 
                 </ul>
@@ -137,9 +151,14 @@
                     {
                         <li><a href="~/NaturelGasMeterMonitoring/GetNaturelGasMeterList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Doğal Gaz Tkp. Sis.</a></li>
                     }
-                    @if (CurrentUser.HasPermission("KAZAN.BoilerRoomDailyShiftMonitoring.View"))
+                    @if (CurrentUser.HasPermission("KAZAN.BoilerOperationandChemicalConsumption.View"))
                     {
-                        <li><a href="~/BoilerRoomDailyShiftMonitoring/GetBoilerRoomDailyShiftData"><ion-icon name="ellipse-outline"></ion-icon>Kazan Vardiya Yapılan İş Tkp.</a></li>
+                        <li><a href="~/BoilerOperationandChemicalConsumption/GetBoilerRoomDailyShiftData"><ion-icon name="ellipse-outline"></ion-icon>Kazan İşletme ve Kimyasal Tüketim.</a></li>
+                    }
+
+                    @if (CurrentUser.HasPermission("KAZAN.KazanEnergyConsumption.View"))
+                    {
+                        <li><a href="~/KazanEnergyConsumption/GetKazanEnergyConsumptionList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Enerji Tüketim Yerleri</a></li>
                     }
 
 
@@ -225,14 +244,7 @@
                     <div class="menu-title">Malzeme Depo</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("MALZEMEDEPO.WarehouseRequestWait.View"))
-                    {
-                        <li><a href="~/WarehouseRequestWait/GetWarehouseRequestWaitList"><ion-icon name="ellipse-outline"></ion-icon>Depo Talep Bekleyen</a></li>
-                    }
-                    @if (CurrentUser.HasPermission("MALZEMEDEPO.LogisticsTrackingReport.View"))
-                    {
-                        <li><a href="~/LogisticsTrackingReport/GetLogisticsTrackingReportList"><ion-icon name="ellipse-outline"></ion-icon>Lojistik Takip Raporu</a></li>
-                    }
+                   
                     @if (CurrentUser.HasPermission("MALZEMEDEPO.SentezNotOrders.View"))
                     {
                         <li><a href="~/SentezNotOrders/GetSentezNotOrdersList"><ion-icon name="ellipse-outline"></ion-icon>Sentezde Siparişi Olmyn.</a></li>
@@ -373,6 +385,16 @@
                     @if (CurrentUser.HasPermission("KAGITSATINALMA.WastePaperCost.View"))
                     {
                         <li><a href="~/WastePaperCost/GetWastePaperCostList"><ion-icon name="ellipse-outline"></ion-icon>Hammadde Maliyet</a></li>
+                    }
+
+                    @if (CurrentUser.HasPermission("KAGITSATINALMA.MassWasteSupplier.View"))
+                    {
+                        <li><a href="~/MassWasteSupplier/GetMassWasteSupplierList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denklik Firma Bz.</a></li>
+                    }
+
+                    @if (CurrentUser.HasPermission("KAGITSATINALMA.MassWasteBalance.View"))
+                    {
+                        <li><a href="~/MassWasteBalance/GetMassWasteBalanceList"><ion-icon name="ellipse-outline"></ion-icon>Kütle Denk. Atık Kodu Bz.</a></li>
                     }
 
 

@@ -6,6 +6,8 @@ namespace BusinessLayer.Abstract
     {
         public Task<List<SalesScaleDto>> GetWithDetails();
 
+        public Task<List<SalesScaleDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
 
     }
 }

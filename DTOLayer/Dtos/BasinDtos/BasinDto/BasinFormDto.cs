@@ -5,7 +5,7 @@ namespace DTOLayer.Dtos.BasinDtos.BasinDto
     {
         public int RecId { get; set; }
 
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public string Name { get; set; }
         public string Category { get; set; }
         public int DepartmentId { get; set; }

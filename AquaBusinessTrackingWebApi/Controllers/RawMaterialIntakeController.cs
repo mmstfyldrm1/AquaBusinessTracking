@@ -54,6 +54,21 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+            _logger.LogInformation(
+                "Hammadde giriş detayları istendi. Kullanıcı={User}",
+                User?.Identity?.Name);
+
+            var result = await _service.GetWithSearchDetails(StartDate, EndDate);
+
+            _logger.LogInformation(
+                "Hammadde giriş detayları başarıyla getirildi.");
+
+            return Ok(result);
+        }
+
 
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -90,7 +105,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 User?.Identity?.Name);
 
             dto.InsertDate = DateTime.Now;
-
+            dto.NetQuantity = dto.FilledQuantity - dto.EmptyQuantity;
             var result = await _service.Add(dto);
 
             _logger.LogInformation(
@@ -111,7 +126,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             dto.RecId = id;
             dto.UpdateDate = DateTime.Now;
-
+            dto.NetQuantity = dto.FilledQuantity - dto.EmptyQuantity;
             await _service.Update(dto);
 
             _logger.LogInformation(

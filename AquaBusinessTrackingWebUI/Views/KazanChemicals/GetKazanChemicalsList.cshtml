@@ -7,7 +7,35 @@
 }
 
 @model List<KazanChemicalsHeadDto>
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
 
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
 
 
 <div class="d-flex justify-content-between align-items-center">
@@ -42,9 +70,7 @@
                         <th>Kullanıcı</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
-                        <th>Detay</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 
@@ -80,32 +106,33 @@
                         </td>
 
                             <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning"
-                                        onclick="openModal(@item.RecId)">
-                                    <ion-icon name="create-outline"></ion-icon>
-                                </button>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                              
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
+
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+                                </div>
                             </td>
 
-                            <td class="text-center">
-                                <form method="post"
-                                      asp-action="Delete"
-                                      asp-route-id="@item.RecId"
-                                      style="display:inline;">
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Silinsin mi?');">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
-                            </td>
-
-                            <td class="text-center">
-                                <a href="/KazanChemicals/Detail/@item.RecId"
-                                   class="btn btn-sm btn-outline-info"
-                                   title="Detay Gör">
-                                    <ion-icon name="eye-outline"></ion-icon>
-                                </a>
-                            </td>
                         </tr>
 
                                         counter++;
@@ -126,9 +153,7 @@
                         <th>Kullanıcı</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
-                        <th>Detay</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
             </table>
@@ -145,7 +170,7 @@
 <div id="modalContainer"></div>
 
 <script>
-           function openModal(id = null) {
+    function openModal(id = null) {
         const url = id
             ? `/KazanChemicals/Edit/${id}`
             : `/KazanChemicals/Edit`;
@@ -158,20 +183,19 @@
                 const modal = new bootstrap.Modal(modalEl);
 
                 modal.show();
-               
-                 $(modalEl).find('.inventory-select').select2({
-                dropdownParent: $(modalEl),
-                placeholder: 'Stok kodu ara...',
-                allowClear: true,
-                tags: true,
-                width: '100%'
-                 });
+
+                $(modalEl).find('.inventory-select').select2({
+                    dropdownParent: $(modalEl),
+                    placeholder: 'Stok kodu ara...',
+                    allowClear: true,
+                    tags: true,
+                    width: '100%'
+                });
 
                 $(document).on('change', '#InventoryCode', function () {
-                 var stockName = $(this).find('option:selected').data('name');
-
-                   $('#InventoryName').val(stockName);
-                 });
+                    var stockName = $(this).find('option:selected').data('name');
+                    $('#InventoryName').val(stockName);
+                });
 
                 const form = modalEl.querySelector('form');
                 form.addEventListener('submit', function (e) {
@@ -189,32 +213,26 @@
                     });
                 });
 
-            const incoming = document.getElementById("Entity_Incoming");
-            const consumed = document.getElementById("Entity_Consumption");
-            const currentStock = document.getElementById("Entity_CurrentStock");
-            const remaining = document.getElementById("Entity_Remaining");
+                const incoming = document.getElementById("Entity_Incoming");
+                const consumed = document.getElementById("Entity_Consumption");
+                const currentStock = document.getElementById("Entity_CurrentStock");
+                const remaining = document.getElementById("Entity_Remaining");
 
-            function calculateRemaining() {
+                function calculateRemaining() {
+                    const incomingValue = parseFloat(incoming.value) || 0;
+                    const consumedValue = parseFloat(consumed.value) || 0;
+                    const currentStockValue = parseFloat(currentStock.value) || 0;
 
-                const incomingValue = parseFloat(incoming.value) || 0;
-                const consumedValue = parseFloat(consumed.value) || 0;
-                const currentStockValue = parseFloat(currentStock.value) || 0;
+                    const result = (incomingValue + currentStockValue) - consumedValue;
 
-                const result = (incomingValue + currentStockValue) - consumedValue;
+                    remaining.value = result.toFixed(2);
+                }
 
-                remaining.value = result.toFixed(2);
-            }
+                incoming.addEventListener("input", calculateRemaining);
+                consumed.addEventListener("input", calculateRemaining);
+                currentStock.addEventListener("input", calculateRemaining);
 
-            incoming.addEventListener("input", calculateRemaining);
-            consumed.addEventListener("input", calculateRemaining);
-            currentStock.addEventListener("input", calculateRemaining);
-
-            calculateRemaining();
+                calculateRemaining();
             });
-
-
-
-
     }
 </script>
-

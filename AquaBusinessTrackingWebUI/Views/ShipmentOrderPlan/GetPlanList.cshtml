@@ -1,0 +1,899 @@
+﻿@model List<AquaBusinessTrackingWebUI.Controllers.ShipmentOrderPlanListItemVm>
+@{
+    ViewData["Title"] = "Sevkiyat Planları";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+<style>
+    .sop-page {
+        --sop-bg: #F6F7F9;
+        --sop-surface: #FFFFFF;
+        --sop-border: #E2E5EA;
+        --sop-text: #1C222B;
+        --sop-text-muted: #5B6472;
+        --sop-accent: #2B6CB0;
+        --sop-accent-soft: #EAF1F8;
+        --sop-danger: #B3441E;
+        --sop-danger-soft: #F8EEE9;
+        background: var(--sop-bg);
+        color: var(--sop-text);
+        padding: 24px;
+        border-radius: 8px;
+    }
+
+    .sop-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+        .sop-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            color: var(--sop-text);
+        }
+
+    .sop-subtitle {
+        margin: 0;
+        color: var(--sop-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .sop-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .sop-search {
+        border: 1px solid var(--sop-border);
+        background: var(--sop-surface);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        min-width: 220px;
+        color: var(--sop-text);
+    }
+
+        .sop-search:focus {
+            outline: none;
+            border-color: var(--sop-accent);
+        }
+
+    .sop-btn {
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .sop-btn-primary {
+        background: var(--sop-accent);
+        color: #fff;
+    }
+
+        .sop-btn-primary:hover {
+            background: #235a91;
+        }
+
+    .sop-empty {
+        background: var(--sop-surface);
+        border: 1px dashed var(--sop-border);
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        color: var(--sop-text-muted);
+    }
+
+    .sop-groups {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sop-group {
+        background: var(--sop-surface);
+        border: 1px solid var(--sop-border);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .sop-group-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .sop-group-name {
+        font-weight: 600;
+        color: var(--sop-text);
+        flex: 1 1 auto;
+    }
+
+    .sop-group-code {
+        color: var(--sop-text-muted);
+        font-size: 0.85rem;
+    }
+
+    .sop-group-count {
+        background: var(--sop-accent-soft);
+        color: var(--sop-accent);
+        font-size: 0.8rem;
+        padding: 3px 10px;
+        border-radius: 999px;
+    }
+
+    .sop-chevron {
+        color: var(--sop-text-muted);
+        transition: transform 0.15s ease;
+    }
+
+    .sop-group.sop-open .sop-chevron {
+        transform: rotate(90deg);
+    }
+
+    .sop-group-body {
+        display: none;
+        border-top: 1px solid var(--sop-border);
+        overflow-x: auto;
+    }
+
+    .sop-group.sop-open .sop-group-body {
+        display: block;
+    }
+
+    .sop-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+    }
+
+        .sop-table th {
+            text-align: left;
+            font-weight: 500;
+            color: var(--sop-text-muted);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--sop-border);
+            white-space: nowrap;
+        }
+
+        .sop-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--sop-border);
+            white-space: nowrap;
+            color: var(--sop-text);
+        }
+
+        .sop-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .sop-badge {
+        background: var(--sop-accent-soft);
+        color: var(--sop-accent);
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+    }
+
+    .sop-row-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .sop-link {
+        color: var(--sop-accent);
+        text-decoration: none;
+        font-size: 0.85rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+        .sop-link:hover {
+            text-decoration: underline;
+        }
+
+    .sop-link-danger {
+        color: var(--sop-danger);
+    }
+
+    .sop-inline-form {
+        display: inline;
+    }
+
+    .sop-expand-btn {
+        background: none;
+        border: 1px solid var(--sop-border);
+        border-radius: 4px;
+        width: 22px;
+        height: 22px;
+        line-height: 1;
+        color: var(--sop-text-muted);
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+
+    tr.sop-plan-row.sop-plan-open .sop-expand-btn {
+        background: var(--sop-accent-soft);
+        color: var(--sop-accent);
+        border-color: var(--sop-accent-soft);
+        transform: rotate(90deg);
+    }
+
+    tr.sop-detail-row {
+        display: none;
+    }
+
+    tr.sop-plan-row.sop-plan-open + tr.sop-detail-row {
+        display: table-row;
+    }
+
+    .sop-detail-cell {
+        background: var(--sop-bg);
+        padding: 0 !important;
+        white-space: normal !important;
+    }
+
+    .sop-detail-wrap {
+        padding: 12px 16px 16px 42px;
+    }
+
+    .sop-detail-empty {
+        color: var(--sop-text-muted);
+        font-size: 0.85rem;
+        padding: 6px 0;
+    }
+
+    .sop-detail-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        background: var(--sop-surface);
+        border: 1px solid var(--sop-border);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+        .sop-detail-table th {
+            text-align: left;
+            font-weight: 500;
+            color: var(--sop-text-muted);
+            padding: 7px 12px;
+            border-bottom: 1px solid var(--sop-border);
+            white-space: nowrap;
+        }
+
+        .sop-detail-table td {
+            padding: 7px 12px;
+            border-bottom: 1px solid var(--sop-border);
+            white-space: nowrap;
+            color: var(--sop-text);
+        }
+
+        .sop-detail-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .sop-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+    }
+
+    .sop-dot-yes {
+        background: #2F855A;
+    }
+
+    .sop-dot-no {
+        background: #C05621;
+    }
+</style>
+
+<div id="modalContainer"></div>
+
+<div class="sop-page">
+    <div class="sop-header">
+        <div>
+            <h1>Sevkiyat Planları</h1>
+            <p class="sop-subtitle">Firma bazında planlanan sevkiyatları görüntüle ve yönet.</p>
+        </div>
+        <div class="sop-actions">
+            <input id="sopFirmaFilter" type="text" class="sop-search" placeholder="Firma ara..." />
+            <button type="button" class="sop-btn sop-btn-primary" onclick="openModal()">+ Yeni Plan</button>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="sop-empty">Henüz kayıtlı sevkiyat planı yok. "+ Yeni Plan" ile ilk kaydı oluşturabilirsiniz.</div>
+    }
+    else
+    {
+        var groups = Model
+        .GroupBy(item => string.IsNullOrWhiteSpace(item.Plan.CurrentAccountName) ? "Tanımsız Firma" : item.Plan.CurrentAccountName)
+        .OrderBy(g => g.Key);
+
+        <div class="sop-groups">
+            @foreach (var group in groups)
+            {
+                var firmaCode = group.First().Plan.CurrentAccountCode;
+                <div class="sop-group">
+                    <button type="button" class="sop-group-header" data-toggle="sop-group">
+                        <span class="sop-group-name">@group.Key</span>
+                        <span class="sop-group-code">@firmaCode</span>
+                        <span class="sop-group-count">@group.Count() plan</span>
+                        <span class="sop-chevron">&rsaquo;</span>
+                    </button>
+                    <div class="sop-group-body">
+                        <table class="sop-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Plan Tarihi</th>
+                                    <th>Teslim Tarihi</th>
+                                    <th>Vardiya</th>
+                                    <th>Oluşturan</th>
+                                    <th>Durum</th>
+                                    <th>Detay</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in group.OrderByDescending(i => i.Plan.PlanDate))
+                                {
+                                    var plan = item.Plan;
+                                    var details = item.Details;
+                                    <tr class="sop-plan-row" data-toggle="sop-plan">
+                                        <td><button type="button" class="sop-expand-btn">&rsaquo;</button></td>
+                                        <td>@plan.PlanDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@plan.ReceiptDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@plan.ShiftName</td>
+                                        <td>@plan.CreatedByName</td>
+                                        <td><span class="sop-badge">Durum: @plan.Status</span></td>
+                                        <td>@details.Count kalem</td>
+                                        <td class="sop-row-actions">
+                                            <button type="button" class="sop-link" onclick="openModal(@plan.RecId)">Düzenle</button>
+                                            <form method="post" action="@Url.Action("DeleteShipmentOrderPlan", "ShipmentOrderPlan")" onsubmit="return confirm('Bu planı silmek istediğinize emin misiniz?');" class="sop-inline-form">
+                                                <input type="hidden" name="id" value="@plan.RecId" />
+                                                <button type="submit" class="sop-link sop-link-danger">Sil</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr class="sop-detail-row">
+                                        <td colspan="8" class="sop-detail-cell">
+                                            <div class="sop-detail-wrap">
+                                                @if (!details.Any())
+                                                {
+                                                    <div class="sop-detail-empty">Bu plana ait detay kaydı yok.</div>
+                                                }
+                                                else
+                                                {
+                                                    <table class="sop-detail-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sipariş No</th>
+                                                                <th>Kağıt Cinsi</th>
+                                                                <th>Gramaj</th>
+                                                                <th>En</th>
+                                                                <th>Tonaj</th>
+                                                                <th>Checklist</th>
+                                                                <th>İrsaliye No</th>
+                                                                <th>Sevk Durumu</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var d in details)
+                                                            {
+                                                                <tr>
+                                                                    <td>@d.OrderNo</td>
+                                                                    <td>@d.PaperType</td>
+                                                                    <td>@d.Grammage</td>
+                                                                    <td>@d.Width</td>
+                                                                    <td>@d.Tonnage</td>
+                                                                    <td>
+                                                                        <span class="sop-dot @(d.Checklist ? "sop-dot-yes" : "sop-dot-no")"></span>
+                                                                        @(d.Checklist ? "Tamam" : "Bekliyor")
+                                                                    </td>
+                                                                    <td>@(string.IsNullOrWhiteSpace(d.DeliveryNoteNo) ? "—" : d.DeliveryNoteNo)</td>
+                                                                    <td>
+                                                                        <span class="sop-dot @(d.Shipped ? "sop-dot-yes" : "sop-dot-no")"></span>
+                                                                        @(d.Shipped ? "Sevk Edildi" : "Sevk Edilmedi")
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    function openModal(id) {
+
+        var url = id
+            ? '/ShipmentOrderPlan/Edit/' + id
+            : '/ShipmentOrderPlan/Edit';
+
+        var container = document.getElementById('modalContainer');
+
+        fetch(url)
+            .then(function (response) {
+
+                if (!response.ok) {
+                    throw new Error('Form yüklenemedi.');
+                }
+
+                return response.text();
+            })
+            .then(function (html) {
+
+                container.innerHTML = html;
+
+                var modalEl = document.getElementById('shipmentOrderPlanModal');
+
+                if (!modalEl) {
+                    alert('Form açılamadı. Bu işlem için yetkiniz olmayabilir.');
+                    container.innerHTML = '';
+                    return;
+                }
+
+                var modal = new bootstrap.Modal(modalEl);
+
+                modal.show();
+
+                // =========================================================
+                // MODAL KAPANINCA TEMİZLE
+                // =========================================================
+
+                modalEl.addEventListener(
+                    'hidden.bs.modal',
+                    function () {
+                        container.innerHTML = '';
+                    },
+                    { once: true }
+                );
+
+                // =========================================================
+                // FORM SUBMIT
+                // =========================================================
+
+                var form = modalEl.querySelector('form');
+
+                if (form) {
+
+                    form.addEventListener('submit', function (e) {
+
+                        e.preventDefault();
+
+                        var submitBtn =
+                            form.querySelector('button[type="submit"]');
+
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                        }
+
+                        fetch('/ShipmentOrderPlan/Edit', {
+                            method: 'POST',
+                            body: new FormData(form)
+                        })
+                            .then(function (response) {
+
+                                if (response.ok) {
+
+                                    modal.hide();
+
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 300);
+
+                                } else {
+
+                                    if (submitBtn) {
+                                        submitBtn.disabled = false;
+                                    }
+
+                                    alert(
+                                        'Kayıt sırasında bir hata oluştu.'
+                                    );
+                                }
+                            })
+                            .catch(function (error) {
+
+                                console.error(error);
+
+                                if (submitBtn) {
+                                    submitBtn.disabled = false;
+                                }
+
+                                alert(
+                                    'Kayıt sırasında bir hata oluştu.'
+                                );
+                            });
+                    });
+                }
+
+                // =========================================================
+                // DETAY SATIRLARI
+                // =========================================================
+
+                initializeDetailRows(modalEl);
+            })
+            .catch(function (error) {
+
+                console.error(error);
+
+                alert('Form yüklenirken bir hata oluştu.');
+            });
+    }
+
+
+    // =============================================================
+    // DETAY SATIRLARI
+    // =============================================================
+
+    function initializeDetailRows(modalEl) {
+
+        var tableBody =
+            modalEl.querySelector('#detailRowsBody');
+
+        var addBtn =
+            modalEl.querySelector('#addDetailRowBtn');
+
+        var deletedContainer =
+            modalEl.querySelector('#deletedDetailIdsContainer');
+
+        if (!tableBody || !addBtn) {
+            return;
+        }
+
+        // Mevcut satır sayısından devam et
+        var rowIndex =
+            tableBody.querySelectorAll('.detail-row').length;
+
+
+        // =========================================================
+        // YENİ SATIR OLUŞTUR
+        // =========================================================
+
+        function buildRow(index) {
+
+            var tr = document.createElement('tr');
+
+            tr.className = 'detail-row';
+
+            tr.innerHTML =
+
+                // Sipariş No
+                '<td>' +
+                    '<input type="hidden" ' +
+                        'name="Entity.Details[' + index + '].RecId" ' +
+                        'value="0" />' +
+
+                    '<input type="text" ' +
+                        'name="Entity.Details[' + index + '].OrderNo" ' +
+                        'class="form-control form-control-sm" ' +
+                        'placeholder="Sipariş No" />' +
+                '</td>' +
+
+                // Kağıt Türü
+                '<td>' +
+                    '<input type="text" ' +
+                        'name="Entity.Details[' + index + '].PaperType" ' +
+                        'class="form-control form-control-sm" ' +
+                        'placeholder="Kağıt Türü" />' +
+                '</td>' +
+
+                // Gramaj
+                '<td>' +
+                    '<input type="number" ' +
+                        'step="0.01" ' +
+                        'name="Entity.Details[' + index + '].Grammage" ' +
+                        'class="form-control form-control-sm" />' +
+                '</td>' +
+
+                // Ebat
+                '<td>' +
+                    '<input type="number" ' +
+                        'step="0.01" ' +
+                        'name="Entity.Details[' + index + '].Width" ' +
+                        'class="form-control form-control-sm" />' +
+                '</td>' +
+
+                // Tonaj
+                '<td>' +
+                    '<input type="number" ' +
+                        'step="0.01" ' +
+                        'name="Entity.Details[' + index + '].Tonnage" ' +
+                        'class="form-control form-control-sm" />' +
+                '</td>' +
+
+                // İrsaliye
+                '<td>' +
+                    '<input type="text" ' +
+                        'name="Entity.Details[' + index + '].DeliveryNoteNo" ' +
+                        'class="form-control form-control-sm" />' +
+                '</td>' +
+
+                // Checklist
+                '<td class="text-center">' +
+
+                    '<input type="hidden" ' +
+                        'name="Entity.Details[' + index + '].Checklist" ' +
+                        'value="false" />' +
+
+                    '<input type="checkbox" ' +
+                        'name="Entity.Details[' + index + '].Checklist" ' +
+                        'class="form-check-input" ' +
+                        'value="true" />' +
+
+                '</td>' +
+
+                // Sevk
+                '<td class="text-center">' +
+
+                    '<input type="hidden" ' +
+                        'name="Entity.Details[' + index + '].Shipped" ' +
+                        'value="false" />' +
+
+                    '<input type="checkbox" ' +
+                        'name="Entity.Details[' + index + '].Shipped" ' +
+                        'class="form-check-input" ' +
+                        'value="true" />' +
+
+                '</td>' +
+
+                // Sil
+                '<td>' +
+
+                    '<button type="button" ' +
+                        'class="btn btn-sm btn-outline-danger remove-detail-row" ' +
+                        'data-recid="0">' +
+
+                        '<ion-icon name="trash-outline"></ion-icon>' +
+
+                    '</button>' +
+
+                '</td>';
+
+            return tr;
+        }
+
+
+        // =========================================================
+        // SATIR EKLE
+        // =========================================================
+
+        addBtn.addEventListener('click', function () {
+
+            var row = buildRow(rowIndex);
+
+            tableBody.appendChild(row);
+
+            var removeBtn =
+                row.querySelector('.remove-detail-row');
+
+            bindRemove(removeBtn);
+
+            rowIndex++;
+        });
+
+
+        // =========================================================
+        // SATIR SİL
+        // =========================================================
+
+        function bindRemove(btn) {
+
+            btn.addEventListener('click', function () {
+
+                var recId =
+                    parseInt(
+                        btn.getAttribute('data-recid'),
+                        10
+                    ) || 0;
+
+
+                // Veritabanında mevcut kayıt ise
+                if (recId > 0 && deletedContainer) {
+
+                    var hidden =
+                        document.createElement('input');
+
+                    hidden.type = 'hidden';
+
+                    hidden.name =
+                        'Entity.DeletedDetailIds';
+
+                    hidden.value = recId;
+
+                    deletedContainer.appendChild(hidden);
+                }
+
+
+                // Satırı DOM'dan kaldır
+                var row = btn.closest('.detail-row');
+
+                if (row) {
+                    row.remove();
+                }
+            });
+        }
+
+
+        // =========================================================
+        // MEVCUT SATIRLARIN SİL BUTONLARI
+        // =========================================================
+
+        tableBody
+            .querySelectorAll('.remove-detail-row')
+            .forEach(function (btn) {
+
+                bindRemove(btn);
+
+            });
+    }
+
+
+    // =============================================================
+    // FİRMA GRUPLARI
+    // =============================================================
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var groups =
+            document.querySelectorAll('.sop-group');
+
+
+        // İlk firma açık
+        if (groups.length > 0) {
+
+            groups[0].classList.add('sop-open');
+        }
+
+
+        // Firma aç/kapat
+        groups.forEach(function (group) {
+
+            var header =
+                group.querySelector(
+                    '[data-toggle="sop-group"]'
+                );
+
+            if (!header) {
+                return;
+            }
+
+            header.addEventListener('click', function () {
+
+                group.classList.toggle('sop-open');
+
+            });
+        });
+
+
+        // =========================================================
+        // SİPARİŞ PLAN SATIRLARI
+        // =========================================================
+
+        document
+            .querySelectorAll('.sop-plan-row')
+            .forEach(function (row) {
+
+                var button =
+                    row.querySelector('.sop-expand-btn');
+
+                if (!button) {
+                    return;
+                }
+
+                button.addEventListener('click', function () {
+
+                    row.classList.toggle(
+                        'sop-plan-open'
+                    );
+
+                });
+            });
+
+
+        // =========================================================
+        // FİRMA FİLTRESİ
+        // =========================================================
+
+        var filterInput =
+            document.getElementById(
+                'sopFirmaFilter'
+            );
+
+        if (filterInput) {
+
+            filterInput.addEventListener(
+                'input',
+                function () {
+
+                    var term =
+                        filterInput.value
+                            .trim()
+                            .toLocaleLowerCase('tr-TR');
+
+
+                    groups.forEach(function (group) {
+
+                        var nameElement =
+                            group.querySelector(
+                                '.sop-group-name'
+                            );
+
+                        var codeElement =
+                            group.querySelector(
+                                '.sop-group-code'
+                            );
+
+
+                        var name =
+                            nameElement
+                                ? nameElement.textContent
+                                    .toLocaleLowerCase('tr-TR')
+                                : '';
+
+
+                        var code =
+                            codeElement
+                                ? codeElement.textContent
+                                    .toLocaleLowerCase('tr-TR')
+                                : '';
+
+
+                        var match =
+                            name.indexOf(term) !== -1 ||
+                            code.indexOf(term) !== -1;
+
+
+                        group.style.display =
+                            match ? '' : 'none';
+
+
+                        // Arama yapılıyorsa eşleşeni aç
+                        if (match && term.length > 0) {
+
+                            group.classList.add(
+                                'sop-open'
+                            );
+                        }
+
+                    });
+
+                }
+            );
+        }
+
+    });
+</script>

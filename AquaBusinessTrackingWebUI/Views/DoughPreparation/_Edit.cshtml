@@ -1,6 +1,30 @@
 ﻿@using DTOLayer.Dtos.DoughPreparationDtos.DoughPreparationHeadDtos
 @model ModalViewModel<DoughPreparationDto>
 
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+
+        .select2-container .select2-selection--single {
+            height: calc(2.25rem + 2px) !important;
+            padding: .375rem .75rem;
+            border: 1px solid #ced4da !important;
+            border-radius: .375rem !important;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 1.5 !important;
+            padding-left: 0 !important;
+        }
+
+        .select2-container .select2-selection__arrow {
+            height: calc(2.25rem + 2px) !important;
+        }
+</style>
+
+
 <div class="modal fade" id="doughPreparationModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -51,13 +75,24 @@
                                    class="form-control" />
                         </div>
 
+                        <div class="row g-3 mb-4">
+
                         <div class="col-md-6">
                             <label class="form-label">Stok Kodu</label>
 
-                            <input type="text"
-                                   asp-for="Entity.InventoryCode"
-                                   class="form-control"
-                                   placeholder="Stok kodu giriniz" />
+                            <select asp-for="Entity.InventoryCode"
+                                    id="InventoryCode" required
+                                    class="form-select inventory-select">
+
+                                <option value="">Seçiniz</option>
+
+                                @foreach (var item in ViewBag.InventoryList)
+                                {
+                                    <option value="@item.Value" data-name="@item.Text">
+                                        @item.Value
+                                    </option>
+                                }
+                            </select>
                         </div>
 
                         <div class="col-md-6">
@@ -65,6 +100,7 @@
 
                             <input type="text"
                                    asp-for="Entity.InventoryName"
+                                   id="InventoryName"
                                    class="form-control"
                                    placeholder="Stok adı giriniz" />
                         </div>

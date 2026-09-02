@@ -1,8 +1,6 @@
 ﻿@{
     Layout = null;
 }
-
-
 <!doctype html>
 <html lang="en">
 @await Component.InvokeAsync("_UserLayoutHeadComponentPartial")
@@ -41,7 +39,7 @@
 
     </div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    
     <!--end wrapper-->
     <!-- JS Files-->
     @await Component.InvokeAsync("_UserLayoutScriptComponentPartial")
@@ -152,9 +150,10 @@
             window.globalMessageConnection = globalConnection;
         })();
     </script>
+
     @await Component.InvokeAsync("_UserLayoutGenericNotificationComponentPartial")
 
-
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>

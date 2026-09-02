@@ -38,6 +38,15 @@ namespace BusinessLayer.Concrete
         {
             var data = await _repo.GetLast30DaysElectricConsumable();
             return _mapper.Map<List<CumulativeElectricityConsumptionDto>>(data);
+
+
+        }
+
+        public async Task<List<CumulativeElectricityConsumptionDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+            var entities = await _repo.GetWithSearchDetails(StartDate, EndDate);
+            var dtos = _mapper.Map<List<CumulativeElectricityConsumptionDto>>(entities);
+            return dtos;
         }
     }
 }

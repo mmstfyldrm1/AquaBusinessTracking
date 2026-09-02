@@ -61,6 +61,27 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearchDetails([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        {
+            _logger.LogInformation(
+                "Satış kantar Detay Sayfası {StartDate} - {EndDate} istendi.",
+                StartDate,
+                EndDate);
+
+
+            var result = await _salesScaleService.GetWithSearchDetails(StartDate, EndDate);
+
+            _logger.LogInformation(
+              "Satış kantar Detay Sayfası {StartDate} - {EndDate} başarıyla getirildi.",
+              StartDate,
+              EndDate);
+
+
+            return Ok(result);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -101,7 +122,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             dto.InsertDate = DateTime.Now;
             dto.ScaleDate = DateTime.Now;
-
+            dto.ScaleGap = (int)(dto.ScaleQuantity - dto.DeliveryQuantity);
 
             await _salesScaleService.Add(dto);
 
@@ -122,7 +143,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
 
             dto.UpdateDate = DateTime.Now;
-
+            dto.ScaleGap = (int)(dto.ScaleQuantity - dto.DeliveryQuantity);
 
             await _salesScaleService.Update(dto);
 

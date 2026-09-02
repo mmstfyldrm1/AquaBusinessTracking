@@ -16,7 +16,7 @@
 
         public string Plate { get; set; }
 
-        public string Operator { get; set; }
+        public int OperatorId { get; set; }
 
         public string Unit { get; set; }
 

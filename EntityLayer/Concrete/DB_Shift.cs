@@ -44,7 +44,7 @@ namespace EntityLayer.Concrete
         public ICollection<DB_BufferProduction> BufferProduction { get; set; }
 
         [JsonIgnore]
-        public ICollection<DB_BoilerRoomDailyShiftMonitoring> BoilerRoomDailyShiftMonitoring { get; set; }
+        public ICollection<DB_BoilerOperationandChemicalConsumption> BoilerOperationandChemicalConsumption { get; set; }
 
         [JsonIgnore]
         public ICollection<DB_DoughPreparation> DoughPreparations { get; set; }
@@ -130,7 +130,7 @@ namespace EntityLayer.Concrete
         public ICollection<DB_WinderCoilLengthControl> WinderCoilLengthControl { get; set; }
 
         [JsonIgnore]
-        public ICollection<DB_WarehouseRequestWait> WarehouseRequestWaits { get; set; }
+        public ICollection<DB_DailyShipmentPlan> DailyShipmentPlans { get; set; }
 
         [JsonIgnore]
         public ICollection<DB_VechileFuelLogs> VechileFuelLogs { get; set; }
@@ -153,6 +153,12 @@ namespace EntityLayer.Concrete
 
         [JsonIgnore]
         public ICollection<DB_MassWasteBalance> MassWasteBalance { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_KazanEnergyConsumption> KazanEnergyConsumption { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DB_ShipmentOrderPlan> ShipmentOrderPlan { get; set; }
 
         public Int16? InUse { get; set; }
 

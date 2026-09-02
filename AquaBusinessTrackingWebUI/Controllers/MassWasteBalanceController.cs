@@ -27,7 +27,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMassWasteBalanceList()
         {
-            if (!_currentUserService.HasPermission("ARITMA.MassWasteBalance.View"))
+            if (!_currentUserService.HasPermission("KAGITSATINALMA.MassWasteBalance.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -51,7 +51,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             if (id.HasValue)
             {
 
-                if (!_currentUserService.HasPermission("ARITMA.MassWasteBalance.Update"))
+                if (!_currentUserService.HasPermission("KAGITSATINALMA.MassWasteBalance.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -74,7 +74,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("ARITMA.MassWasteBalance.Add"))
+                if (!_currentUserService.HasPermission("KAGITSATINALMA.MassWasteBalance.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -115,7 +115,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("ARITMA.MassWasteBalance.Delete"))
+            if (!_currentUserService.HasPermission("KAGITSATINALMA.MassWasteBalance.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

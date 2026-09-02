@@ -11,7 +11,7 @@
 
         public string TruckPlate { get; set; }
 
-        public string Operator { get; set; }
+        public int OperatorId { get; set; }
 
         public decimal WaybillQuantity { get; set; }
 

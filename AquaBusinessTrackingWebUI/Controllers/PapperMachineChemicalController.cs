@@ -48,6 +48,39 @@ namespace AquaBusinessTrackingWebUI.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetWithSearchDetails()
+        {
+            ViewData["Title"] = "Kağıt Makinesi Kimyasal Arama";
+            return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetWithSearchDetailsJson(DateTime StartDate, DateTime EndDate)
+        {
+            if (!_currentUserService.HasPermission("KIMYASAL.PapperMachineChemical.View"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+            if (StartDate == default || EndDate == default)
+            {
+                return Json(new { success = false, message = "Başlangıç ve bitiş tarihleri geçerli olmalıdır." });
+            }
+            var startDateStr = StartDate.ToString("yyyy-MM-dd");
+            var endDateStr = EndDate.ToString("yyyy-MM-dd");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/PapperMachineChemical/search?startDate={startDateStr}&endDate={endDateStr}");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<PapperMachineChemicalDto>());
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<PapperMachineChemicalDto>>(json);
+            if (values == null || !values.Any())
+                return Json(new List<PapperMachineChemicalDto>());
+
+            return Json(values ?? new List<PapperMachineChemicalDto>());
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             var client = _httpClientFactory.CreateClient();
@@ -116,6 +149,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ModalViewModel<PapperMachineChemicalDto> model)
         {
+
             var dto = model.Entity;
             dto.DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
             dto.AppUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

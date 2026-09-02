@@ -11,6 +11,9 @@ namespace DataAccsessLayer.Abstract
         Task<List<DB_ElectricMeterLocation>> GetLocationName();
 
         Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable();
+        public Task<List<DB_CumulativeElectricityConsumption>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
+
 
 
     }

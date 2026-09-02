@@ -8,11 +8,8 @@ namespace EntityLayer.Concrete
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RecId { get; set; }
-
-
         public decimal Boil { get; set; }
         public decimal FeedWater { get; set; }
-
         public decimal KM2Kodens { get; set; }
         public decimal Hvac { get; set; }
 

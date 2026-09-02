@@ -19,7 +19,11 @@ namespace DTOLayer.MappingProfiles.Weighbridge
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                .ForMember(x => x.GapSuperVisiorName,
                     x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+
+
 
             #endregion
 
@@ -33,7 +37,10 @@ namespace DTOLayer.MappingProfiles.Weighbridge
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                .ForMember(x => x.OperatorName,
                     x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+
 
             #endregion
         }

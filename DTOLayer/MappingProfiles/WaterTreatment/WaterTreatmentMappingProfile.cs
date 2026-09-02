@@ -31,6 +31,16 @@ namespace DTOLayer.MappingProfiles.WaterTreatment
             CreateMap<DB_BasinMeasurement, UpdateBasinMeasurementDto>().ReverseMap();
             CreateMap<DB_BasinMeasurement, BasinMeasurementDto>().ReverseMap();
 
+
+            CreateMap<DB_BasinMeasurement, BasinMeasurementDto>()
+              .ForMember(x => x.BasinName,
+                  x => x.MapFrom(s => s.Basin != null ? s.Basin.Name : null))
+
+              .ForMember(x => x.CreatedByName,
+                  x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+
+              .ForMember(x => x.ShiftName,
+                  x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null));
             #endregion
 
             #region Test

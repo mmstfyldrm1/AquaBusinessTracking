@@ -7,6 +7,39 @@
 }
 
 @model IEnumerable<LogisticsTrackingReportDto>
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
 
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Lojistik Nakliye Raporu</h6>
@@ -31,21 +64,24 @@
                     <tr>
                         <th>#</th>
                         <th>Tarih</th>
-                        <th>Nakliye Firması</th>
+                        <th>Plan No</th>
                         <th>Çıkış Yeri</th>
-                        <th>Varış Yeri</th>
-                        <th>Araç</th>
-                        <th>Soför/Plaka</th>
-                        <th>Fiyat</th>
+                        <th>Varış Şehri</th>
+                        <th>Varış İlçesi</th>
                         <th>İşlem Yapılan Firma</th>
+                        <th>Nakliye Firması</th>
+                        <th>Çekici Plakası</th>
+                        <th>Dorse Plakası</th>
+                        <th>Sürücü</th>
+                        <th>Yükleme Durumu</th>
                         <th>Durum</th>
-                        <th>Fatura No</th>
-                        <th>Bölüm</th>
+                        <th>İrsaliye/Fatura No</th>
+                        <th>Kantar Miktarı</th>
+                        <th>Bobin Miktarı</th>
                         <th>Vardiya</th>
+                        <th>Kullanıcı</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelleme</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 
@@ -61,84 +97,71 @@
 
                             <td>@counter</td>
 
-                            <td>
-                                @(item.ReceiptDate.ToString("dd.MM.yyyy") ?? "-")
-                            </td>
+                            <td>@(item.ReceiptDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+
+                            <td>@(item.ShipmentNo ?? "-")</td>
+
+                            <td>@(item.DepartureLocation ?? "-")</td>
+
+                            <td>@(item.ArrivalCity ?? "-")</td>
+
+                            <td>@(item.ArrivalDistrict ?? "-")</td>
+
+                            <td>@(item.ProcessingCompany ?? "-")</td>
+
+                            <td>@(item.CarrierCompany ?? "-")</td>
+
+                            <td>@(item.TruckPlate ?? "-")</td>
+
+                            <td>@(item.TrailerPlate ?? "-")</td>
+
+                            <td>@(item.DriverName ?? "-")</td>
 
                             <td>
-                                @(item.CarrierCompany ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.DepartureLocation ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.ArrivalLocation ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.Vehicle ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.DriverNameOrPlate ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.Price?.ToString("N2") ?? "-")
-                            </td>
-
-                            <td>
-                                @(item.ProcessingCompany ?? "-")
-                            </td>
-
-                            <td>
-                                <span class="badge bg-info">
+                                <span class="badge bg-success">
                                     @(item.Status ?? "-")
                                 </span>
                             </td>
 
+                            <td>@(item.InvoiceNumber ?? "-")</td>
+
+                            <td>@item.ScaleQuantity.ToString("N2")</td>
+
+                            <td>@item.CoilQuantity.ToString("N2")</td>
+
+                            <td>@(item.ShiftName ?? "-")</td>
+
+                            <td>@(item.CreatedByName ?? "-")</td>
+
+                            <td>@(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+
+            
                             <td>
-                                @(item.InvoiceNumber ?? "-")
-                            </td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
 
-                            <td>
-                                @item.CreatedByName
-                            </td>
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="Delete"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
 
-                            <td>
-                                @item.ShiftName
-                            </td>
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
 
-                            <td>
-                                @(item.InsertDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
-                            </td>
+                                    </form>
 
-                            <td>
-                                @(item.UpdateDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
-                            </td>
-
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning"
-                                        onclick="openModal(@item.RecId)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                            </td>
-
-                            <td class="text-center">
-                                <form method="post"
-                                      asp-action="Delete"
-                                      asp-route-id="@item.RecId"
-                                      style="display:inline;">
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Silinsin mi?');">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-
-                                </form>
+                                </div>
                             </td>
 
                         </tr>
@@ -152,21 +175,24 @@
                     <tr>
                         <th>#</th>
                         <th>Tarih</th>
-                        <th>Nakliye Firması</th>
+                        <th>Plan No</th>
                         <th>Çıkış Yeri</th>
-                        <th>Varış Yeri</th>
-                        <th>Araç</th>
-                        <th>Soför/Plaka</th>
-                        <th>Fiyat</th>
-                        <th>İşlem Yapılan</th>
+                        <th>Varış Şehri</th>
+                        <th>Varış İlçesi</th>
+                        <th>İşlem Yapılan Firma</th>
+                        <th>Nakliye Firması</th>
+                        <th>Çekici Plakası</th>
+                        <th>Dorse Plakası</th>
+                        <th>Sürücü</th>
+                        <th>Yükleme Durumu</th>
                         <th>Durum</th>
-                        <th>Fatura No</th>
-                        <th>Kullanıcı</th>
+                        <th>İrsaliye/Fatura No</th>
+                        <th>Kantar Miktarı</th>
+                        <th>Bobin Miktarı</th>
                         <th>Vardiya</th>
-                        <th>Kayıt</th>
-                        <th>Güncelleme</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>Kullanıcı</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
 
@@ -184,35 +210,71 @@
 <div id="modalContainer"></div>
 
 <script>
-           function openModal(id = null) {
-        const url = id
-            ? `/LogisticsTrackingReport/Edit/${id}`
-            : `/LogisticsTrackingReport/Edit`;
 
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                document.getElementById('modalContainer').innerHTML = html;
-                const modalEl = document.getElementById('logisticsTrackingReportModal');
-                const modal = new bootstrap.Modal(modalEl);
+       function openModal(id = null) {
 
-                modal.show();
+      const url = id ?
+        `/LogisticsTrackingReport/Edit/${id}` :
+        `/LogisticsTrackingReport/Edit`;
 
-                const form = modalEl.querySelector('form');
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
+      const ApiBaseUrl = "@ViewBag.ApiBaseUrl";
+      const JwtToken = "@ViewBag.JwtToken";
+      fetch(url)
+        .then(r => r.text())
+        .then(html => {
 
-                    fetch('/LogisticsTrackingReport/Edit', {
-                        method: 'POST',
-                        body: new FormData(this)
-                    })
-                    .then(r => {
-                        if (r.ok) {
-                            modal.hide();
-                            location.reload();
-                        }
-                    });
-                });
-            });
+          document.getElementById('modalContainer').innerHTML = html;
+          const modalEl = document.getElementById('logisticsTrackingReportModal');
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+
+          modalEl.querySelector('#Entity_ShipmentPlanId').addEventListener('change', function () {
+            const id = this.value;
+            fetch(`${ApiBaseUrl}/DailyShipmentPlan/GetById/${id}`, {
+                headers: {
+                  'Authorization': `Bearer ${JwtToken}`
+                }
+              })
+              .then(r => {
+                if (!r.ok) {
+                  throw new Error(`HTTP ${r.status}`);
+                }
+                return r.json();
+              })
+              .then(data => {
+                console.log(data);
+                modalEl.querySelector('#Entity_ProcessingCompany').value = data.companyName;
+                modalEl.querySelector('#Entity_ArrivalCountry').value = data.country;
+                modalEl.querySelector('#Entity_ArrivalCity').value = data.city;
+                modalEl.querySelector('#Entity_ArrivalDistrict').value = data.district;
+                modalEl.querySelector('#Entity_ArrivalAddress').value = data.address;
+              })
+              .catch(err => console.error('GetById hatası:', err));
+          });
+
+          const form = modalEl.querySelector('form');
+
+          form.addEventListener('submit', function (e) {
+
+            e.preventDefault();
+
+            fetch('/LogisticsTrackingReport/Edit', {
+                method: 'POST',
+                body: new FormData(this)
+              })
+              .then(r => {
+                if (r.ok) {
+                  modal.hide();
+                  location.reload();
+                }
+              });
+
+          });
+
+
+
+        });
+
+
     }
 </script>

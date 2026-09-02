@@ -18,7 +18,7 @@
 
         public DateTime? UpdateDate { get; set; }
 
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
         public DateTime? DeleteDate { get; set; }
 
         public Int16? InUse { get; set; }

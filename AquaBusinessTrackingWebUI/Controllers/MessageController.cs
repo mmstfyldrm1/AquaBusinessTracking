@@ -22,13 +22,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         {
 
             var token = Request.Cookies["AuthToken"];
-            ViewBag.JwtToken = token;
-            ViewBag.ApiBaseUrl = _apiSettings.BaseUrl;
-
-
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            ViewBag.CurrentUserId = currentUserId;
-
 
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization =
@@ -43,9 +37,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 users = JsonConvert.DeserializeObject<List<UserListItemViewModel>>(json) ?? new();
             }
 
-            // Kendini listeden çıkar
             users = users.Where(u => u.Id.ToString() != currentUserId).ToList();
-
             return View(users);
         }
     }

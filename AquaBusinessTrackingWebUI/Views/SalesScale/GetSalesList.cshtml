@@ -6,6 +6,39 @@
     int counter = 0;
     var controller = "SalesScale/GetSalesList";
 }
+<style>
+    .table-action {
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .table-action:hover {
+            transform: translateY(-1px);
+        }
+
+    .delete-action {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .table-action.text-info:hover {
+        color: #087f8c !important;
+    }
+
+    .table-action.text-warning:hover {
+        color: #d39e00 !important;
+    }
+
+    .delete-action:hover {
+        color: #b02a37 !important;
+    }
+</style>
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Kantar Takip Sistemi</h6>
     <a asp-controller="UserDashboard"
@@ -40,8 +73,7 @@
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
                         <th>Kayıt Eden</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>İşlemler</th>
                     </tr>
                 </thead>
 
@@ -59,26 +91,38 @@
                             <td>@item.DeliveryQuantity</td>
                             <td>@item.ScaleQuantity</td>
                             <td>@item.ScaleGap</td>
-                            <td>@item.GapSuperVisior</td>
+                            <td>@item.GapSuperVisiorName</td>
                             <td>@item.GapDesicion</td>
                             <td>@item.ShiftName</td>
                             <td>@item.InsertDate.ToString("dd.MM.yyyy HH:mm")</td>
                             <td>@item.CreatedByName</td>
 
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning px-2 py-1"
-                                        onclick="openModal(@item.RecId)">
-                                    <i class="bi bi-pencil-square fs-6"></i>
-                                </button>
-                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Güncelle -->
+                                    <a href="javascript:void(0);"
+                                       class="table-action text-warning"
+                                       onclick="openModal(@item.RecId)"
+                                       title="Güncelle">
+                                        <ion-icon name="pencil-outline"></ion-icon>
+                                    </a>
 
-                            <td class="text-center">
-                                <form method="post" asp-action="DeleteSalesScale" asp-route-id="@item.RecId" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Silinsin mi?');">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
+                                    <!-- Sil -->
+                                    <form method="post"
+                                          asp-action="DeleteSalesScale"
+                                          asp-route-id="@item.RecId"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="table-action delete-action"
+                                                onclick="return confirm('Silinsin mi?');"
+                                                title="Sil">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+
+                                    </form>
+
+                                </div>
                             </td>
                         </tr>
                         counter++;
@@ -87,7 +131,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
-                        
+
                         <th>Tarih</th>
                         <th>Saat</th>
                         <th>İrsaliye No</th>
@@ -98,9 +142,10 @@
                         <th>Fark</th>
                         <th>Sorumlu</th>
                         <th>Karar</th>
+                        <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
-                        <th>Güncelle</th>
-                        <th>Sil</th>
+                        <th>Kayıt Eden</th>
+                        <th>İşlemler</th>
                     </tr>
                 </tfoot>
             </table>
@@ -109,6 +154,12 @@
             <ion-icon name="add-circle-outline"></ion-icon>
             Yeni Kayıt Ekle
         </button>
+
+        <a href="/SalesScale/GetWithSearchDetails" class="btn btn-outline-secondary shadow-sm">
+            <ion-icon name="document-text-outline" class="me-1"></ion-icon>
+            Tüm Detayları Gör
+        </a>
+
     </div>
 </div>
 
@@ -140,10 +191,37 @@
                     .then(r => {
                         if (r.ok) {
                             modal.hide();
-                            location.reload();
+                            location.reload(null, false);
                         }
                     });
                 });
+
+             const incoming = document.getElementById("Entity_ScaleQuantity");
+             const consumed = document.getElementById("Entity_DeliveryQuantity");
+             const remaining = document.getElementById("Entity_ScaleGap");
+
+             function calculateRemaining() {
+
+                 const incomingValue = parseFloat(incoming.value) || 0;
+                 const consumedValue = parseFloat(consumed.value) || 0;
+              
+
+                 const result = incomingValue - consumedValue;
+
+                 remaining.value = result.toFixed(2);
+             }
+
+             incoming.addEventListener("input", calculateRemaining);
+             consumed.addEventListener("input", calculateRemaining);
+
+
+             calculateRemaining();
             });
+        $(document).ready(function () {
+        $('#salesScaleTable').DataTable({
+            stateSave: true,
+            stateDuration: 60 * 60 * 24
+        });
+    });
     }
 </script>

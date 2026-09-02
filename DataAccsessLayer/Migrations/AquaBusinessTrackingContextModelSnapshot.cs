@@ -214,17 +214,29 @@ namespace DataAccsessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_BasinMeasurement", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RecId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
 
                     b.Property<int>("BasinId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("DO")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EndHours")
                         .IsRequired()
@@ -242,14 +254,26 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("Imhoff")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("OutAKM")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("OutKOI")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("Renk")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
 
                     b.Property<string>("StartHours")
                         .IsRequired()
@@ -258,17 +282,29 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("TN")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("pH")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("BasinId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
 
                     b.ToTable("Db_BasinMeasurement");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerOperationandChemicalConsumption", b =>
                 {
                     b.Property<int>("RecId")
                         .ValueGeneratedOnAdd()
@@ -278,6 +314,12 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
+
+                    b.Property<int>("ConsumptionPlaceId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ConsumptionQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -289,7 +331,6 @@ namespace DataAccsessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Explanation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("InUse")
@@ -298,16 +339,11 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NextShiftWork")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PersonelToWork")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ReceiptDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ScalePlaceId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ShiftId")
                         .HasColumnType("int");
@@ -318,21 +354,19 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
-                    b.Property<bool>("WorkIsDone")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorkPermit")
-                        .HasColumnType("bit");
-
                     b.HasKey("RecId");
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("ConsumptionPlaceId");
+
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ScalePlaceId");
 
                     b.HasIndex("ShiftId");
 
-                    b.ToTable("Db_BoilerRoomDailyShiftMonitoring");
+                    b.ToTable("Db_BoilerOperationandChemicalConsumption");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerSteamFeedWaterCondensateData", b =>
@@ -893,6 +927,9 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
+                    b.Property<float>("CapacitiveReactive")
+                        .HasColumnType("real");
+
                     b.Property<decimal>("Consumption")
                         .HasColumnType("decimal(18,2)");
 
@@ -910,6 +947,9 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<short?>("InUse")
                         .HasColumnType("smallint");
+
+                    b.Property<float>("InductiveReactive")
+                        .HasColumnType("real");
 
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
@@ -943,6 +983,82 @@ namespace DataAccsessLayer.Migrations
                     b.HasIndex("ShiftId");
 
                     b.ToTable("Db_CumulativeElectricityConsumption");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShipmentNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_DailyShipmentPlan");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_Department", b =>
@@ -1431,9 +1547,8 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("NetQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Operator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OperatorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Plate")
                         .IsRequired()
@@ -1619,6 +1734,65 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_KazanDailyShiftMonitoring");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_KazanEnergyConsumption", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConsumptionPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConsumptionUnit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Explanation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_KazanEnergyConsumption");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_LabWork", b =>
                 {
                     b.Property<int>("RecId")
@@ -1695,13 +1869,28 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ArrivalLocation")
+                    b.Property<string>("ArrivalAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ArrivalCity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ArrivalCountry")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ArrivalDistrict")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CarrierCompany")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("CoilQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
@@ -1716,11 +1905,15 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("DriverIdentityNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DriverNameOrPlate")
+                    b.Property<string>("DriverName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DriverPhone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1734,8 +1927,14 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("LoadingDepartureTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LoadingEntryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("OperationDuration")
+                        .HasColumnType("time");
 
                     b.Property<string>("ProcessingCompany")
                         .IsRequired()
@@ -1744,10 +1943,27 @@ namespace DataAccsessLayer.Migrations
                     b.Property<DateTime?>("ReceiptDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("ScaleQuantity")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int?>("ShiftId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("ShipmentPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TrailerPlate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrailerType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TruckPlate")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1757,10 +1973,6 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
-                    b.Property<string>("Vehicle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("RecId");
 
                     b.HasIndex("AppUserId");
@@ -1768,6 +1980,8 @@ namespace DataAccsessLayer.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("ShiftId");
+
+                    b.HasIndex("ShipmentPlanId");
 
                     b.ToTable("Db_LogisticsTrackingReport");
                 });
@@ -2087,6 +2301,81 @@ namespace DataAccsessLayer.Migrations
                     b.HasIndex("ShiftId");
 
                     b.ToTable("Db_NaturelGasMeterMonitoring");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_Notification", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_Notification");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_OilAnalysisReport", b =>
@@ -2515,9 +2804,8 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("NetQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Operator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OperatorId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ReceiptDate")
                         .HasColumnType("datetime2");
@@ -2741,9 +3029,8 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GapSuperVisior")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GapSuperVisiorId")
+                        .HasColumnType("int");
 
                     b.Property<short?>("InUse")
                         .HasColumnType("smallint");
@@ -3148,6 +3435,116 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_Shift");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ShipmentOrderPlan", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentAccountCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CurrentAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentAccountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PlanDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.ToTable("Db_ShipmentOrderPlan");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ShipmentOrderPlanDetail", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<bool>("Checklist")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DeliveryNoteNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Grammage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("OrderNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaperType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShipmentPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Shipped")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Tonnage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Width")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("ShipmentPlanId");
+
+                    b.ToTable("Db_ShipmentOrderPlanDetail");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_StarchAnalysisHeading", b =>
                 {
                     b.Property<int>("RecId")
@@ -3530,100 +3927,6 @@ namespace DataAccsessLayer.Migrations
                     b.HasIndex("ShiftId");
 
                     b.ToTable("Db_VechileFuelLogs");
-                });
-
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
-                {
-                    b.Property<int>("RecId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
-
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Explanation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<short?>("InUse")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("IncomingCurrentAccountName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("InsertDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Quanity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("ReceiptDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("ReturnDate")
-                        .HasColumnType("time");
-
-                    b.Property<string>("SentezInventoryCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SentezInventoryGroup")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SentezInventoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("WaitingTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("WarehouseEntryDate")
-                        .HasColumnType("time");
-
-                    b.Property<string>("WaybillInvoiceNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WaybillNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RecId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.ToTable("Db_WarehouseRequestWait");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_WastePaperControl", b =>
@@ -4339,35 +4642,69 @@ namespace DataAccsessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_BasinMeasurement", b =>
                 {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("EntityLayer.Concrete.DB_Basin", "Basin")
                         .WithMany("Measurements")
                         .HasForeignKey("BasinId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId");
+
+                    b.Navigation("AppUser");
+
                     b.Navigation("Basin");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
                 });
 
-            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerRoomDailyShiftMonitoring", b =>
+            modelBuilder.Entity("EntityLayer.Concrete.DB_BoilerOperationandChemicalConsumption", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("EntityLayer.Concrete.DB_KazanEnergyConsumption", "KazanEnergyConsumption")
+                        .WithMany("BoilerOperationandChemicalConsumption")
+                        .HasForeignKey("ConsumptionPlaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "ScalePlace")
+                        .WithMany()
+                        .HasForeignKey("ScalePlaceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
-                        .WithMany("BoilerRoomDailyShiftMonitoring")
+                        .WithMany("BoilerOperationandChemicalConsumption")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
 
                     b.Navigation("Department");
+
+                    b.Navigation("KazanEnergyConsumption");
+
+                    b.Navigation("ScalePlace");
 
                     b.Navigation("Shift");
                 });
@@ -4552,6 +4889,30 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("ElectricMeterLocation");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("DailyShipmentPlans")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("DailyShipmentPlans")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("DailyShipmentPlans")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
 
                     b.Navigation("Shift");
                 });
@@ -4778,6 +5139,30 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_KazanEnergyConsumption", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("KazanEnergyConsumption")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("KazanEnergyConsumption")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("KazanEnergyConsumption")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_LabWork", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
@@ -4819,7 +5204,15 @@ namespace DataAccsessLayer.Migrations
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("EntityLayer.Concrete.DB_DailyShipmentPlan", "DailyShipmentPlan")
+                        .WithMany("LogisticsTrackingReport")
+                        .HasForeignKey("ShipmentPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("DailyShipmentPlan");
 
                     b.Navigation("Department");
 
@@ -4933,6 +5326,27 @@ namespace DataAccsessLayer.Migrations
                         .WithMany("NaturelGasMeterMonitorings")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_Notification", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId");
 
                     b.Navigation("AppUser");
 
@@ -5199,6 +5613,41 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ShipmentOrderPlan", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany("ShipmentOrderPlan")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany("ShipmentOrderPlan")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany("ShipmentOrderPlan")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ShipmentOrderPlanDetail", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_ShipmentOrderPlan", "ShipmentOrderPlan")
+                        .WithMany("ShipmentOrderPlanDetail")
+                        .HasForeignKey("ShipmentPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ShipmentOrderPlan");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_StarchAnalysisHeading", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
@@ -5307,30 +5756,6 @@ namespace DataAccsessLayer.Migrations
 
                     b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
                         .WithMany("VechileFuelLogs")
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Shift");
-                });
-
-            modelBuilder.Entity("EntityLayer.Concrete.DB_WarehouseRequestWait", b =>
-                {
-                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
-                        .WithMany("WarehouseRequestWaits")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
-                        .WithMany("WarehouseRequestWaits")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
-                        .WithMany("WarehouseRequestWaits")
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -5545,7 +5970,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5560,6 +5985,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
                     b.Navigation("CumulativeElectricityConsumption");
+
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("DoughPreparationAnalysisResults");
 
@@ -5579,6 +6006,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("KazanDailyShiftMonitoring");
 
+                    b.Navigation("KazanEnergyConsumption");
+
                     b.Navigation("LabWorks");
 
                     b.Navigation("LogisticsTrackingReports");
@@ -5605,6 +6034,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("SentezAllData");
 
+                    b.Navigation("ShipmentOrderPlan");
+
                     b.Navigation("StarchAnalysisHeadings");
 
                     b.Navigation("SteamConsumptions");
@@ -5612,8 +6043,6 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("TestHeader");
 
                     b.Navigation("VechileFuelLogs");
-
-                    b.Navigation("WarehouseRequestWaits");
 
                     b.Navigation("WastePaperControls");
 
@@ -5633,13 +6062,18 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Measurements");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_DailyShipmentPlan", b =>
+                {
+                    b.Navigation("LogisticsTrackingReport");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_Department", b =>
                 {
                     b.Navigation("AppUsers");
 
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5654,6 +6088,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
                     b.Navigation("CumulativeElectricityConsumption");
+
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("DoughPreparationAnalysisResults");
 
@@ -5670,6 +6106,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("KazanChemicalsHead");
 
                     b.Navigation("KazanDailyShiftMonitoring");
+
+                    b.Navigation("KazanEnergyConsumption");
 
                     b.Navigation("LabWorks");
 
@@ -5697,6 +6135,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("SentezAllData");
 
+                    b.Navigation("ShipmentOrderPlan");
+
                     b.Navigation("StarchAnalysisHeadings");
 
                     b.Navigation("SteamConsumptions");
@@ -5704,8 +6144,6 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("TestHeaders");
 
                     b.Navigation("VechileFuelLogs");
-
-                    b.Navigation("WarehouseRequestWaits");
 
                     b.Navigation("WastePaperControls");
 
@@ -5723,6 +6161,11 @@ namespace DataAccsessLayer.Migrations
             modelBuilder.Entity("EntityLayer.Concrete.DB_ElectricMeterLocation", b =>
                 {
                     b.Navigation("CumulativeElectricityConsumption");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_KazanEnergyConsumption", b =>
+                {
+                    b.Navigation("BoilerOperationandChemicalConsumption");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_Permission", b =>
@@ -5751,7 +6194,7 @@ namespace DataAccsessLayer.Migrations
                 {
                     b.Navigation("Basins");
 
-                    b.Navigation("BoilerRoomDailyShiftMonitoring");
+                    b.Navigation("BoilerOperationandChemicalConsumption");
 
                     b.Navigation("BoilerSteamFeedWaterCondensateData");
 
@@ -5766,6 +6209,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("CirculationTankAirPressureMeasurementTurbidities");
 
                     b.Navigation("CumulativeElectricityConsumption");
+
+                    b.Navigation("DailyShipmentPlans");
 
                     b.Navigation("DoughPreparationAnalysisResults");
 
@@ -5782,6 +6227,8 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("KazanChemicalsHead");
 
                     b.Navigation("KazanDailyShiftMonitoring");
+
+                    b.Navigation("KazanEnergyConsumption");
 
                     b.Navigation("LabWorks");
 
@@ -5809,6 +6256,8 @@ namespace DataAccsessLayer.Migrations
 
                     b.Navigation("SentezAllData");
 
+                    b.Navigation("ShipmentOrderPlan");
+
                     b.Navigation("StarchAnalysisHeadings");
 
                     b.Navigation("SteamConsumptions");
@@ -5816,8 +6265,6 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("TestHeaders");
 
                     b.Navigation("VechileFuelLogs");
-
-                    b.Navigation("WarehouseRequestWaits");
 
                     b.Navigation("WastePaperControls");
 
@@ -5830,6 +6277,11 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("WinderCoilLengthControl");
 
                     b.Navigation("WinderCoilTrackings");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.DB_ShipmentOrderPlan", b =>
+                {
+                    b.Navigation("ShipmentOrderPlanDetail");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.DB_StarchAnalysisHeading", b =>

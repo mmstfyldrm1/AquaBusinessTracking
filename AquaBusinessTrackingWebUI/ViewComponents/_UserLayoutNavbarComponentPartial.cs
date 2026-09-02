@@ -23,9 +23,15 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var client = _httpClientFactory.CreateClient();
-
             var user = HttpContext.User;
             var departmentId = user.FindFirst("DepartmentId")?.Value;
+
+            var token = Request.Cookies["AuthToken"];
+            var currentUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             if (!string.IsNullOrEmpty(departmentId))
             {

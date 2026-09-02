@@ -7,6 +7,10 @@
         public int Month { get; set; } = DateTime.Now.Month;
 
         public decimal Consumption { get; set; }
+        public float InductiveReactive { get; set; }
+
+        public float CapacitiveReactive { get; set; }
+
 
         public DateTime ReceiptDate { get; set; }
 

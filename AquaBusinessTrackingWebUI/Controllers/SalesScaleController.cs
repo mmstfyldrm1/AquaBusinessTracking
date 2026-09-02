@@ -2,6 +2,7 @@
 using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.SalesScale;
 using DTOLayer.Dtos.ShiftDtos;
+using DTOLayer.Dtos.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
@@ -45,8 +46,42 @@ namespace AquaBusinessTrackingWebUI.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetWithSearchDetails()
+        {
+            ViewData["Title"] = "Kantar Satış Arama";
+            return View();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetWithSearchDetailsJson(DateTime StartDate, DateTime EndDate)
+        {
+            if (!_currentUserService.HasPermission("M2KANTAR.SalesScale.View"))
+            {
+                return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+            if (StartDate == default || EndDate == default)
+            {
+                return Json(new { success = false, message = "Başlangıç ve bitiş tarihleri geçerli olmalıdır." });
+            }
+            var startDateStr = StartDate.ToString("yyyy-MM-dd");
+            var endDateStr = EndDate.ToString("yyyy-MM-dd");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/SalesScale/search?startDate={startDateStr}&endDate={endDateStr}");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<SalesScaleDto>());
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<SalesScaleDto>>(json);
+            if (values == null || !values.Any())
+                return Json(new List<SalesScaleDto>());
+
+            return Json(values ?? new List<SalesScaleDto>());
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            await LoadUserListAsync();
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
@@ -155,6 +190,26 @@ namespace AquaBusinessTrackingWebUI.Controllers
                         Text = r.ShiftName.ToString()
                     }).ToList();
                 }
+            }
+        }
+
+        private async Task LoadUserListAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/Auth/GetAllUsers");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+
+                var users = JsonConvert.DeserializeObject<List<GetListUserDto>>(jsonData);
+
+                ViewBag.Users = users.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.UserName
+                }).ToList();
             }
         }
 

@@ -89,7 +89,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var isAdmin = claims.Any(c => c.Type == ClaimTypes.Role &&
                string.Equals(c.Value, "Admin", StringComparison.OrdinalIgnoreCase));
             if (isAdmin)
-                return RedirectToAction("Index", "AdminDashboard");
+                return RedirectToAction("Index", "UserDashboard");  //AdminDashboard
 
             return RedirectToAction("Index", "UserDashboard");
 

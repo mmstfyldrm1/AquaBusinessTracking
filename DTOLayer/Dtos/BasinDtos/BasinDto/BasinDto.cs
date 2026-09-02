@@ -18,7 +18,7 @@
 
         public DateTime InsertDate { get; set; } = DateTime.Now;
 
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ReceiptDate { get; set; } = DateTime.Now;
 
         public DateTime? UpdateDate { get; set; }
 

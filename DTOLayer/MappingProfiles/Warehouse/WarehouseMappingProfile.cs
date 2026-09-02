@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using DTOLayer.Dtos.DailyShipmentPlanDtos;
 using DTOLayer.Dtos.LogisticsTrackingReportDtos;
 using DTOLayer.Dtos.SentezNotOrdersDtos;
 using DTOLayer.Dtos.VechileFuelLogsDtos;
-using DTOLayer.Dtos.WarehouseRequestWaitDtos;
 using EntityLayer.Concrete;
 
 namespace DTOLayer.MappingProfiles.Warehouse
@@ -11,13 +11,13 @@ namespace DTOLayer.MappingProfiles.Warehouse
     {
         public WarehouseMappingProfile()
         {
-            #region Warehouse Request
+            #region DailyShipmentPlan
 
-            CreateMap<DB_WarehouseRequestWait, CreateWarehouseRequestWaitDto>().ReverseMap();
-            CreateMap<DB_WarehouseRequestWait, UpdateWarehouseRequestWaitDto>().ReverseMap();
-            CreateMap<DB_WarehouseRequestWait, WarehouseRequestWaitDto>().ReverseMap();
+            CreateMap<DB_DailyShipmentPlan, CreateDailyShipmentPlanDto>().ReverseMap();
+            CreateMap<DB_DailyShipmentPlan, UpdateDailyShipmentPlanDto>().ReverseMap();
+            CreateMap<DB_DailyShipmentPlan, DailyShipmentPlanDto>().ReverseMap();
 
-            CreateMap<DB_WarehouseRequestWait, WarehouseRequestWaitDto>()
+            CreateMap<DB_DailyShipmentPlan, DailyShipmentPlanDto>()
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
@@ -35,7 +35,10 @@ namespace DTOLayer.MappingProfiles.Warehouse
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
-                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                 .ForMember(x => x.ShipmentNo,
+                    x => x.MapFrom(s => s.DailyShipmentPlan != null ? s.DailyShipmentPlan.ShipmentNo : null));
+
 
             #endregion
 
