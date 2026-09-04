@@ -385,6 +385,28 @@
             badge.textContent = next;
         }
     }
+
+        (function () {
+        const searchForm = document.querySelector('.searchbar');
+        const mobileSearchBtn = document.querySelector('.mobile-search-button');
+        const aiSearchUrl = '@Url.Action("Index", "Ai")';
+
+        if (searchForm) {
+            searchForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+            });
+            searchForm.addEventListener('click', function () {
+                window.location.href = aiSearchUrl;
+            });
+        }
+
+        if (mobileSearchBtn) {
+            mobileSearchBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.location.href = aiSearchUrl;
+            });
+        }
+    })();
     })();
 </script>
 

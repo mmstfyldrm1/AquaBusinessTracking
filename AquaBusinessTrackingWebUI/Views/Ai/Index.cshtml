@@ -1,0 +1,457 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+<div class="ai-search-page container py-5">
+
+    <div class="ai-search-header text-center mb-5">
+        <div class="ai-icon-badge mx-auto mb-3">
+            <ion-icon name="search-outline"></ion-icon>
+        </div>
+        <h3 class="ai-title">Aqua AI Beta</h3>
+        <p>Beta sürümünde bazı özellikler sınırlı olabilir.</p>
+        <p class="ai-subtitle">Aradığınız bilgiyi yazın, sizin için ilgili verileri bulalım.</p>
+    </div>
+
+    <div class="ai-search-box mx-auto">
+        <div class="ai-input-wrapper">
+            <ion-icon name="chatbubble-ellipses-outline" class="ai-input-icon"></ion-icon>
+            <input type="text" id="aiQueryInput" class="ai-input"
+                   placeholder="Örn: Geçen ayki sevkiyat raporunu göster" />
+            <button class="ai-send-btn" id="aiAskBtn" type="button">
+                <ion-icon name="send-outline"></ion-icon>
+            </button>
+        </div>
+
+        <div class="ai-suggestions" id="aiSuggestions">
+            <span class="ai-chip">Geçen ayki sevkiyatlar</span>
+            <span class="ai-chip">Stok durumu özeti</span>
+            <span class="ai-chip">Bu haftaki satışlar</span>
+        </div>
+
+        <div id="aiLoading" class="ai-loading" style="display:none;">
+            <div class="ai-loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p class="ai-loading-text">Yanıt hazırlanıyor...</p>
+        </div>
+
+        <div id="aiResultArea" class="ai-result-area"></div>
+    </div>
+
+</div>
+
+<style>
+    :root {
+        --ai-primary: #10233f;
+        --ai-primary-dark: #0a1830;
+        --ai-accent: #2c4a72;
+        --ai-border: rgba(16, 35, 63, 0.14);
+        --ai-muted: #64748b;
+        --ai-bg-soft: #f7f8fa;
+    }
+
+    .ai-search-page {
+        max-width: 900px;
+    }
+
+    .ai-icon-badge {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--ai-primary), var(--ai-primary-dark));
+        box-shadow: 0 8px 20px -8px rgba(16, 35, 63, 0.5);
+    }
+
+        .ai-icon-badge ion-icon {
+            font-size: 24px;
+            color: #fff;
+        }
+
+    .ai-title {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 6px;
+        color: var(--bs-heading-color, #101828);
+    }
+
+    .ai-subtitle {
+        color: var(--ai-muted);
+        font-size: 0.92rem;
+        font-weight: 400;
+    }
+
+    .ai-search-box {
+        max-width: 720px;
+    }
+
+    .ai-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bs-body-bg, #fff);
+        border: 1px solid var(--ai-border);
+        border-radius: 8px;
+        padding: 11px 14px;
+        box-shadow: 0 1px 3px rgba(16, 35, 63, 0.06);
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+        .ai-input-wrapper:focus-within {
+            border-color: var(--ai-accent);
+            box-shadow: 0 0 0 3px rgba(44, 74, 114, 0.12);
+        }
+
+    .ai-input-icon {
+        font-size: 18px;
+        color: var(--ai-muted);
+        flex-shrink: 0;
+    }
+
+    .ai-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 0.95rem;
+        color: inherit;
+        padding: 6px 4px;
+    }
+
+        .ai-input::placeholder {
+            color: rgba(100, 116, 139, 0.65);
+        }
+
+    .ai-send-btn {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border: none;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--ai-primary);
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background .15s ease;
+    }
+
+        .ai-send-btn:hover {
+            background: var(--ai-primary-dark);
+        }
+
+        .ai-send-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+    .ai-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .ai-chip {
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 6px 13px;
+        border-radius: 20px;
+        background: var(--ai-bg-soft);
+        color: var(--ai-primary);
+        border: 1px solid var(--ai-border);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background .15s ease, border-color .15s ease;
+    }
+
+        .ai-chip:hover {
+            background: #edf1f5;
+            border-color: rgba(16, 35, 63, 0.22);
+        }
+
+    .ai-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 32px 0 12px;
+    }
+
+    .ai-loading-dots {
+        display: flex;
+        gap: 6px;
+    }
+
+        .ai-loading-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ai-accent);
+            animation: ai-bounce 1.2s infinite ease-in-out both;
+        }
+
+            .ai-loading-dots span:nth-child(1) {
+                animation-delay: -0.28s;
+            }
+
+            .ai-loading-dots span:nth-child(2) {
+                animation-delay: -0.14s;
+            }
+
+    @@keyframes ai-bounce {
+        0%, 80%, 100% {
+            transform: scale(0.6);
+            opacity: 0.5;
+        }
+
+        40% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .ai-loading-text {
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: var(--ai-muted);
+    }
+
+    .ai-result-area {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ai-answer-card {
+        background: var(--bs-body-bg, #fff);
+        border: 1px solid var(--ai-border);
+        border-left: 3px solid var(--ai-primary);
+        border-radius: 8px;
+        padding: 18px 20px;
+        box-shadow: 0 1px 4px rgba(16, 35, 63, 0.06);
+        animation: ai-fade-in .2s ease;
+        line-height: 1.6;
+        font-size: 0.94rem;
+    }
+
+        .ai-answer-card .ai-answer-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--ai-accent);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+    .ai-error-card {
+        background: rgba(185, 28, 28, 0.06);
+        border: 1px solid rgba(185, 28, 28, 0.22);
+        color: #a11f1f;
+        border-radius: 8px;
+        padding: 14px 18px;
+        font-size: 0.9rem;
+        animation: ai-fade-in .2s ease;
+    }
+
+    @@keyframes ai-fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    (function () {
+
+        // Razor değerlerini JavaScript'e güvenli şekilde aktar
+        const jwtToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.JwtToken ?? ""));
+        const apiBaseUrl = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ApiBaseUrl ?? ""));
+       
+        const input = document.getElementById('aiQueryInput');
+        const btn = document.getElementById('aiAskBtn');
+        const loading = document.getElementById('aiLoading');
+        const resultArea = document.getElementById('aiResultArea');
+        const suggestions = document.getElementById('aiSuggestions');
+
+        console.log("AI API URL:", apiBaseUrl);
+        console.log("JWT var mı:", !!jwtToken);
+
+        async function askAi(query) {
+
+            const q = (query ?? input.value).trim();
+
+            if (!q) {
+                console.log("Boş mesaj gönderilmeye çalışıldı.");
+                return;
+            }
+
+            console.log("Gönderilecek mesaj:", q);
+
+            input.value = q;
+
+            loading.style.display = 'flex';
+            resultArea.innerHTML = '';
+            btn.disabled = true;
+
+            try {
+
+                const url = `${apiBaseUrl}/Ai/ask`;
+
+                console.log("Request URL:", url);
+
+                const requestBody = {
+                    Message: q
+                };
+
+                console.log("Request Body:", requestBody);
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                console.log("HTTP Status:", res.status);
+
+                const responseText = await res.text();
+
+                console.log("API Response:", responseText);
+
+                if (!res.ok) {
+                    throw new Error(
+                        `İstek başarısız. HTTP ${res.status} - ${responseText}`
+                    );
+                }
+
+                let data;
+
+                try {
+                    data = JSON.parse(responseText);
+                }
+                catch {
+                    data = {
+                        answer: responseText
+                    };
+                }
+
+                console.log("Parsed Response:", data);
+
+                renderResult(data);
+
+            }
+            catch (err) {
+
+                console.error("AI HATASI:", err);
+
+                resultArea.innerHTML = `
+                    <div class="ai-error-card">
+                        Bir hata oluştu:
+                        <br>
+                        ${escapeHtml(err.message)}
+                    </div>
+                `;
+
+            }
+            finally {
+
+                loading.style.display = 'none';
+                btn.disabled = false;
+
+            }
+        }
+
+
+           function renderResult(data) {
+
+        const answer =
+            data?.response ??
+            data?.answer ??
+            data?.message ??
+            data?.result ??
+            JSON.stringify(data);
+
+        resultArea.innerHTML = `
+            <div class="ai-answer-card">
+                <div class="ai-answer-label">
+                    <ion-icon name="analytics-outline"></ion-icon>
+                    AI Yanıtı
+                </div>
+                <div class="ai-markdown-body">
+                    ${marked.parse(answer)}
+                </div>
+            </div>
+        `;
+    }
+
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+
+        }
+
+
+        // Gönder butonu
+        btn.addEventListener('click', function () {
+
+            console.log("Gönder butonuna basıldı.");
+
+            askAi();
+
+        });
+        input.addEventListener('keydown', function (e) {
+
+            if (e.key === 'Enter') {
+
+                e.preventDefault();
+
+                console.log("Enter'a basıldı.");
+
+                askAi();
+
+            }
+
+        });
+
+        suggestions.addEventListener('click', function (e) {
+
+            const chip = e.target.closest('.ai-chip');
+
+            if (!chip)
+                return;
+
+            const text = chip.textContent.trim();
+
+            console.log("Öneri seçildi:", text);
+
+            askAi(text);
+
+        });
+
+    })();
+</script>

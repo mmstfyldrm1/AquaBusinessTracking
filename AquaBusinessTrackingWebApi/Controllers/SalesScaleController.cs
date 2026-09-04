@@ -60,6 +60,22 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("last30days")]
+        public async Task<IActionResult> GetWithLast30Days()
+        {
+            _logger.LogInformation(
+                "Satış kantar son 30 gün detayları istendi.");
+
+
+            var result = await _salesScaleService.GetWithLast30Days();
+
+
+            _logger.LogInformation(
+                "Satış kantar son 30 gün detayları başarıyla getirildi.");
+
+
+            return Ok(result);
+        }
 
         [HttpGet("search")]
         public async Task<IActionResult> GetWithSearchDetails([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)

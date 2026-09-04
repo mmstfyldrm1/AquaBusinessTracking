@@ -6,11 +6,11 @@ using System.Text;
 
 namespace BusinessLayer.Concrete
 {
-    public class SentezCurrentAccountQueryService : ISentezCurrentAccountQueryService
+    public class SentezCurrentAccountQueryManager : ISentezCurrentAccountQueryService
     {
         private readonly ISentezIntegrationsService _service;
 
-        public SentezCurrentAccountQueryService(ISentezIntegrationsService service)
+        public SentezCurrentAccountQueryManager(ISentezIntegrationsService service)
         {
             _service = service;
         }

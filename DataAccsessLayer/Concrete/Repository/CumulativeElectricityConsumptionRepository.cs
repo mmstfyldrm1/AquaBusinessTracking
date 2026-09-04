@@ -63,8 +63,9 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable()
         {
-            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            DateTime endDate = DateTime.Today;
+            DateTime startDate = DateTime.Today.AddDays(-6);
+            DateTime endDate = DateTime.Today.AddDays(1);
+
             var data = await _context.Db_CumulativeElectricityConsumption
                 .AsNoTracking()
                 .Include(x => x.ElectricMeterLocation)
@@ -83,6 +84,7 @@ namespace DataAccsessLayer.Concrete.Repository
                     Consumption = g.Sum(x => x.Consumption)
                 })
                 .ToListAsync();
+
             return data;
         }
 

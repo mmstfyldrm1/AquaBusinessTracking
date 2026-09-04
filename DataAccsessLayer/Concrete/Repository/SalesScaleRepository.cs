@@ -35,6 +35,21 @@ namespace DataAccsessLayer.Concrete.Repository
 
         }
 
+        public async Task<List<DB_SalesScale>> GetWithLast30Days()
+        {
+            DateTime endDate = DateTime.Today;
+            DateTime startDate = DateTime.Today.AddDays(-30);
+
+            return await _context.Db_SalesScale
+                .Include(x => x.Shift)
+                .Include(x => x.AppUser)
+                .Where(x => x.ScaleDate >= startDate && x.ScaleDate < endDate)
+                .AsNoTracking()
+                .ToListAsync();
+
+
+        }
+
         public async Task<List<DB_SalesScale>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
         {
 

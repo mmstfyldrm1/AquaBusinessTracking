@@ -223,5 +223,37 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpGet("searchSales")]
+        public async Task<IActionResult> GetSalesGetbyDate(DateTime startDate, DateTime endDate)
+        {
+            _logger.LogInformation(
+                "Belirli tarihler arasında satış bilgileri isteniyor. BaşlangıçTarihi={StartDate}, BitişTarihi={EndDate}",
+                startDate, endDate);
+
+            var result = await _service.GetSalesGetbyDateAsync(startDate, endDate);
+
+            _logger.LogInformation(
+                "Belirli tarihler arasında satış bilgileri getirildi. BaşlangıçTarihi={StartDate}, BitişTarihi={EndDate}",
+                startDate, endDate);
+
+            return Ok(result);
+        }
+
+        [HttpGet("searchProduction")]
+        public async Task<IActionResult> GetProductionGetbyDate(DateTime startDate, DateTime endDate)
+        {
+            _logger.LogInformation(
+                "Belirli tarihler arasında üretim bilgileri isteniyor. BaşlangıçTarihi={StartDate}, BitişTarihi={EndDate}",
+                startDate, endDate);
+            var result = await _service.GetStockWithByDateRange(startDate, endDate);
+            _logger.LogInformation(
+                "Belirli tarihler arasında üretim bilgileri getirildi. BaşlangıçTarihi={StartDate}, BitişTarihi={EndDate}",
+                startDate, endDate);
+            return Ok(result);
+        }
     }
+
+
 }

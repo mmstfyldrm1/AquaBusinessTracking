@@ -22,6 +22,13 @@ namespace BusinessLayer.Concrete
             return dtos;
         }
 
+        public async Task<List<SalesScaleDto>> GetWithLast30Days()
+        {
+            var entities = await _repo.GetWithLast30Days();
+            var dtos = _mapper.Map<List<SalesScaleDto>>(entities);
+            return dtos;
+        }
+
         public async Task<List<SalesScaleDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
         {
             var entities = await _repo.GetWithSearchDetails(StartDate, EndDate);

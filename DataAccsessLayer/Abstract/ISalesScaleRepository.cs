@@ -8,6 +8,8 @@ namespace DataAccsessLayer.Abstract
 
         public Task<decimal> GetPreviousTodaySales();
 
+        public Task<List<DB_SalesScale>> GetWithLast30Days();
+
 
         public Task<List<DB_SalesScale>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
 

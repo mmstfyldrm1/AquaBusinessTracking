@@ -1,4 +1,19 @@
-﻿using AquaBusinessTrackingWebApi.Services;
+﻿using AIAgent.Handlers;
+using AIAgent.Orchestration.Abstract;
+using AIAgent.Orchestration.Manager;
+using AIAgent.Services.Abstract.Electric;
+using AIAgent.Services.Abstract.Production;
+using AIAgent.Services.Abstract.RawMaterials;
+using AIAgent.Services.Abstract.Sales;
+using AIAgent.Services.Abstract.Shipment;
+using AIAgent.Services.Manager;
+using AIAgent.Tools;
+using AIAgent.Tools.Electric;
+using AIAgent.Tools.Production;
+using AIAgent.Tools.RawMaterials;
+using AIAgent.Tools.Sales;
+using AIAgent.Tools.Shipment;
+using AquaBusinessTrackingWebApi.Services;
 using BusinessLayer.Abstract;
 using BusinessLayer.Abstract.Integrations;
 using BusinessLayer.Concrete;
@@ -55,7 +70,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityRepository, CirculationTankAirPressureMeasurementTurbidityRepository>();
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityService, CirculationTankAirPressureMeasurementTurbidityManager>();
             Services.AddScoped<ILogisticsTrackingReportRepository, LogisticsTrackingReportRepository>();
-            Services.AddScoped<ISentezCurrentAccountQueryService, SentezCurrentAccountQueryService>();
+            Services.AddScoped<ISentezCurrentAccountQueryService, SentezCurrentAccountQueryManager>();
             Services.AddScoped<ILogisticsTrackingReportService, LogisticsTrackingReportManager>();
             Services.AddScoped<INaturelGasMeterMonitoringRepository, NaturelGasMeterMonitoringRepository>();
             Services.AddScoped<INaturelGasMeterMonitoringService, NaturelGasMeterMonitoringManager>();
@@ -143,8 +158,61 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<GenerateTokenService>();
             Services.AddScoped<IQueryService, QueryManager>();
             Services.AddScoped<IQueryRepository, QueryRepository>();
+
+            Services.AddTransient<JwtAuthorizationHandler>();
             Services.AddHttpContextAccessor();
             Services.AddHttpClient();
+            Services.AddHttpClient<IProductionApiService, ProductionApiManager>(
+                client =>
+                {
+                    client.BaseAddress = new Uri(
+                        "https://localhost:7255/api/");
+                }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddHttpClient<IShipmentApiService, ShipmentApiManager>(
+               client =>
+               {
+                   client.BaseAddress = new Uri(
+                       "https://localhost:7255/api/");
+               }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddHttpClient<IElectricApiService, ElectricApiManager>(
+              client =>
+              {
+                  client.BaseAddress = new Uri(
+                      "https://localhost:7255/api/");
+              }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddHttpClient<IRawMaterialsApiService, RawMaterialsApiManager>(
+            client =>
+            {
+                client.BaseAddress = new Uri(
+                    "https://localhost:7255/api/");
+            }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddHttpClient<ISalesApiService, SalesApiManager>(
+            client =>
+            {
+                client.BaseAddress = new Uri(
+                    "https://localhost:7255/api/");
+            }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddScoped<AiToolRegistry>();
+            Services.AddScoped<IAiTool, GetLast7DaysProductionTool>();
+            Services.AddScoped<IAiTool, GetLast30DaysShipment>();
+            Services.AddScoped<IAiTool, GetWithBySearchSalesScale>();
+            Services.AddScoped<IAiTool, GetWithBySearchCumulativeElectricConsumption>();
+            Services.AddScoped<IAiTool, GetWithBySearchRawMaterialsIntake>();
+            Services.AddScoped<IAiTool, GetByDateRangeSales>();
+            Services.AddScoped<IAiTool, GetWithProductionByDate>();
+            Services.AddHttpClient<IAiService, AiManager>(
+                client =>
+                {
+                    client.BaseAddress = new Uri(
+                        "https://integrate.api.nvidia.com/v1");
+
+                    client.Timeout = TimeSpan.FromMinutes(5);
+                });
         }
     }
 }

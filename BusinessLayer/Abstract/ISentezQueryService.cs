@@ -24,5 +24,9 @@ namespace BusinessLayer.Abstract
         Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsStockAsync();
 
         Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsPreviousDayStockAsync();
+
+        public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
+
+        public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetStockWithByDateRange(DateTime startDate, DateTime endDate);
     }
 }

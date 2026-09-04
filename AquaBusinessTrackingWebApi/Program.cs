@@ -17,6 +17,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .Enrich.FromLogContext()
@@ -29,7 +31,8 @@ Log.Logger = new LoggerConfiguration()
     // API Loglarý
     .WriteTo.Logger(lc => lc
         .Filter.ByIncludingOnly(x =>
-            !x.Properties.ContainsKey("SourceContext") ||
+
+        !x.Properties.ContainsKey("SourceContext") ||
             !x.Properties["SourceContext"]
             .ToString()
             .Contains("OpcUaPlcReader"))
@@ -193,6 +196,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\AquaAPI\DataProtection-Keys"))
     .SetApplicationName("AquaBusinessTracking");
+
+
 
 var app = builder.Build();
 

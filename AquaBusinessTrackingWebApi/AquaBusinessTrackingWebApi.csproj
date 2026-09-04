@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AIAgent\AIAgent.csproj" />
     <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj" />
     <ProjectReference Include="..\DataAccsessLayer\DataAccsessLayer.csproj" />
     <ProjectReference Include="..\DTOLayer\DTOLayer.csproj" />
