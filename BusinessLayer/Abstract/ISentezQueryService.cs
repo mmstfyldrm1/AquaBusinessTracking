@@ -1,4 +1,5 @@
 ﻿using DTOLayer.Dtos.AdminDashboardDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
 using DTOLayer.Dtos.SentezProductionDtos;
 
 namespace BusinessLayer.Abstract
@@ -28,5 +29,7 @@ namespace BusinessLayer.Abstract
         public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
 
         public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetStockWithByDateRange(DateTime startDate, DateTime endDate);
+        public Task<SentezIntegrationsResponsoDto<SentezIntegrationsGetStockByInventoryCode>?> GetStockByInventoryCode(string inventoryCode);
+
     }
 }

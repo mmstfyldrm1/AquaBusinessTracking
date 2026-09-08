@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Abstract;
 using BusinessLayer.Abstract.Integrations;
 using DTOLayer.Dtos.AdminDashboardDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
 using DTOLayer.Dtos.SentezProductionDtos;
 using System.Text;
 
@@ -75,6 +76,12 @@ namespace BusinessLayer.Concrete
         {
             var query = BuildProductionLast30Query();
             return await _service.ExecuteQueryAsync<AdminDahboardLast7DaysStock>(query);
+        }
+
+        public async Task<SentezIntegrationsResponsoDto<SentezIntegrationsGetStockByInventoryCode>?> GetStockByInventoryCode(string inventoryCode)
+        {
+            var query = BuildStockByInventoryCode(inventoryCode);
+            return await _service.ExecuteQueryAsync<SentezIntegrationsGetStockByInventoryCode>(query);
         }
 
 
@@ -976,6 +983,27 @@ namespace BusinessLayer.Concrete
 
             sb.AppendLine($"group by a.Explanation");
 
+            return sb.ToString();
+        }
+
+        private string BuildStockByInventoryCode(string InventoryCode)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"select ");
+            sb.AppendLine($"");
+            sb.AppendLine($"isc.SerialCode [SerialCode]");
+            sb.AppendLine($",i.InventoryCode [InventoryCode]");
+            sb.AppendLine($",i.InventoryName [InventoryName]");
+            sb.AppendLine($",isc.WidthCM  [WidthCM]");
+            sb.AppendLine($",isc.Quantity [SerialQuantity]");
+            sb.AppendLine($",ist.Quantity [StockQuantity]");
+            sb.AppendLine($",w.WarehouseCode [WarehouseCode]");
+            sb.AppendLine($",w.WarehouseName [WarehouseName]");
+            sb.AppendLine($" from Erp_InventorySerialCard isc with(nolock)");
+            sb.AppendLine($"left join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
+            sb.AppendLine($"left join Erp_InventorySerialCardTotal ist with(nolock) on isc.RecId = ist.SerialCardId");
+            sb.AppendLine($"left join Erp_Warehouse w with(nolock) on w.RecId = ist.WarehouseId");
+            sb.AppendLine($"where i.CompanyId = 22 and SerialCode not like'E%' and ist.Quantity>0  and i.InventoryCode = '{InventoryCode}'");
             return sb.ToString();
         }
 

@@ -205,6 +205,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IAiTool, GetWithBySearchRawMaterialsIntake>();
             Services.AddScoped<IAiTool, GetByDateRangeSales>();
             Services.AddScoped<IAiTool, GetWithProductionByDate>();
+            Services.AddScoped<IAiTool, GetProductionStockByInventoryCode>();
             Services.AddHttpClient<IAiService, AiManager>(
                 client =>
                 {

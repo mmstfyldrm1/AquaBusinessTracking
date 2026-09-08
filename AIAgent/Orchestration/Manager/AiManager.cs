@@ -41,11 +41,14 @@ namespace AIAgent.Orchestration.Manager
                 {
                     role = "system",
                     content =
-                        "Sen bir MES sisteminin yapay zeka asistanısın. " +
-                        "Üretim, makine, enerji ve fabrika verileri hakkında " +
-                        "cevap verirken mevcut Tool'ları kullan. " +
-                        "Tool sonucunda gelen verileri analiz ederek kullanıcıya " +
-                        "Türkçe ve anlaşılır şekilde cevap ver."
+                         "Sen bir MES sisteminin yapay zeka asistanısın. " +
+                         "Üretim, makine, enerji ve fabrika verileri hakkında " +
+                         "cevap verirken mevcut Tool'ları kullan. " +
+                         "ÖNEMLİ: Cevabını SADECE tool'lardan dönen veriye dayandır. " +
+                         "Tool sonucu boşsa veya alakasız kayıt içeriyorsa bunu açıkça belirt, " +
+                         "asla veri uydurma veya tahmin yürütme. " +
+                         "Liste halinde birden fazla kayıt dönerse, her kaydı ayrı ayrı değerlendir; " +
+                         "kullanıcı özellikle belirtmediyse otomatik toplama yapma, kayıtları listele."
                 },
                 new
                 {
@@ -63,11 +66,8 @@ namespace AIAgent.Orchestration.Manager
                     {
                         name = tool.Name,
                         description = tool.Description,
-                        parameters = new
-                        {
-                            type = "object",
-                            parameters = tool.ParametersSchema
-                        }
+                        parameters = tool.ParametersSchema
+
                     }
                 })
                 .ToList();
@@ -76,26 +76,16 @@ namespace AIAgent.Orchestration.Manager
 
             for (int i = 0; i < maxToolCalls; i++)
             {
-                var response = await SendToNvidiaAsync(
-                    apiKey,
-                    maxTokens,
-                    model,
-                    messages,
-                    tools);
-
+                var response = await SendToNvidiaAsync(apiKey, maxTokens, model, messages, tools);
                 using var document = JsonDocument.Parse(response);
 
                 var root = document.RootElement;
                 var messageElement = root.GetProperty("choices")[0].GetProperty("message");
 
                 // Model doğrudan cevap verdiyse
-                if (!messageElement.TryGetProperty(
-                        "tool_calls",
-                        out var toolCalls))
+                if (!messageElement.TryGetProperty("tool_calls", out var toolCalls))
                 {
-                    if (messageElement.TryGetProperty(
-                            "content",
-                            out var content))
+                    if (messageElement.TryGetProperty("content", out var content))
                     {
                         return content.GetString() ?? string.Empty;
                     }
@@ -104,32 +94,33 @@ namespace AIAgent.Orchestration.Manager
                 }
 
                 // Önce AI'nın assistant mesajını conversation'a ekle
-                messages.Add(
-                    JsonSerializer.Deserialize<object>(
-                        messageElement.GetRawText())!
-                );
+                object? contentValue = messageElement.TryGetProperty("content", out var contentEl) && contentEl.ValueKind != JsonValueKind.Null
+                ? contentEl.GetString()
+                : null;
+
+                // tool_calls'ı ham JSON olarak koru (yapısı bozulmasın)
+                JsonElement? toolCallsValue = messageElement.TryGetProperty("tool_calls", out var tcEl) ? tcEl : null;
+
+                var cleanAssistantMessage = new Dictionary<string, object?>
+                {
+                    ["role"] = "assistant",
+                    ["content"] = contentValue
+                };
+
+                if (toolCallsValue.HasValue)
+                {
+                    cleanAssistantMessage["tool_calls"] = JsonSerializer.Deserialize<object>(toolCallsValue.Value.GetRawText());
+                }
+
+                messages.Add(cleanAssistantMessage);
 
                 // Modelin istediği Tool'ları çalıştır
                 foreach (var toolCall in toolCalls.EnumerateArray())
                 {
-                    var toolCallId =
-                        toolCall
-                            .GetProperty("id")
-                            .GetString();
-
-                    var function =
-                        toolCall.GetProperty("function");
-
-                    var toolName =
-                        function
-                            .GetProperty("name")
-                            .GetString();
-
-                    var arguments =
-                        function
-                            .GetProperty("arguments")
-                            .GetString();
-
+                    var toolCallId = toolCall.GetProperty("id").GetString();
+                    var function = toolCall.GetProperty("function");
+                    var toolName = function.GetProperty("name").GetString();
+                    var arguments = function.GetProperty("arguments").GetString();
                     if (string.IsNullOrWhiteSpace(toolName))
                     {
                         throw new Exception(
@@ -138,17 +129,8 @@ namespace AIAgent.Orchestration.Manager
 
                     var tool = _toolRegistry.Get(toolName);
                     var argumentsJs = function.GetProperty("arguments").GetString();
-
-
-
-
                     var toolResult = await tool.ExecuteAsync(argumentsJs);
-
-
                     var toolResultJson = JsonSerializer.Serialize(toolResult);
-
-
-
                     messages.Add(new
                     {
                         role = "tool",
@@ -158,8 +140,8 @@ namespace AIAgent.Orchestration.Manager
                 }
             }
 
-            throw new Exception(
-                "AI maksimum Tool çağrısı limitine ulaştı.");
+            throw new Exception("AI maksimum Tool çağrısı limitine ulaştı.");
+
         }
 
         public async Task<string> SendToNvidiaAsync(string apiKey, string maxTokens, string model, List<object> messages, object tools)
@@ -172,8 +154,11 @@ namespace AIAgent.Orchestration.Manager
                 max_tokens = decimal.Parse(maxTokens),
                 temperature = 0,
                 stream = false,
-                chat_template_kwargs = new { thinking = false }
+                chat_template_kwargs = new { thinking = true }
             };
+
+            var jsonBody = JsonSerializer.Serialize(requestBody);
+
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://integrate.api.nvidia.com/v1/chat/completions");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);

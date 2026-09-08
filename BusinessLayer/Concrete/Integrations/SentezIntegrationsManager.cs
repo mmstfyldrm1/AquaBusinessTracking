@@ -15,7 +15,7 @@ namespace BusinessLayer.Concrete.Integrations
             _httpClient = httpClient;
         }
 
-        public async Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> ExecuteQueryAsync<SentezProductionDto>(string query)
+        public async Task<SentezIntegrationsResponsoDto<T>?> ExecuteQueryAsync<T>(string query)
         {
             var loginResponse = await _httpClient.PostAsync("http://10.54.100.110:8484/api/Authentication/Login?userCode=Sentez8&password=Mustafa.41045416&companyCode=54500&userType=0", null);
 
@@ -47,10 +47,25 @@ namespace BusinessLayer.Concrete.Integrations
                 PropertyNameCaseInsensitive = true
             };
 
-            var result = JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<SentezProductionDto>>(body, options);
+            try
+            {
+                var result = JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<T>>(
+                    body,
+                    options);
+
+                return result;
+            }
+            catch (JsonException ex)
+            {
+                throw new Exception(
+                    $"Deserialize hatası. T tipi: {typeof(T).FullName}, " +
+                    $"Path: {ex.Path}, " +
+                    $"Message: {ex.Message}\n" +
+                    $"Body: {body}", ex);
+            }
 
 
-            return result;
+
         }
 
 

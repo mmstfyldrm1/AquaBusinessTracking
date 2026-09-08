@@ -1,5 +1,6 @@
 ﻿using AIAgent.Models.Production;
 using AIAgent.Services.Abstract.Production;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
 using DTOLayer.Dtos.SentezProductionDtos;
 using System.Net.Http.Json;
 
@@ -54,6 +55,31 @@ namespace AIAgent.Services.Manager
             }
 
 
+
+            return result.Data;
+        }
+
+        public async Task<List<SentezIntegrationsGetStockByInventoryCode>> GetStockByInventoryCode(string inventoryCode)
+        {
+            var response = await _httpClient.GetAsync($"SentezIntegrations/getStockByInventoryCode?inventoryCode={inventoryCode}");
+
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<GetStockByInventoryCodeIntegrationsResponse>();
+
+
+            if (result == null)
+            {
+                throw new Exception(
+                    "Üretim API'sinden geçerli bir cevap alınamadı.");
+            }
+
+            if (!result.IsOk)
+            {
+                throw new Exception(
+                    $"Üretim API hatası: {result.ErrorMessage}");
+            }
 
             return result.Data;
         }

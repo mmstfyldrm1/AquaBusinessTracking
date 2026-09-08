@@ -253,6 +253,19 @@ namespace AquaBusinessTrackingWebApi.Controllers
                 startDate, endDate);
             return Ok(result);
         }
+
+        [HttpGet("getStockByInventoryCode")]
+        public async Task<IActionResult> GetStockByInventoryCode(string inventoryCode)
+        {
+            _logger.LogInformation(
+                "Belirli bir envanter koduna sahip stok bilgileri isteniyor. EnvanterKodu={InventoryCode}",
+                inventoryCode);
+            var result = await _service.GetStockByInventoryCode(inventoryCode);
+            _logger.LogInformation(
+                "Belirli bir envanter koduna sahip stok bilgileri getirildi. EnvanterKodu={InventoryCode}",
+                inventoryCode);
+            return Ok(result);
+        }
     }
 
 

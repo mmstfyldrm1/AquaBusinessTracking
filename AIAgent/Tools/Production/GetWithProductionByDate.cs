@@ -14,7 +14,7 @@ namespace AIAgent.Tools.Production
 
         public string Name => "get_with_production_by_date";
 
-        public string Description => "Kullanıcıdan alınan tarih aralığına göre üretim verilerini getirir.";
+        public string Description => "Kullanıcıdan alınan tarih aralığına göre mamül  üretim verilerini getirir.";
 
         public object ParametersSchema => new
         {
