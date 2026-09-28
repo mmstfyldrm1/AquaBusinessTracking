@@ -50,6 +50,22 @@ namespace AquaBusinessTrackingWebApi.Controllers
             }
         }
 
+
+        [HttpGet("GetTodayPlan")]
+        public async Task<IActionResult> GetTodayPlan()
+        {
+            try
+            {
+                var shipmentOrderPlans = await _shipmentOrderPlanService.GetTodayPlan();
+                return Ok(shipmentOrderPlans);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving shipment order plan details.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {

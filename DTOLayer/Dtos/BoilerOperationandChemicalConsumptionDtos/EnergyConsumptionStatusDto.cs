@@ -12,6 +12,8 @@
 
         public DateTime? ReceiptDate { get; set; }
 
+        public Int16 InUse { get; set; } = 1;
+
         public bool IsRecorded { get; set; }
 
     }

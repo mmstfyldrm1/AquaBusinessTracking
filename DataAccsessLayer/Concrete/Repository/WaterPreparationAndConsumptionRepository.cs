@@ -25,6 +25,18 @@ namespace DataAccsessLayer.Concrete.Repository
               .ToListAsync();
         }
 
+        public async Task<List<DB_WaterPreparationAndConsumption>> GetTodayConsumption()
+        {
+            DateTime? startDate = DateTime.Today;
+            DateTime? endDate = DateTime.Today.AddDays(1);
+
+            return await _context.Db_WaterPreparationAndConsumption
+              .Include(x => x.Shift)
+              .Include(x => x.AppUser)
+              .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
+              .ToListAsync();
+        }
+
         public async Task<List<DB_WaterPreparationAndConsumption>> GetWithDetails()
         {
             return await _context.Db_WaterPreparationAndConsumption

@@ -75,6 +75,7 @@
         overflow: hidden;
         margin-bottom: 1rem;
     }
+
     .pill {
         display: inline-block;
         font-size: 11px;
@@ -110,26 +111,35 @@
     var chartEnergy = last7Days
         .Select(d => Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date)?.Electricity ?? 0)
         .ToList();
+
+    var chartKwhPerKg = last7Days
+.Select(d =>
+{
+    var s = Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date);
+    return (s != null && s.KwhPerTon > 0) ? (double?)Math.Round((double)s.KwhPerTon, 3) : null;
+})
+.ToList();
 }
 
 <div class="page-section" id="enerji">
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">Son 30 Gün Üretim</div>
+            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Üretim </div>
             <div class="kpi-val">@Model.TotalProduction.ToString("N2")</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Toplam Elektrik</div>
+            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Elektrik Tüketimi</div>
             <div class="kpi-val">@Model.TotalElectricity.ToString("N2")</div>
             <div class="kpi-unit">kWh</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Ton Başına Enerji</div>
-            <div class="kpi-val">@Model.KwhPerTon.ToString("N2")</div>
+            <div class="kpi-lbl">Kg Başına Enerji - Ton Başına Enerji </div>
+            <div class="kpi-val">@Model.KwhPerkg.ToString("N2") - @Model.KwhPerTons.ToString("N2")</div>
             <div class="kpi-unit">kWh / Kg</div>
         </div>
+    
     </div>
 
     <div class="e-card">
@@ -239,28 +249,62 @@
         const labels = @Html.Raw(Json.Serialize(chartLabels));
         const prodVal = @Html.Raw(Json.Serialize(chartProd));
         const energyVal = @Html.Raw(Json.Serialize(chartEnergy));
+        const kwhPerKg = @Html.Raw(Json.Serialize(chartKwhPerKg));
+
 
         const existing = Chart.getChart('energyChart');
         if (existing) existing.destroy();
 
-        new Chart(document.getElementById('energyChart'), {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [
-                    { label: 'Üretim (ton)', data: prodVal, backgroundColor: '#378ADD', yAxisID: 'y' },
-                    { label: 'Enerji (kWh)', data: energyVal, backgroundColor: '#F09595', yAxisID: 'y1' }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: true } },
-                scales: {
-                    y: { position: 'left', grid: { color: 'rgba(0,0,0,0.06)' } },
-                    y1: { position: 'right', grid: { drawOnChartArea: false } }
+           new Chart(document.getElementById('energyChart'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Üretim (kg)',
+                    data: prodVal,
+                    backgroundColor: 'rgba(55,138,221,0.75)',
+                    yAxisID: 'y',
+                    order: 3
+                },
+                {
+                    type: 'line',
+                    label: 'Elektrik (kWh)',
+                    data: energyVal,
+                    borderColor: '#E24B4A',
+                    backgroundColor: '#E24B4A',
+                    tension: 0.3,
+                    yAxisID: 'y1',
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: 'kWh / kg',
+                    data: kwhPerKg,
+                    borderColor: '#1D9E75',
+                    backgroundColor: '#1D9E75',
+                    borderDash: [6, 4],
+                    tension: 0.3,
+                    spanGaps: true,
+                    yAxisID: 'y2',
+                    order: 1
                 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: true } },
+            scales: {
+                y:  { position: 'left',  beginAtZero: true, title: { display: true, text: 'kg' } },
+                y1: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false },
+                      title: { display: true, text: 'kWh' }, ticks: { color: '#E24B4A' } },
+                y2: { position: 'right', grid: { drawOnChartArea: false },
+                      title: { display: true, text: 'kWh/kg' }, ticks: { color: '#1D9E75' } }
             }
-        });
+        }
+    });
     });
 </script>

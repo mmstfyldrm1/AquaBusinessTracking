@@ -67,8 +67,8 @@ namespace AquaBusinessTrackingWebApi.Controllers
         {
             _logger.LogInformation("Raw Materials dashboard istendi.");
 
-            var waterConsuption = await _waterPreparationAndConsumptionService.GetWithDetails();
-            var resultPaperMachine = await _machineChemicalService.GetWithDetails();
+            var waterConsuption = await _waterPreparationAndConsumptionService.GetTodayConsumption();
+            var resultPaperMachine = await _machineChemicalService.GetTodayConsumption();
 
             var dashboard = new RawMaterialsDto
             {

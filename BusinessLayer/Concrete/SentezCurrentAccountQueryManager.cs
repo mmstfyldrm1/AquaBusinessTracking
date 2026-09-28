@@ -15,9 +15,9 @@ namespace BusinessLayer.Concrete
             _service = service;
         }
 
-        public async Task<SentezIntegrationsResponsoDto<SentezAddressResponse>?> GetCurrentAccountAddress(int RecId)
+        public async Task<SentezIntegrationsResponsoDto<SentezAddressResponse>?> GetCurrentAccountAddress(int RecId, int CityId)
         {
-            var query = "Select Line1, Line2, Line3 From Erp_Address a where a.CurrentAccountId = " + RecId;
+            var query = "Select Line1, Line2, Line3 From Erp_Address a where a.CurrentAccountId = " + RecId + " and a.DistrictId = " + CityId;
             return await _service.ExecuteQueryAsync<SentezAddressResponse>(query);
         }
 
@@ -26,9 +26,9 @@ namespace BusinessLayer.Concrete
             var sb = new StringBuilder();
             sb.AppendLine($"select ");
             sb.AppendLine($"");
-            sb.AppendLine($"cu.RecId [CityId]");
+            sb.AppendLine($"cu.RecId [RecId]");
             sb.AppendLine($",c.CityName [CityName]");
-            sb.AppendLine($"");
+            sb.AppendLine($",c.RecId [CityId]");
             sb.AppendLine($"");
             sb.AppendLine($"from Erp_CurrentAccount cu ");
             sb.AppendLine($"left join Erp_Address a with(nolock) on cu.RecId =  a.CurrentAccountId");
@@ -43,7 +43,7 @@ namespace BusinessLayer.Concrete
             return await _service.ExecuteQueryAsync<SentezCurrentAccountResponse>(query);
         }
 
-        public async Task<SentezIntegrationsResponsoDto<SentezDistrictResponse>?> GetCurrentAccountDistrict(int RecId)
+        public async Task<SentezIntegrationsResponsoDto<SentezDistrictResponse>?> GetCurrentAccountDistrict(int RecId, int CityId)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"select ");
@@ -55,7 +55,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"from Erp_CurrentAccount cu ");
             sb.AppendLine($"left join Erp_Address a with(nolock) on cu.RecId =  a.CurrentAccountId");
             sb.AppendLine($"left join Meta_District d with(nolock) on d.RecId= a.DistrictId");
-            sb.AppendLine($"where cu.RecId = {RecId}");
+            sb.AppendLine($"where cu.RecId = {RecId} and a.CityId = {CityId}");
             return await _service.ExecuteQueryAsync<SentezDistrictResponse>(sb.ToString());
         }
     }

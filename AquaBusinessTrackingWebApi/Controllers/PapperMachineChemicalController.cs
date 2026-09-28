@@ -1,6 +1,5 @@
 ﻿using AquaBusinessTrackingWebApi.Services;
 using BusinessLayer.Abstract;
-using DTOLayer.Dtos.NotificationDtos;
 using DTOLayer.Dtos.PapperMachineChemicalDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -120,20 +119,20 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             _logger.LogInformation("Kağıt Makinesi Kimyasal kaydı başarıyla eklendi.");
 
-            var notifDto = new CreateNotificationDto
-            {
-                UserId = 5,
-                Title = "Yeni Kimyasal Girişi",
-                Message = $"{dto.InventoryName} malzemesi  için  {dto.IncomingQuantity} gelen {dto.ConsumedQuantity} sarf ve stok {dto.CurrentStock} ",
-                Url = "/PapperMachineChemical/GetPapperMachineChemicalList",
-                Icon = "cube-outline",
-                Color = "warning",
-                IsRead = false
-            };
+            //var notifDto = new CreateNotificationDto
+            //{
+            //    UserIds = {5},
+            //    Title = "Yeni Kimyasal Girişi",
+            //    Message = $"{dto.InventoryName} malzemesi  için  {dto.IncomingQuantity} gelen {dto.ConsumedQuantity} sarf ve stok {dto.CurrentStock} ",
+            //    Url = "/PapperMachineChemical/GetPapperMachineChemicalList",
+            //    Icon = "cube-outline",
+            //    Color = "warning",
+            //    RoleName = 
+            //};
 
-            var savedNotif = await _notificationService.SendAsync(notifDto);
-            await _hub.Clients.Group($"user-{notifDto.UserId}")
-                .SendAsync("ReceiveNotification", savedNotif);
+            //var savedNotif = await _notificationService.SendAsync(notifDto);
+            //await _hub.Clients.Group($"user-{notifDto}")
+            //    .SendAsync("ReceiveNotification", savedNotif);
 
             return Ok(result);
 

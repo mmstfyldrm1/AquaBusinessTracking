@@ -83,5 +83,28 @@ namespace AIAgent.Services.Manager
 
             return result.Data;
         }
+
+        public async Task<List<SentezIntegrationsGetStockByInventoryCode>> GetStockByInventoryCodeAndWidthCM(string inventoryCode, double WidthCM)
+        {
+            var response = await _httpClient.GetAsync($"SentezIntegrations/getStockByInventoryCodeAndWidthCM?inventoryCode={inventoryCode}&WidthCM={WidthCM}");
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<GetStockByInventoryCodeIntegrationsResponse>();
+
+            if (result == null)
+            {
+                throw new Exception(
+                    "Üretim API'sinden geçerli bir cevap alınamadı.");
+            }
+
+            if (!result.IsOk)
+            {
+                throw new Exception(
+                    $"Üretim API hatası: {result.ErrorMessage}");
+            }
+
+            return result.Data;
+
+        }
     }
 }

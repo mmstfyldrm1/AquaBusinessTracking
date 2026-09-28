@@ -5,10 +5,9 @@ namespace AquaBusinessTrackingWebUI.Models
 {
     public class AdminDashboardSummaryViewModel
     {
-        public SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock> GetLast7Sales { get; set; }
+        public SentezIntegrationsResponsoDto<AdminDashboardSales> GetLast7Sales { get; set; }
 
-        public SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock> GetLast7RawMateriels { get; set; }
-
-        public SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock> GetLast7Days { get; set; }
+        public SentezIntegrationsResponsoDto<AdminDahboardDaysStock> GetLast7RawMateriels { get; set; }
+        public SentezIntegrationsResponsoDto<AdminDahboardDaysStock> GetLast7Days { get; set; }
     }
 }

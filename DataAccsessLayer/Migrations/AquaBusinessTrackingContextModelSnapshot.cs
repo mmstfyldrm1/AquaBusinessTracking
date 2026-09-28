@@ -4215,7 +4215,7 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal>("IncomingQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("InsertDate")
+                    b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InventoryCode")

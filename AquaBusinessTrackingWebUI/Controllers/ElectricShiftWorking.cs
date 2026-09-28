@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using System.Text;
 
 namespace AquaBusinessTrackingWebUI.Controllers
@@ -17,12 +18,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly AuthorizedHttpClientService _httpClientService;
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
+        private readonly UserFavoriteService _userFavoriteService;
 
-        public ElectricShiftWorking(AuthorizedHttpClientService httpClientService, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService)
+        public ElectricShiftWorking(AuthorizedHttpClientService httpClientService, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, UserFavoriteService userFavoriteService)
         {
             _httpClientService = httpClientService;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
@@ -34,6 +37,18 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             }
             var client = _httpClientService.CreateClient();
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "ElectricShiftWorking/GetElectricShiftWorking");
+            if (value == 1)
+            {
+                ViewBag.FavMenu = 1;
+            }
+            else
+            {
+                ViewBag.FavMenu = 0;
+            }
+
+
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/ElectiricShiftWork/details");
             if (!response.IsSuccessStatusCode)
                 return View(new List<ElectricShiftWorkDto>());

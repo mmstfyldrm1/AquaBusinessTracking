@@ -8,6 +8,7 @@ namespace DataAccsessLayer.Abstract
 
         public Task<List<DB_PapperMachineChemical>> GetPreviousDay();
 
+        public Task<List<DB_PapperMachineChemical>> GetTodayConsumption();
         public Task<List<DB_PapperMachineChemical>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
     }
 }

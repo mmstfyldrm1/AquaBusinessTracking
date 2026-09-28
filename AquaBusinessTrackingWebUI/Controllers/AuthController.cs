@@ -30,12 +30,21 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "AdminDashboard");
+
+                return RedirectToAction("Index", "UserDashboard");
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
+
             var response = await _httpClient.PostAsJsonAsync($"{_apiSettings.BaseUrl}/Auth/login", loginDto);
             if (!response.IsSuccessStatusCode)
             {
@@ -49,6 +58,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var handler = new JwtSecurityTokenHandler();
             handler.InboundClaimTypeMap.Clear();
             var jwtToken = handler.ReadJwtToken(result.Token);
+            DateTimeOffset expires = new DateTimeOffset(DateTime.SpecifyKind(jwtToken.ValidTo, DateTimeKind.Utc));
 
 
 
@@ -76,15 +86,24 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            Response.Cookies.Append("AuthToken", result.Token, new CookieOptions { HttpOnly = true, Secure = false });
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddHours(2),
-                AllowRefresh = true,
-                IssuedUtc = DateTimeOffset.UtcNow
-            });
+            var cookieOptions = new CookieOptions();
+            cookieOptions.HttpOnly = true;
+            cookieOptions.Secure = false;
+            cookieOptions.SameSite = SameSiteMode.Lax;
+            if (loginDto.RememberMe)
+                cookieOptions.Expires = expires;
+
+            Response.Cookies.Append("AuthToken", result.Token, cookieOptions);
+
+            var authProperties = new AuthenticationProperties();
+            authProperties.IsPersistent = loginDto.RememberMe;
+            authProperties.AllowRefresh = true;
+            authProperties.IssuedUtc = DateTimeOffset.UtcNow;
+            authProperties.ExpiresUtc = expires;
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+
 
             var isAdmin = claims.Any(c => c.Type == ClaimTypes.Role &&
                string.Equals(c.Value, "Admin", StringComparison.OrdinalIgnoreCase));

@@ -18,12 +18,13 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly AuthorizedHttpClientService _httpClientFactory;
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
-
-        public LogisticsTrackingReportController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService)
+        private readonly UserFavoriteService _userFavoriteService;
+        public LogisticsTrackingReportController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, UserFavoriteService userFavoriteService)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
@@ -34,6 +35,17 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
             var client = _httpClientFactory.CreateClient();
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "LogisticsTrackingReport/GetLogisticsTrackingReportList");
+            if (value == 1)
+            {
+                ViewBag.FavMenu = 1;
+            }
+            else
+            {
+                ViewBag.FavMenu = 0;
+            }
+
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/LogisticsTrackingReport/details");
             if (!response.IsSuccessStatusCode)
                 return View(new List<LogisticsTrackingReportDto>());
@@ -143,9 +155,19 @@ namespace AquaBusinessTrackingWebUI.Controllers
                     var errorMessage = await result.Content.ReadAsStringAsync();
                     return PartialView("_Edit", result);
                 }
+                if (model.Entity.Status == "IptalEdildi")
+                {
+                    var UpdatePlanId = await client.PutAsync($"{_apiSettings.BaseUrl}/DailyShipmentPlan/updateIsActiveStatus/{model.Entity.ShipmentPlanId}", null);
+                    if (!UpdatePlanId.IsSuccessStatusCode)
+                    {
+                        var errorMessage = await UpdatePlanId.Content.ReadAsStringAsync();
+                        return PartialView("_Edit", result);
+                    }
+                }
             }
             else
             {
+
                 dto.InsertDate = DateTime.Now;
                 var result = await client.PostAsync($"{_apiSettings.BaseUrl}/LogisticsTrackingReport/add", content);
                 if (!result.IsSuccessStatusCode)
@@ -176,6 +198,15 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             var client = _httpClientFactory.CreateClient();
             var response = await client.DeleteAsync($"{_apiSettings.BaseUrl}/LogisticsTrackingReport/delete/{id}");
+
+            //var UpdatePlanId = await client.PutAsync($"{_apiSettings.BaseUrl}/DailyShipmentPlan/updateIsActiveStatus/{ShipmentPlanId}", null);
+            //if (!UpdatePlanId.IsSuccessStatusCode)
+            //{
+            //    var errorMessage = await UpdatePlanId.Content.ReadAsStringAsync();
+            //    return PartialView("_Edit", UpdatePlanId);
+            //}
+
+
             if (response.IsSuccessStatusCode)
                 return Redirect("~/LogisticsTrackingReport/GetLogisticsTrackingReportList");
 

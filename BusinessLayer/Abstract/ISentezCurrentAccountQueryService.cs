@@ -9,8 +9,8 @@ namespace BusinessLayer.Abstract
 
         Task<SentezIntegrationsResponsoDto<SentezCityResponse>?> GetCurrentAccountCity(int RecId);
 
-        Task<SentezIntegrationsResponsoDto<SentezDistrictResponse>?> GetCurrentAccountDistrict(int RecId);
+        Task<SentezIntegrationsResponsoDto<SentezDistrictResponse>?> GetCurrentAccountDistrict(int RecId, int CityId);
 
-        Task<SentezIntegrationsResponsoDto<SentezAddressResponse>?> GetCurrentAccountAddress(int RecId);
+        Task<SentezIntegrationsResponsoDto<SentezAddressResponse>?> GetCurrentAccountAddress(int RecId, int CityId);
     }
 }

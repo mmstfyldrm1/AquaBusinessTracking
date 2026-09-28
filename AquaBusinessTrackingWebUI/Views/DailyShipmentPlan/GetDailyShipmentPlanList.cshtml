@@ -4,6 +4,18 @@
     ViewData["Title"] = "GetDailyShipmentPlanList";
     Layout = "~/Views/_UserLayout/Index.cshtml";
     var controller = "DailyShipmentPlan/GetDailyShipmentPlanList";
+
+    string actionName = string.Empty;
+
+    if (ViewBag.FavMenu == 1)
+    {
+        actionName = "DeleteFavorite";
+    }
+    else
+    {
+        actionName = "AddFavorite";
+    }
+
 }
 
 @model IEnumerable<DailyShipmentPlanDto>
@@ -47,11 +59,11 @@
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Günlük Sevkiyat Sipariş Listesi</h6>
     <a asp-controller="UserDashboard"
-       asp-action="AddFavorite"
+       asp-action="@actionName"
        asp-route-url="@controller"
        class="btn btn-light btn-sm border rounded-pill px-3">
-        <i class="bx bx-star text-warning me-1"></i>
-        Favorilere Ekle
+        <i class="bx @(ViewBag.FavMenu == 1 ? "bxs-star text-warning" : "bx-star text-secondary") me-1"></i>
+        @(ViewBag.FavMenu == 1 ? "Favorilerde" : "Favorilere Ekle")
     </a>
 </div>
 
@@ -216,7 +228,6 @@
 </div>
 
 <div id="modalContainer"></div>
-
 <script>
     function openModal(id = null) {
         const url = id
@@ -349,6 +360,7 @@
         });
 
         // 3) Şehir değişince -> İlçeleri getir
+        //    Route: districts/{recId}/{cityId}  -> recId = CurrentAccountId, cityId = seçilen şehir
         ddlCity.addEventListener('change', function () {
             const selected = this.selectedOptions[0];
             resetSelect(ddlDistrict, 'Önce Şehir Seçiniz');
@@ -357,7 +369,10 @@
 
             if (!this.value) return;
 
-            apiFetch(`districts/${selected.dataset.recid}`)
+            const companyRecId = ddlCompanyEl.value;
+            const cityId       = selected.dataset.recid;
+
+            apiFetch(`districts/${companyRecId}/${cityId}`)
                 .then(r => r.json())
                 .then(response => {
                     const data = response.data || [];
@@ -374,6 +389,7 @@
         });
 
         // 4) İlçe değişince -> Adres kayıtlarını getir, ddlAddress'i doldur
+        //    Route: neighborhoods/{recId}/{cityId} -> recId = CurrentAccountId, ikinci parametre = seçilen İLÇE id'si
         ddlDistrict.addEventListener('change', function () {
             const selected = this.selectedOptions[0];
             resetSelect(ddlAddress, 'Önce İlçe Seçiniz');
@@ -381,7 +397,10 @@
 
             if (!this.value) return;
 
-            apiFetch(`neighborhoods/${ddlCompanyEl.value}`)
+            const companyRecId = ddlCompanyEl.value;
+            const districtId   = selected.dataset.recid;
+
+            apiFetch(`neighborhoods/${companyRecId}/${districtId}`)
                 .then(r => r.json())
                 .then(response => {
                     const inner = response.data;

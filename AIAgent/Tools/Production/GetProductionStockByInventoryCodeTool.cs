@@ -3,27 +3,28 @@ using System.Text.Json;
 
 namespace AIAgent.Tools.Production
 {
-    public class GetProductionStockByInventoryCode : IAiTool
+    public class GetProductionStockByInventoryCodeTool : IAiTool
     {
         private readonly IProductionApiService _productionApiService;
 
-        public GetProductionStockByInventoryCode(IProductionApiService productionApiService)
+        public GetProductionStockByInventoryCodeTool(IProductionApiService productionApiService)
         {
             _productionApiService = productionApiService;
         }
 
-        public string Name => "get_production_stock_by_inventory_code";
+        public string Name => "get_production_stock_by_inventory_code_tool";
 
         public string Description =>
-            "Kullanıcının verdiği inventory_code değerine göre üretim stok bilgisini getirir. " +
-            "SONUÇ BİR LİSTEDİR — aynı inventory_code için birden fazla kayıt dönebilir " +
-            "(farklı depo veya seri numarasına göre ayrılmış olabilir). " +
-            "Her kayıt alanları: SerialCode, InventoryCode, InventoryName, WidthCM, " +
-            "SerialQuantity (o seriye ait miktar), StockQuantity (o kayıttaki stok miktarı), " +
+            "Retrieves production stock information based on the inventory_code provided by the user. " +
+            "THE RESULT IS A LIST — multiple records may be returned for the same inventory_code " +
+            "(records may be separated by different warehouses or serial numbers). " +
+            "Each record contains the following fields: SerialCode, InventoryCode, InventoryName, WidthCM, " +
+            "SerialQuantity (quantity belonging to that serial), StockQuantity (stock quantity in that record), " +
             "WarehouseCode, WarehouseName. " +
-            "Kullanıcı toplam stok soruyorsa tüm kayıtlardaki StockQuantity değerlerini topla. " +
-            "Depo bazında soruyorsa WarehouseName'e göre ayrıştır. " +
-            "Liste boşsa, bu ürün için stok kaydı bulunamadığını belirt.";
+            "If the user asks for total stock, sum the StockQuantity values across all records. " +
+            "If the user asks for stock by warehouse, group and separate the results by WarehouseName. " +
+            "If the list is empty, state that no stock records were found for this product. " +
+            "Always respond to the user in Turkish.";
 
         public object ParametersSchema => new
         {

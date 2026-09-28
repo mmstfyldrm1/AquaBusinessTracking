@@ -1,4 +1,4 @@
-﻿using DTOLayer.Dtos.SentezProductionDtos;
+﻿using DTOLayer.Dtos.SentezIntegrationsDtos;
 
 namespace AIAgent.Models.Sales
 {
@@ -8,6 +8,6 @@ namespace AIAgent.Models.Sales
         public int ErrorCode { get; set; }
         public string? ErrorMessage { get; set; }
         public object? ServerMessages { get; set; }
-        public List<SentezProductionDto> Data { get; set; } = new();
+        public List<SentezSalesResponseDto> Data { get; set; } = new();
     }
 }

@@ -7,8 +7,19 @@
 
     int counter = 1;
 
-    var controller =
-        "BoilerOperationandChemicalConsumption/GetBoilerRoomDailyShiftData";
+    var controller = "BoilerOperationandChemicalConsumption/GetBoilerRoomDailyShiftData";
+    string actionName = string.Empty;   
+
+    
+    if (ViewBag.IsFavorite == 1)
+    {
+        actionName = "DeleteFavorite";
+    }
+    else
+    {
+        actionName = "AddFavorite";
+    }
+
 }
 
 <style>
@@ -93,12 +104,14 @@
     </h6>
 
     <a asp-controller="UserDashboard"
-       asp-action="AddFavorite"
+       asp-action="@actionName"
        asp-route-url="@controller"
        class="btn btn-light btn-sm border rounded-pill px-3">
 
-        <i class="bx bx-star text-warning me-1"></i>
-        Favorilere Ekle
+        <i class="bx @(ViewBag.IsFavorite == 1 ? "bxs-star text-warning" : "bx-star text-secondary") me-1"></i>
+
+        @(ViewBag.IsFavorite == 1 ? "Favorilerde" : "Favorilere Ekle")
+        
 
     </a>
 

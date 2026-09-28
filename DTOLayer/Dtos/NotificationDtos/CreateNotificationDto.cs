@@ -1,20 +1,17 @@
-﻿namespace DTOLayer.Dtos.NotificationDtos
+﻿using static EntityLayer.Enums.NotificationTargetTypes;
+
+namespace DTOLayer.Dtos.NotificationDtos
 {
     public class CreateNotificationDto
     {
 
-        public int UserId { get; set; }
-
-        public string Title { get; set; }
-
-        public string Message { get; set; }
-
-        public string Url { get; set; }
-
-        public string Icon { get; set; }
-
-        public string Color { get; set; }
-
-        public bool IsRead { get; set; }
+        public NotificationTargetType TargetType { get; set; }
+        public List<int>? UserIds { get; set; }      // SingleUser/MultipleUsers için
+        public string? RoleName { get; set; }         // Role için
+        public string Title { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string? Url { get; set; }
+        public string Icon { get; set; } = "bell-outline";
+        public string Color { get; set; } = "info";    // info, warning, success, danger
     }
 }

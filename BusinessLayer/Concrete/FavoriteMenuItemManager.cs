@@ -28,6 +28,14 @@ namespace BusinessLayer.Concrete
             return resut;
         }
 
+        public async Task<bool> DeleteFavorite(UserDashboardAddFavoriteModuleDto dto)
+        {
+            var dtos = _mapper.Map<DB_FavoriteMenuItem>(dto);
+            var resut = await _repository.DeleteFavorite(dtos);
+            await _uow.SaveChangesAsync();
+            return resut;
+        }
+
         public async Task<List<UserDashboardFavoriteMenuDto>> GetFavoriteMenuItemsByUserIdAsync(int userId)
         {
             var data = await _repository.GetFavoriteMenuItemsByUserIdAsync(userId);

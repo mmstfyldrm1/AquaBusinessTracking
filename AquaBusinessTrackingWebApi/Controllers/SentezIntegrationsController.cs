@@ -15,10 +15,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly ILogger<SentezIntegrationsController> _logger;
 
 
-        public SentezIntegrationsController(
-            ISentezQueryService service,
-            IPlcService plcService,
-            ILogger<SentezIntegrationsController> logger)
+        public SentezIntegrationsController(ISentezQueryService service, IPlcService plcService, ILogger<SentezIntegrationsController> logger)
         {
             _service = service;
             _plcService = plcService;
@@ -101,13 +98,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
 
         [HttpGet("getLas7DaysProductionAsync")]
-        public async Task<IActionResult> GetLas7DaysProductionAsync()
+        public async Task<IActionResult> GetLas7DaysProductionAsync(DateTime? startDate, DateTime? endDate)
         {
             _logger.LogInformation(
                 "Son 7 günlük üretim bilgileri isteniyor.");
 
 
-            var result = await _service.GetLas7DaysProductionAsync();
+            var result = await _service.GetLas7DaysProductionAsync(startDate, endDate);
 
 
             _logger.LogInformation(
@@ -118,13 +115,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
         [HttpGet("getLas7DaysRawMaterilsAsync")]
-        public async Task<IActionResult> GetLas7DaysRawMaterilsAsync()
+        public async Task<IActionResult> GetLas7DaysRawMaterilsAsync(DateTime? startDate, DateTime? endDate)
         {
             _logger.LogInformation(
                 "Son 7 günlük Atık Kağıt bilgileri isteniyor.");
 
 
-            var result = await _service.GetLas7DaysRawMaterilsAsync();
+            var result = await _service.GetLas7DaysRawMaterilsAsync(startDate, endDate);
 
 
             _logger.LogInformation(
@@ -135,13 +132,13 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
         [HttpGet("getLas7DaysSalesAsync")]
-        public async Task<IActionResult> GetLas7DaysSalesAsync()
+        public async Task<IActionResult> GetLas7DaysSalesAsync(DateTime? startDate, DateTime? endDate)
         {
             _logger.LogInformation(
                 "Son 7 günlük satış bilgileri isteniyor.");
 
 
-            var result = await _service.GetLas7DaysSalesAsync();
+            var result = await _service.GetLas7DaysSalesAsync(startDate, endDate);
 
 
             _logger.LogInformation(
@@ -264,6 +261,19 @@ namespace AquaBusinessTrackingWebApi.Controllers
             _logger.LogInformation(
                 "Belirli bir envanter koduna sahip stok bilgileri getirildi. EnvanterKodu={InventoryCode}",
                 inventoryCode);
+            return Ok(result);
+        }
+
+        [HttpGet("getStockByInventoryCodeAndWidthCM")]
+        public async Task<IActionResult> GetStockByInventoryCodeAndWidthCM(string inventoryCode, double WidthCM)
+        {
+            _logger.LogInformation(
+                "Belirli bir envanter koduna ve genişliğe sahip stok bilgileri isteniyor. EnvanterKodu={InventoryCode}, GenişlikCM={WidthCM}",
+                inventoryCode, WidthCM);
+            var result = await _service.GetStockByInventoryCodeAndWidthCM(inventoryCode, WidthCM);
+            _logger.LogInformation(
+                "Belirli bir envanter koduna ve genişliğe sahip stok bilgileri getirildi. EnvanterKodu={InventoryCode}, GenişlikCM={WidthCM}",
+                inventoryCode, WidthCM);
             return Ok(result);
         }
     }

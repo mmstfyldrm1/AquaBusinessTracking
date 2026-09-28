@@ -1,27 +1,30 @@
-﻿
-using AIAgent.Services.Abstract.Production;
+﻿using AIAgent.Services.Abstract.Electric;
 
-namespace AIAgent.Tools.Production
+namespace AIAgent.Tools.Electric
 {
-    public class GetWithProductionByDate : IAiTool
+    public class GetWithBySearchCumulativeElectricConsumptionTool : IAiTool
     {
-        private readonly IProductionApiService _productionApiService;
+        private readonly IElectricApiService _electricApiService;
 
-        public GetWithProductionByDate(IProductionApiService productionApiService)
+        public GetWithBySearchCumulativeElectricConsumptionTool(IElectricApiService electricApiService)
         {
-            _productionApiService = productionApiService;
+            _electricApiService = electricApiService;
         }
 
-        public string Name => "get_with_production_by_date";
+        public string Name => "get_with_by_search_cumulative_electric_consumption_tool";
 
-        public string Description => "Kullanıcıdan alınan tarih aralığına göre mamül  üretim verilerini getirir.";
+        public string Description => "Retrieves cumulative electricity consumption details for the date range specified by the user. Always respond to the user in Turkish";
 
         public object ParametersSchema => new
         {
             type = "object",
-            properties = new { }
+            properties = new
+            {
+                StartDate = new { type = "string", format = "date" },
+                EndDate = new { type = "string", format = "date" }
+            },
+            required = new[] { "StartDate", "EndDate" }
         };
-
         public async Task<object> ExecuteAsync(string? argumentsJson = null)
         {
             var rawArgs = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(argumentsJson);
@@ -43,7 +46,7 @@ namespace AIAgent.Tools.Production
                 return new { error = "Tarih formatı geçersiz." };
             }
 
-            return await _productionApiService.GetDailyWithByDateRangeProduction(startDate, endDate);
+            return await _electricApiService.GetWithBySearch(startDate, endDate);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 await Task.WhenAll(productionTask, electricTask);
 
                 var production = productionTask.Result.IsSuccessStatusCode
-                     ? JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
+                     ? JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>>(
                          await productionTask.Result.Content.ReadAsStringAsync(), jsonOptions)?.Data ?? new()
                      : new();
 

@@ -2,18 +2,23 @@
 
 namespace AIAgent.Tools.RawMaterials
 {
-    public class GetWithBySearchRawMaterialsIntake : IAiTool
+    public class GetWithBySearchRawMaterialsIntakeTool : IAiTool
     {
         private readonly IRawMaterialsApiService _rawMaterialsApiService;
 
-        public GetWithBySearchRawMaterialsIntake(IRawMaterialsApiService rawMaterialsApiService)
+        public GetWithBySearchRawMaterialsIntakeTool(IRawMaterialsApiService rawMaterialsApiService)
         {
             _rawMaterialsApiService = rawMaterialsApiService;
         }
 
-        public string Name => "get_with_by_search_raw_materials_intake";
+        public string Name => "get_with_by_search_raw_materials_intake_tool";
 
-        public string Description => "Kullanıcı tarafından belirtilen tarihler arasında hammadde alımlarını getirir.";
+        public string Description => "Retrieves waste paper raw material purchase and stock intake records between the start date and end date provided by the user. " +
+        "The results specifically refer to waste paper raw materials and should not include finished products or other types of raw materials. " +
+        "The result may contain multiple records within the specified date range. " +
+        "Evaluate each record separately and do not automatically aggregate or combine the records unless the user explicitly asks for a total, summary, or aggregation. " +
+        "If the result is empty, clearly state that no waste paper raw material purchase records were found for the specified date range. " +
+        "Always respond to the user in Turkish.";
 
         public object ParametersSchema => new
         {

@@ -1,9 +1,9 @@
-﻿using DTOLayer.Dtos.SentezProductionDtos;
+﻿using DTOLayer.Dtos.SentezIntegrationsDtos;
 
 namespace AIAgent.Services.Abstract.Sales
 {
     public interface ISalesApiService
     {
-        Task<List<SentezProductionDto>> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
+        Task<List<SentezSalesResponseDto>> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
     }
 }

@@ -48,5 +48,23 @@ namespace DataAccsessLayer.Concrete.Repository
             return true;
 
         }
+
+        public async Task<bool> UpdateIsActiveStatus(int id)
+        {
+            var plan = await _context.Db_DailyShipmentPlan.FindAsync(id);
+
+            if (plan == null)
+                return false;
+
+            plan.InUse = 1;
+
+            var value = await _context.SaveChangesAsync();
+            if (value == 0)
+            {
+                return false;
+            }
+            return true;
+
+        }
     }
 }

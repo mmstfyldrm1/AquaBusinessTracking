@@ -7,7 +7,7 @@
 
     var salesLookup = Model.GetLast7Sales.Data
         .GroupBy(x => Convert.ToDateTime(x.Date).Date)
-        .ToDictionary(g => g.Key, g => g.Sum(x => x.Production));
+        .ToDictionary(g => g.Key, g => g.Sum(x => x.Sales));
 
     var alignedSalesValues = productionDays
         .Select(d => salesLookup.TryGetValue(d, out var v) ? v : 0m)
@@ -22,6 +22,34 @@
         .ToList();
 }
 
+<style>
+    .range-tabs {
+        display: flex;
+        gap: 6px;
+    }
+
+    .range-tab {
+        border: 1px solid #d0d7de;
+        background: transparent;
+        padding: 6px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+        .range-tab.active {
+            background: #185FA5;
+            color: #fff;
+            border-color: #185FA5;
+        }
+
+        .range-tab:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+</style>
+
+
 <div class="page-section" id="ozet">
 
     <div class="section-header">
@@ -29,148 +57,113 @@
             <div class="section-title">Genel Özet</div>
             <div class="section-sub">KM-2 üretim göstergeleri</div>
         </div>
+        <div class="range-tabs" id="rangeTabs">
+            <button type="button" class="range-tab active" data-range="7d">Son 7 Gün</button>
+            <button type="button" class="range-tab" data-range="30d">Son 1 Ay</button>
+            <button type="button" class="range-tab" data-range="1y">Son 1 Yıl</button>
+        </div>
     </div>
 
     <div class="ozet-layout">
 
-        <!-- ÜRETİM TREND -->
         <div class="card chart-card">
-            <div class="card-title">Üretim Trend</div>
+            <div class="card-title">Üretim & Hammadde Girişi</div>
             <div class="chart-wrap-small">
                 <canvas id="trendChart"></canvas>
             </div>
         </div>
 
-        <!-- DURUŞ -->
         <div class="card chart-card">
-            <div class="card-title">Üretim Trend</div>
+            <div class="card-title">Üretim & Satış</div>
             <div class="chart-wrap-small">
                 <canvas id="salesProductionChart"></canvas>
             </div>
         </div>
 
     </div>
-
 </div>
 
-
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+     document.addEventListener("DOMContentLoaded", function () {
 
-        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(productionDays.Select(d => d.ToString("dd.MM"))));
-                                                                                               
-                                                               
-        const productionValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetLast7Days.Data.Select(x => x.Remaning)));
-                                                                                               
-                                                               
-        const salesValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedSalesValues));
+        const initial = {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(productionDays.Select(d => d.ToString("dd.MM")))),
+            production: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GetLast7Days.Data.Select(x => x.Remaning))),
+            sales: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedSalesValues)),
+            rawMaterial: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedRawMaterialValues))
+        };
 
-        const rawMaterialValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(alignedRawMaterialValues));
-
-        // 1) Üretim + Hammadde Girişi trendi
-        new Chart(document.getElementById('trendChart'), {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Üretim',
-                        data: productionValues,
-                        borderColor: '#185FA5',
-                        backgroundColor: 'rgba(24,95,165,0.15)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: '#185FA5'
-                    },
-                    {
-                        label: 'Hammadde Girişi',
-                        data: rawMaterialValues,
-                        borderColor: '#e67e22',
-                        backgroundColor: 'rgba(230,126,34,0.15)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: '#e67e22'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+        const ds = (label, data, color, rgba) => ({
+            label, data,
+            borderColor: color, backgroundColor: rgba, pointBackgroundColor: color,
+            fill: true, tension: 0.4, borderWidth: 3, pointRadius: 3, pointHoverRadius: 5
         });
 
-        // 2) Üretim + Satış
-        new Chart(document.getElementById('salesProductionChart'), {
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+        };
+
+        const trendChart = new Chart(document.getElementById('trendChart'), {
             type: 'line',
             data: {
-                labels: labels,
+                labels: initial.labels,
                 datasets: [
-                    {
-                        label: 'Üretim',
-                        data: productionValues,
-                        borderColor: '#185FA5',
-                        backgroundColor: 'rgba(24,95,165,0.15)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: '#185FA5'
-                    },
-                    {
-                        label: 'Satış',
-                        data: salesValues,
-                        borderColor: '#2ecc71',
-                        backgroundColor: 'rgba(46,204,113,0.15)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: '#2ecc71'
-                    }
+                    ds('Üretim', initial.production, '#185FA5', 'rgba(24,95,165,0.15)'),
+                    ds('Hammadde Girişi', initial.rawMaterial, '#e67e22', 'rgba(230,126,34,0.15)')
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            options
         });
+
+        const salesChart = new Chart(document.getElementById('salesProductionChart'), {
+            type: 'line',
+            data: {
+                labels: initial.labels,
+                datasets: [
+                    ds('Üretim', initial.production, '#185FA5', 'rgba(24,95,165,0.15)'),
+                    ds('Satış', initial.sales, '#2ecc71', 'rgba(46,204,113,0.15)')
+                ]
+            },
+            options
+        });
+
+        // ---- Tablar ----
+        const cache = { '7d': initial };           // aynı aralığa tekrar istek atma
+        const tabs = document.querySelectorAll('#rangeTabs .range-tab');
+
+        function applyData(d) {
+            trendChart.data.labels = d.labels;
+            trendChart.data.datasets[0].data = d.production;
+            trendChart.data.datasets[1].data = d.rawMaterial;
+            trendChart.update();
+
+            salesChart.data.labels = d.labels;
+            salesChart.data.datasets[0].data = d.production;
+            salesChart.data.datasets[1].data = d.sales;
+            salesChart.update();
+        }
+
+        tabs.forEach(btn => btn.addEventListener('click', async () => {
+            const range = btn.dataset.range;
+            tabs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (cache[range]) { applyData(cache[range]); return; }
+
+            tabs.forEach(t => t.disabled = true);
+            try {
+                const res = await fetch(`@Url.Action("GetChartData", "AdminDashboard")?range=${range}`);
+                if (!res.ok) throw new Error(res.status);
+                cache[range] = await res.json();
+                applyData(cache[range]);
+            } catch (e) {
+                console.error('Grafik verisi alınamadı', e);
+            } finally {
+                tabs.forEach(t => t.disabled = false);
+            }
+        }));
     });
 </script>

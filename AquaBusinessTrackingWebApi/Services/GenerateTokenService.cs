@@ -23,8 +23,10 @@ namespace AquaBusinessTrackingWebApi.Services
             _service = service;
         }
 
-        public async Task<string> CreateToken(DB_AppUser user)
+        public async Task<(string Token, DateTime ExpireDate)> CreateToken(DB_AppUser user, bool RememberMe)
         {
+            var expireDate = RememberMe ? DateTime.UtcNow.AddDays(3) : DateTime.UtcNow.AddHours(2);
+
 
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>
@@ -64,13 +66,12 @@ namespace AquaBusinessTrackingWebApi.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: expireDate,
                 signingCredentials: creds
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-
-            return tokenString.ToString();
+            return (tokenString, expireDate);
         }
     }
 }

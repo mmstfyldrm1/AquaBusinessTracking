@@ -13,8 +13,6 @@ namespace EntityLayer.Concrete
 
         public string InventoryName { get; set; }
 
-        public DateTime InsertDate { get; set; }
-
         public decimal IncomingQuantity { get; set; }
 
         public decimal ConsumedQuantity { get; set; }

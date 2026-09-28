@@ -79,7 +79,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
 
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            var result = await _signInManager.PasswordSignInAsync(user, dto.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, dto.Password, dto.RememberMe, false);
             if (!result.Succeeded)
             {
                 _logger.LogWarning("Geçersiz giriş. Email={Email}", dto.UserName);
@@ -91,15 +91,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
 
             var roles = await _userManager.GetRolesAsync(user);
-            var token = await _generateTokenService.CreateToken(user);
+            var (token, expireDate) = await _generateTokenService.CreateToken(user, dto.RememberMe);
             return Ok(new
             {
                 Token = token,
                 Id = user.Id,
+                ExpiresAt = expireDate,
                 FullName = user.Email,
                 Email = user.Email,
                 UserName = user.UserName,
                 Role = roles,
+
+
             });
 
         }

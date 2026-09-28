@@ -19,12 +19,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly AuthorizedHttpClientService _httpClientFactory;
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
+        private readonly UserFavoriteService _userFavoriteService;
 
-        public BoilerOperationandChemicalConsumptionController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService)
+        public BoilerOperationandChemicalConsumptionController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, UserFavoriteService userFavoriteService)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
@@ -33,6 +35,17 @@ namespace AquaBusinessTrackingWebUI.Controllers
             if (!_currentUserService.HasPermission("KAZAN.BoilerOperationandChemicalConsumption.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
+            }
+
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "BoilerOperationandChemicalConsumption/GetBoilerRoomDailyShiftData");
+            if (value == 1)
+            {
+                ViewBag.IsFavorite = 1;
+            }
+            else
+            {
+                ViewBag.IsFavorite = 0;
             }
 
             var client = _httpClientFactory.CreateClient();
@@ -65,7 +78,6 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             await LoadShiftListAsync();
             await LoadDepartmentListAsync();
-            await LoadKazanEnergyListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
 
             if (id.HasValue)
@@ -111,7 +123,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 var bulkDto = new BoilerOperationandChemicalConsumptionBulkDto
                 {
                     ReceiptDate = DateTime.Now,
-                    Rows = kazanList.Select(x => new ConsumptionPlaceRow
+                    Rows = kazanList.Where(x => x.InUse == 1).Select(x => new ConsumptionPlaceRow
                     {
                         ConsumptionPlaceId = x.RecId,
                         ConsumptionPlaceName = x.ConsumptionPlace
@@ -305,24 +317,8 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
         }
 
-        private async Task LoadKazanEnergyListAsync()
-        {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiSettings.BaseUrl}/KazanEnergyConsumption/details");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<KazanEnergyConsumptionDto>>(jsonData);
-                if (values != null)
-                {
-                    ViewBag.ConsumptionPlaces = values.Select(r => new SelectListItem
-                    {
-                        Value = r.RecId.ToString(),
-                        Text = r.ConsumptionPlace.ToString()
-                    }).ToList();
-                }
-            }
-        }
+
     }
 }
+

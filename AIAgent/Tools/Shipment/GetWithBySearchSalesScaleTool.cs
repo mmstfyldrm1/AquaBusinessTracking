@@ -2,18 +2,23 @@
 
 namespace AIAgent.Tools.Shipment
 {
-    public class GetWithBySearchSalesScale : IAiTool
+    public class GetWithBySearchSalesScaleTool : IAiTool
     {
         private readonly IShipmentApiService _shipmentApiService;
 
-        public GetWithBySearchSalesScale(IShipmentApiService shipmentApiService)
+        public GetWithBySearchSalesScaleTool(IShipmentApiService shipmentApiService)
         {
             _shipmentApiService = shipmentApiService;
         }
 
-        public string Name => "get_with_by_search_sales_scale";
+        public string Name => "get_with_by_search_sales_scale_tool";
 
-        public string Description => "Kullanıcı tarafından belirtilen tarih aralığındaki sevkiyat detaylarını alır.";
+        public string Description => "Retrieves shipment dispatch records between the start date and end date provided by the user. " +
+"The results specifically represent outgoing shipments dispatched from the factory during the specified date range. " +
+"The result may contain multiple shipment dispatch records. " +
+"Evaluate each record separately and do not automatically aggregate or combine the records unless the user explicitly asks for a total, summary, or aggregation. " +
+"If the result is empty, clearly state that no shipment dispatch records were found for the specified date range. " +
+"Always respond to the user in Turkish.";
 
         public object ParametersSchema => new
         {

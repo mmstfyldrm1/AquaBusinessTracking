@@ -5,7 +5,6 @@ using DTOLayer.Dtos.SentezProductionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-
 namespace AquaBusinessTrackingWebUI.ViewComponents
 {
     public class _AdminLayoutSummaryComponentPartial : ViewComponent
@@ -21,49 +20,45 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-
-            var emptySentez = new SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>
+            var emptySentez = new SentezIntegrationsResponsoDto<AdminDashboardSales>
             {
-                Data = new List<AdminDahboardLast7DaysStock>()
-            };
-            var emptyModel = new AdminDashboardSummaryViewModel
-            {
-                GetLast7Sales = emptySentez,
-                GetLast7Days = emptySentez,
-                GetLast7RawMateriels = emptySentez
+                Data = new List<AdminDashboardSales>()
             };
 
+            var emptySentezStock = new SentezIntegrationsResponsoDto<AdminDahboardDaysStock>
+            {
+                Data = new List<AdminDahboardDaysStock>()
+            };
 
-            var cilent = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient();
             var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            var response = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysSalesAsync", cts.Token);
-            var responseRawMateriles = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysRawMaterilsAsync", cts.Token);
-            var responseProduction = cilent.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysProductionAsync", cts.Token);
 
+            var today = DateTime.Today;
+            var start = today.AddDays(-6);
+            var qs = $"?startDate={start:yyyy-MM-dd}&endDate={today:yyyy-MM-dd}";
 
-            await Task.WhenAll(response, responseProduction, responseRawMateriles);
+            var salesTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysSalesAsync{qs}", cts.Token);
+            var rawTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysRawMaterilsAsync{qs}", cts.Token);
+            var prodTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas7DaysProductionAsync{qs}", cts.Token);
 
-            var stock = responseProduction.Result.IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
-                    await responseProduction.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
+            await Task.WhenAll(salesTask, rawTask, prodTask);
+
+            var stock = prodTask.Result.IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>>(
+                    await prodTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentezStock
+                : emptySentezStock;
+
+            var sales = salesTask.Result.IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDashboardSales>>(
+                    await salesTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
                 : emptySentez;
 
-
-
-            var sales = response.Result.IsSuccessStatusCode
-                  ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
-                      await response.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
-                  : emptySentez;
-
-            var rawMateriels = responseRawMateriles.Result.IsSuccessStatusCode
-                  ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
-                      await responseRawMateriles.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
-                  : emptySentez;
-
-
-
+            var rawMateriels = rawTask.Result.IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>>(
+                    await rawTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentezStock
+                : emptySentezStock;
 
             var result = new AdminDashboardSummaryViewModel
             {
@@ -71,8 +66,6 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 GetLast7Days = stock,
                 GetLast7RawMateriels = rawMateriels,
             };
-
-
 
             return View(result);
         }

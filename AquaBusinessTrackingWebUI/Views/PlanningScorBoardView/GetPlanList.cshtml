@@ -5,6 +5,17 @@
     Layout = "~/Views/_UserLayout/Index.cshtml";
     var controller = "PlanningScorBoardView/GetPlanList";
     int counter = 0;
+    string actionName = string.Empty;
+
+    if (ViewBag.FavMenu == 1)
+    {
+        actionName = "DeleteFavorite";
+    }
+    else
+    {
+        actionName = "AddFavorite";
+    }
+
 }
 @model List<PlanningScorBoardViewDto>
 <style>
@@ -43,11 +54,12 @@
 <div class="d-flex justify-content-between align-items-center">
     <h6 class="mb-0 text-uppercase">Plan Listesi</h6>
     <a asp-controller="UserDashboard"
-       asp-action="AddFavorite"
+       asp-action="@actionName"
        asp-route-url="@controller"
        class="btn btn-light btn-sm border rounded-pill px-3">
-        <i class="bx bx-star text-warning me-1"></i>
-        Favorilere Ekle
+        <i class="bx @(ViewBag.FavMenu == 1 ? "bxs-star text-warning" : "bx-star text-secondary") me-1"></i>
+
+        @(ViewBag.FavMenu == 1 ? "Favorilerde" : "Favorilere Ekle")
     </a>
 </div>
 

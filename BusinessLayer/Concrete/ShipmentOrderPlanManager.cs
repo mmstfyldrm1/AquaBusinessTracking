@@ -21,5 +21,12 @@ namespace BusinessLayer.Concrete
             var dtos = _mapper.Map<List<ShipmentOrderPlanDto>>(entities);
             return dtos;
         }
+
+        public async Task<List<ShipmentOrderPlanDto>> GetTodayPlan()
+        {
+            var entities = await _shipmentOrderPlanRepository.GetTodayPlan();
+            var dtos = _mapper.Map<List<ShipmentOrderPlanDto>>(entities);
+            return dtos;
+        }
     }
 }

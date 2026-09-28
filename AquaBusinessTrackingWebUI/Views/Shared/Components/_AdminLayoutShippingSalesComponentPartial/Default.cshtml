@@ -1,6 +1,38 @@
 ﻿@model AdminDashboardSalesShippingViewModel
 
+<style>
+    .range-tabs {
+        display: flex;
+        gap: 6px;
+    }
+
+    .range-tab {
+        border: 1px solid #d0d7de;
+        background: transparent;
+        padding: 6px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+        .range-tab.active {
+            background: #185FA5;
+            color: #fff;
+            border-color: #185FA5;
+        }
+
+        .range-tab:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+    #sevk .chart-wrap-small {
+        height: 280px;
+    }
+</style>
+
 <div class="page-section" id="sevk">
+
     <!-- KPI ROW -->
     <div class="kpi-grid">
 
@@ -34,23 +66,35 @@
 
     <div class="row">
 
-
-        <!-- CHART -->
-
-        <div class="card chart-card">
-            <div class="card-title">Satış Trend</div>
-            <div class="chart-wrap-small">
-                <canvas id="trendsChart"></canvas>
+        <!-- BAŞLIK + TABLAR (tam genişlik) -->
+        <div class="col-12">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Genel Özet</div>
+                    <div class="section-sub">Satış Göstergeleri</div>
+                </div>
+                <div class="range-tabs" id="salesRangeTabs">
+                    <button type="button" class="range-tab active" data-range="7d">Son 7 Gün</button>
+                    <button type="button" class="range-tab" data-range="30d">Son 1 Ay</button>
+                    <button type="button" class="range-tab" data-range="1y">Son 1 Yıl</button>
+                </div>
             </div>
         </div>
 
+        <!-- GRAFİK (yarım genişlik) -->
+        <div class="col-lg-6 mb-3">
+            <div class="card chart-card h-100">
+                <div class="card-title">Satış Trend</div>
+                <div class="chart-wrap-small">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+        </div>
 
-        <!-- TABLO -->
+        <!-- SATIŞ DÜN -->
         <div class="col-lg-6 mb-3">
             <div class="card h-100">
-                <div class="card-title">
-                    Satış Dün
-                </div>
+                <div class="card-title">Satış Dün</div>
 
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -62,30 +106,23 @@
                                 <th>Kalan</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach (var item in Model.PreviousDay.Data)
                             {
                                 <tr>
                                     <td>@item.PapperType</td>
-                                    <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
-                                    <td class="">@item.Consumable.ToString("N2")</td>
-                                    <td>@item.Remaning.ToString("N2")</td>
+                                    <td class="fw-bold text-success">@item.Sales.ToString("N2")</td>
+                                    <td>@item.Return.ToString("N2")</td>
+                                    <td>@item.Stock.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot class="table-light">
                             <tr class="fw-bold">
                                 <td>Toplam</td>
-                                <td class="text-success">
-                                    @Model.PreviousDay.Data.Sum(x => x.Production).ToString("N2")
-                                </td>
-                                <td class="">
-                                    @Model.PreviousDay.Data.Sum(x => x.Consumable).ToString("N2")
-                                </td>
-                                <td>
-                                    @Model.PreviousDay.Data.Sum(x => x.Remaning).ToString("N2")
-                                </td>
+                                <td class="text-success">@Model.PreviousDay.Data.Sum(x => x.Sales).ToString("N2")</td>
+                                <td>@Model.PreviousDay.Data.Sum(x => x.Return).ToString("N2")</td>
+                                <td>@Model.PreviousDay.Data.Sum(x => x.Stock).ToString("N2")</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -93,12 +130,10 @@
             </div>
         </div>
 
-       
+        <!-- SON 10 SEVKİYAT -->
         <div class="col-lg-6 mb-3">
             <div class="card h-100">
-                <div class="card-title">
-                    Son 10 Sevkiyat
-                </div>
+                <div class="card-title">Son 10 Sevkiyat</div>
 
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -110,7 +145,6 @@
                                 <th>Miktar (Kg)</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @{
                                 int counter = 1;
@@ -121,9 +155,7 @@
                                     <td>@counter</td>
                                     <td>@item.InsertDate.ToString("dd.MM.yyyy HH:mm")</td>
                                     <td>@item.CurrentAccountName</td>
-                                    <td class="fw-bold text-success">
-                                        @item.DeliveryQuantity.ToString("N2")
-                                    </td>
+                                    <td class="fw-bold text-success">@item.DeliveryQuantity.ToString("N2")</td>
                                 </tr>
                                 counter++;
                             }
@@ -131,9 +163,7 @@
                         <tfoot class="table-light">
                             <tr class="fw-bold">
                                 <td colspan="3">Toplam</td>
-                                <td class="text-success">
-                                    @Model.Last10.Sum(x => x.DeliveryQuantity).ToString("N2")
-                                </td>
+                                <td class="text-success">@Model.Last10.Sum(x => x.DeliveryQuantity).ToString("N2")</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -141,12 +171,10 @@
             </div>
         </div>
 
-        <!-- TABLO 2 -->
+        <!-- SATIŞ TÜM -->
         <div class="col-lg-6 mb-3">
             <div class="card h-100">
-                <div class="card-title">
-                    Satış Tüm
-                </div>
+                <div class="card-title">Satış Tüm</div>
 
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -158,30 +186,23 @@
                                 <th>Kalan</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach (var item in Model.Sales.Data)
                             {
                                 <tr>
                                     <td>@item.PapperType</td>
-                                    <td class="fw-bold text-success">@item.Production.ToString("N2")</td>
-                                    <td class="">@item.Consumable.ToString("N2")</td>
-                                    <td>@item.Remaning.ToString("N2")</td>
+                                    <td class="fw-bold text-success">@item.Sales.ToString("N2")</td>
+                                    <td>@item.Return.ToString("N2")</td>
+                                    <td>@item.Stock.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot class="table-light">
                             <tr class="fw-bold">
                                 <td>Toplam</td>
-                                <td class="text-success">
-                                    @Model.Sales.Data.Sum(x => x.Production).ToString("N2")
-                                </td>
-                                <td class="">
-                                    @Model.Sales.Data.Sum(x => x.Consumable).ToString("N2")
-                                </td>
-                                <td>
-                                    @Model.Sales.Data.Sum(x => x.Remaning).ToString("N2")
-                                </td>
+                                <td class="text-success">@Model.Sales.Data.Sum(x => x.Sales).ToString("N2")</td>
+                                <td>@Model.Sales.Data.Sum(x => x.Return).ToString("N2")</td>
+                                <td>@Model.Sales.Data.Sum(x => x.Stock).ToString("N2")</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -190,24 +211,26 @@
         </div>
 
     </div>
-
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const labels = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM"))));
-        const values = @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)));
+
+        const initial = {
+            labels: @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Date.ToString("dd.MM")))),
+            values: @Html.Raw(Json.Serialize(Model.Trend.Select(x => x.Value)))
+        };
 
         const existing = Chart.getChart('trendsChart');
         if (existing) existing.destroy();
 
-        new Chart(document.getElementById('trendsChart'), {
+        const chart = new Chart(document.getElementById('trendsChart'), {
             type: 'line',
             data: {
-                labels: labels,
+                labels: initial.labels,
                 datasets: [{
                     label: 'Satış',
-                    data: values,
+                    data: initial.values,
                     borderColor: '#185FA5',
                     backgroundColor: 'rgba(24,95,165,0.15)',
                     fill: true,
@@ -222,22 +245,39 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 devicePixelRatio: Math.max(window.devicePixelRatio || 1, 2),
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+                plugins: { legend: { display: false } },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
             }
         });
+
+        // ---- Tablar ----
+        const cache = { '7d': initial };
+        const tabs = document.querySelectorAll('#salesRangeTabs .range-tab');
+
+        function applyData(d) {
+            chart.data.labels = d.labels;
+            chart.data.datasets[0].data = d.values;
+            chart.update();
+        }
+
+        tabs.forEach(btn => btn.addEventListener('click', async () => {
+            const range = btn.dataset.range;
+            tabs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (cache[range]) { applyData(cache[range]); return; }
+
+            tabs.forEach(t => t.disabled = true);
+            try {
+                const res = await fetch(`@Url.Action("GetSalesTrend", "AdminDashboard")?range=${range}`);
+                if (!res.ok) throw new Error(res.status);
+                cache[range] = await res.json();
+                applyData(cache[range]);
+            } catch (e) {
+                console.error('Satış verisi alınamadı', e);
+            } finally {
+                tabs.forEach(t => t.disabled = false);
+            }
+        }));
     });
 </script>

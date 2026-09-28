@@ -21,5 +21,16 @@ namespace DataAccsessLayer.Concrete.Repository
                  .OrderByDescending(x => x.RecId)
                 .ToListAsync();
         }
+
+        public async Task<List<DB_ShipmentOrderPlan>> GetTodayPlan()
+        {
+            var today = DateTime.Today;
+            return await _context.Db_ShipmentOrderPlan
+                .Include(x => x.Department)
+                .Include(x => x.AppUser)
+                .Where(x => x.PlanDate == today)
+                .OrderByDescending(x => x.RecId)
+                .ToListAsync();
+        }
     }
 }

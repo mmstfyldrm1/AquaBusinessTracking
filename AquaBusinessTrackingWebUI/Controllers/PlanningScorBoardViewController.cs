@@ -17,13 +17,15 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
         private readonly IWebHostEnvironment _env;
+        private readonly UserFavoriteService _userFavoriteService;
 
-        public PlanningScorBoardViewController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, IWebHostEnvironment env)
+        public PlanningScorBoardViewController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, IWebHostEnvironment env, UserFavoriteService userFavoriteService)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
             _env = env;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
@@ -33,6 +35,17 @@ namespace AquaBusinessTrackingWebUI.Controllers
             if (!_currentUserService.HasPermission("PLANLAMA.PlanningScorBoardView.View"))
             {
                 return Json(new { success = false, message = "Bu işlemi gerçekleştirmek için gerekli izniniz bulunmamaktadır." });
+            }
+
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "PlanningScorBoardView/GetPlanList");
+            if (value == 1)
+            {
+                ViewBag.FavMenu = 1;
+            }
+            else
+            {
+                ViewBag.FavMenu = 0;
             }
 
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/PlanningScorBoardView/details");

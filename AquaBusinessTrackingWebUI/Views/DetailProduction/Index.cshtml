@@ -1,0 +1,1159 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+@using DTOLayer.Dtos.SentezIntegrationsDtos.SentezIntegrationProductionDtos
+@model AquaBusinessTrackingWebUI.Models.DetailProductionViewModel
+
+<style>
+    .pp-wrap {
+        --pp-navy: #16273f;
+        --pp-navy-2: #1f3a5c;
+        --pp-ink: #0e1c2e;
+        --pp-accent: #3a6ea5;
+        --pp-gold: #0e1c2e;
+        --pp-teal: #1f6f66;
+        --pp-bg: #eef1f5;
+        --pp-card-bg: #ffffff;
+        --pp-border: #e0e4ea;
+        --pp-text: #26313f;
+        --pp-muted: #6c7686;
+        --pp-radius: 10px;
+        color: var(--pp-text);
+        padding: 26px;
+        min-height: 100%;
+        font-size: .93rem;
+    }
+
+    .pp-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--pp-border);
+    }
+
+        .pp-header .pp-eyebrow {
+            font-size: .68rem;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--pp-gold);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pp-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--pp-navy);
+            letter-spacing: -.01em;
+        }
+
+        .pp-header .pp-sub {
+            color: var(--pp-muted);
+            font-size: .82rem;
+            margin-top: 3px;
+        }
+
+        .pp-header .pp-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+    .pp-actions input[type="date"], .pp-actions input[type="search"] {
+        border: 1px solid var(--pp-border);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: .82rem;
+        background: #fff;
+        outline: none;
+    }
+
+    .pp-actions input:focus {
+        border-color: var(--pp-accent);
+        box-shadow: 0 0 0 3px rgba(58,110,165,.14);
+    }
+
+    .pp-btn {
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: .82rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: .01em;
+    }
+
+    .pp-btn-primary {
+        background: var(--pp-navy);
+        color: #fff;
+    }
+
+        .pp-btn-primary:hover {
+            background: var(--pp-ink);
+        }
+
+    .pp-btn-ghost {
+        background: #fff;
+        color: var(--pp-navy);
+        border-color: var(--pp-border);
+    }
+
+        .pp-btn-ghost:hover {
+            border-color: var(--pp-navy);
+        }
+
+    .pp-section-title {
+        font-size: .72rem;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color: var(--pp-muted);
+        font-weight: 700;
+        margin: 0 0 12px 2px;
+    }
+
+    .pp-stats, .pp-kpi-row {
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        gap: 14px;
+        margin-bottom: 26px;
+    }
+
+    @@media (max-width:1100px) {
+        .pp-stats, .pp-kpi-row {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    .pp-stat {
+        background: var(--pp-card-bg);
+        border: 1px solid var(--pp-border);
+        border-top: 3px solid var(--pp-accent);
+        border-radius: var(--pp-radius);
+        padding: 14px 16px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.04);
+    }
+
+        .pp-stat.alt {
+            border-top-color: var(--pp-teal);
+        }
+
+        .pp-stat.warn {
+            border-top-color: var(--pp-gold);
+        }
+
+        .pp-stat .lbl {
+            font-size: .68rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--pp-muted);
+            font-weight: 700;
+        }
+
+        .pp-stat .val {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--pp-navy);
+            margin-top: 5px;
+        }
+
+            .pp-stat .val small {
+                font-size: .68rem;
+                font-weight: 600;
+                color: var(--pp-muted);
+                margin-left: 3px;
+            }
+
+        .pp-stat .trend {
+            font-size: .7rem;
+            color: var(--pp-muted);
+            margin-top: 4px;
+        }
+
+    .pp-card {
+        background: var(--pp-card-bg);
+        border: 1px solid var(--pp-border);
+        border-radius: var(--pp-radius);
+        overflow: hidden;
+        margin-bottom: 26px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.04);
+    }
+
+    .pp-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--pp-border);
+        background: #f8f9fb;
+        padding: 0 8px;
+        overflow-x: auto;
+    }
+
+    .pp-tab-btn {
+        border: none;
+        background: transparent;
+        padding: 14px 18px;
+        font-size: .85rem;
+        font-weight: 600;
+        color: var(--pp-muted);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+        .pp-tab-btn .badge-count {
+            background: #eef1f6;
+            color: var(--pp-navy);
+            border-radius: 4px;
+            padding: 1px 8px;
+            font-size: .7rem;
+            font-weight: 700;
+        }
+
+        .pp-tab-btn.active {
+            color: var(--pp-navy);
+            border-bottom-color: var(--pp-navy);
+        }
+
+            .pp-tab-btn.active .badge-count {
+                background: var(--pp-navy);
+                color: #fff;
+            }
+
+    .pp-tab-panel {
+        display: none;
+        padding: 18px 20px 22px;
+    }
+
+        .pp-tab-panel.active {
+            display: block;
+        }
+
+    .pp-panel-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+        .pp-panel-toolbar h6 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--pp-navy);
+            font-size: .9rem;
+        }
+
+    table.pp-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .82rem;
+    }
+
+        table.pp-table thead th {
+            background: #f6f7fa;
+            color: var(--pp-navy);
+            font-weight: 700;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--pp-border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            font-size: .74rem;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        table.pp-table tbody td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--pp-border);
+            color: var(--pp-text);
+            white-space: nowrap;
+        }
+
+        table.pp-table tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        table.pp-table tbody tr:hover {
+            background: #eef3f9;
+        }
+
+    .pp-table-scroll {
+        max-height: 520px;
+        overflow: auto;
+        border: 1px solid var(--pp-border);
+        border-radius: 8px;
+    }
+
+    .pp-chip {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .02em;
+    }
+
+    .pp-chip-on {
+        background: #e6f3ef;
+        color: #1f6f4f;
+    }
+
+    .pp-chip-off {
+        background: #fbebe9;
+        color: #a5382c;
+    }
+
+    .pp-chip-neutral {
+        background: #eef1f6;
+        color: var(--pp-navy);
+    }
+
+    .pp-chip-tampon {
+        background: #e6ecf3;
+        color: var(--pp-navy);
+    }
+
+    .pp-chip-bobin {
+        background: #e2f0ee;
+        color: var(--pp-teal);
+    }
+
+    .pp-plc-group {
+        margin-bottom: 20px;
+    }
+
+        .pp-plc-group h6 {
+            font-size: .78rem;
+            font-weight: 700;
+            color: var(--pp-navy-2);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .pp-plc-group h6::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: var(--pp-border);
+            }
+
+    .pp-plc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(190px,1fr));
+        gap: 12px;
+    }
+
+    .pp-plc-card {
+        background: #fbfcfe;
+        border: 1px solid var(--pp-border);
+        border-radius: 8px;
+        padding: 12px 14px;
+    }
+
+        .pp-plc-card .name {
+            font-size: .74rem;
+            color: var(--pp-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .pp-plc-card .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--pp-navy);
+        }
+
+            .pp-plc-card .value small {
+                font-size: .68rem;
+                color: var(--pp-muted);
+                font-weight: 600;
+                margin-left: 3px;
+            }
+
+        .pp-plc-card .time {
+            font-size: .68rem;
+            color: var(--pp-muted);
+            margin-top: 6px;
+        }
+
+    .pp-empty {
+        text-align: center;
+        padding: 40px 10px;
+        color: var(--pp-muted);
+        font-size: .88rem;
+    }
+
+    .pp-type-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 26px;
+    }
+
+    @@media (max-width:900px) {
+        .pp-type-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .pp-type-card {
+        border-radius: var(--pp-radius);
+        padding: 20px 22px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(16,24,40,.08);
+    }
+
+        .pp-type-card.tampon {
+            background: linear-gradient(160deg,#132338,#1f3a5c);
+        }
+
+        .pp-type-card.bobin {
+            background: linear-gradient(160deg,#123c37,#1f6f66);
+        }
+
+        .pp-type-card .tc-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .pp-type-card .tc-title {
+            font-size: .95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: .01em;
+        }
+
+        .pp-type-card .tc-code {
+            font-size: .66rem;
+            background: rgba(255,255,255,.14);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .pp-type-card .tc-metrics {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 10px;
+        }
+
+    @@media (max-width:560px) {
+        .pp-type-card .tc-metrics {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    .pp-type-card .tc-metric .m-val {
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .pp-type-card .tc-metric .m-lbl {
+        font-size: .64rem;
+        opacity: .8;
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .pp-type-filter {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+        .pp-type-filter button {
+            border: 1px solid var(--pp-border);
+            background: #fff;
+            color: var(--pp-navy);
+            font-size: .76rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .pp-type-filter button.active {
+                background: var(--pp-navy);
+                color: #fff;
+                border-color: var(--pp-navy);
+            }
+
+    .pp-tree-node {
+        border: 1px solid var(--pp-border);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+
+    .pp-tree-parent {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #fbfcfe;
+        cursor: pointer;
+        flex-wrap: wrap;
+    }
+
+        .pp-tree-parent:hover {
+            background: #eef3f9;
+        }
+
+    .pp-tree-caret {
+        transition: transform .15s;
+        color: var(--pp-navy);
+        flex-shrink: 0;
+    }
+
+    .pp-tree-node.open .pp-tree-caret {
+        transform: rotate(90deg);
+    }
+
+    .pp-tree-serial {
+        font-weight: 700;
+        color: var(--pp-navy);
+        font-size: .84rem;
+    }
+
+    .pp-tree-meta {
+        font-size: .76rem;
+        color: var(--pp-muted);
+    }
+
+    .pp-tree-children {
+        display: none;
+        padding: 0 14px 14px 40px;
+        border-top: 1px solid var(--pp-border);
+    }
+
+    .pp-tree-node.open .pp-tree-children {
+        display: block;
+        padding-top: 12px;
+    }
+
+    .pp-progress-bar {
+        height: 6px;
+        background: #e9edf3;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+        .pp-progress-bar > span {
+            display: block;
+            height: 100%;
+            background: var(--pp-teal);
+        }
+</style>
+
+<div class="pp-wrap">
+
+    <div class="pp-header">
+        <div>
+            <div class="pp-eyebrow">Üretim Yönetim Sistemi</div>
+            <h1>Üretim Plan Detayı</h1>
+            <div class="pp-sub">PLC anlık verileri, kombinasyon, üretim ve verimlilik göstergeleri tek ekranda</div>
+        </div>
+        <div class="pp-actions">
+            <input type="date" id="ppDateFilter" />
+            <input type="search" id="ppGlobalSearch" placeholder="Kombinasyon / stok / seri no ara..." style="min-width:240px;" />
+            <button type="button" class="pp-btn pp-btn-ghost" onclick="location.reload()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" /></svg>
+                Yenile
+            </button>
+            <button type="button" class="pp-btn pp-btn-primary" onclick="window.print()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></svg>
+                Yazdır
+            </button>
+        </div>
+    </div>
+
+    <div class="pp-section-title">Genel Özet</div>
+    <div class="pp-stats">
+        <div class="pp-stat">
+            <div class="lbl">PLC Okuma Sayısı</div>
+            <div class="val">@Model.Summary.TotalPlc</div>
+        </div>
+        <div class="pp-stat alt">
+            <div class="lbl">Aktif Kombinasyon</div>
+            <div class="val">@Model.Summary.ActiveSets</div>
+        </div>
+        <div class="pp-stat">
+            <div class="lbl">Kombinasyon Kaydı</div>
+            <div class="val">@Model.Summary.TotalCombine</div>
+        </div>
+        <div class="pp-stat alt">
+            <div class="lbl">Kombinasyon Miktarı</div>
+            <div class="val">@Model.Summary.TotalCombineQty.ToString("N0")<small>kg</small></div>
+        </div>
+        <div class="pp-stat">
+            <div class="lbl">Üretim Kaydı / Miktar</div>
+            <div class="val">@Model.Summary.TotalProd<small>/ @Model.Summary.TotalProdQty.ToString("N0") kg</small></div>
+        </div>
+    </div>
+
+    <div class="pp-section-title">Verimlilik ve Performans Göstergeleri</div>
+    <div class="pp-kpi-row">
+        <div class="pp-stat alt">
+            <div class="lbl">Kesim Verimi</div>
+            <div class="val">@Model.Summary.CuttingYieldPercent.ToString("N1")<small>%</small></div>
+            <div class="pp-progress-bar"><span style="width:@(Math.Min(100, Model.Summary.CuttingYieldPercent).ToString("N0", System.Globalization.CultureInfo.InvariantCulture))%;"></span></div>
+            <div class="trend">Kesilen tampondan elde edilen bobin oranı</div>
+        </div>
+        <div class="pp-stat warn">
+            <div class="lbl">Fire Oranı</div>
+            <div class="val">@Model.Summary.FireLossPercent.ToString("N1")<small>%</small></div>
+            <div class="trend">@Model.Summary.FireLossQty.ToString("N0") kg fire</div>
+        </div>
+        <div class="pp-stat">
+            <div class="lbl">Bekleyen Tampon Oranı</div>
+            <div class="val">@Model.Summary.WaitingRatioPercent.ToString("N1")<small>%</small></div>
+            <div class="trend">@Model.WaitingTampons.Count tampon henüz kesilmedi</div>
+        </div>
+        <div class="pp-stat">
+            <div class="lbl">Plan / Gerçekleşme</div>
+            <div class="val">@Model.Summary.PlanActualPercent.ToString("N1")<small>%</small></div>
+            <div class="trend">Üretim miktarı / kombinasyon miktarı</div>
+        </div>
+        <div class="pp-stat alt">
+            <div class="lbl">Ort. Çevrim Süresi</div>
+            <div class="val">@Model.Summary.AvgCycleMinutes.ToString("N0")<small>dk</small></div>
+            <div class="trend">Ort. hız: @Model.Summary.AvgResourceSpeed.ToString("N1")</div>
+        </div>
+    </div>
+
+    <div class="pp-type-row">
+        <div class="pp-type-card tampon">
+            <div class="tc-head">
+                <div class="tc-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" /></svg>
+                    Tampon Üretimi
+                </div>
+               
+            </div>
+            <div class="tc-metrics">
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.TamponCount</div>
+                    <div class="m-lbl">Kayıt</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.TamponQty.ToString("N0")</div>
+                    <div class="m-lbl">Toplam Kg</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.TamponSets</div>
+                    <div class="m-lbl">Kombinasyon</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.StrapCompletionPercent.ToString("N0")%</div>
+                    <div class="m-lbl">Strap Tamamlama</div>
+                </div>
+            </div>
+        </div>
+        <div class="pp-type-card bobin">
+            <div class="tc-head">
+                <div class="tc-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /></svg>
+                    Bobin Üretimi
+                </div>
+               
+            </div>
+            <div class="tc-metrics">
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.BobinCount</div>
+                    <div class="m-lbl">Kayıt</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.BobinQty.ToString("N0")</div>
+                    <div class="m-lbl">Toplam Kg</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.BobinSets</div>
+                    <div class="m-lbl">Kombinasyon</div>
+                </div>
+                <div class="tc-metric">
+                    <div class="m-val">@Model.Summary.WrapCompletionPercent.ToString("N0")%</div>
+                    <div class="m-lbl">Sarım Tamamlama</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pp-card">
+        <div class="pp-tabs">
+            <button type="button" class="pp-tab-btn active" data-tab="plc" onclick="ppSwitchTab('plc')">
+                PLC Anlık Veriler <span class="badge-count">@Model.Summary.TotalPlc</span>
+            </button>
+            <button type="button" class="pp-tab-btn" data-tab="combine" onclick="ppSwitchTab('combine')">
+                Kombinasyon Detayları <span class="badge-count">@Model.Summary.TotalCombine</span>
+            </button>
+            <button type="button" class="pp-tab-btn" data-tab="prod" onclick="ppSwitchTab('prod')">
+                Üretim Detayları <span class="badge-count">@Model.Summary.TotalProd</span>
+            </button>
+            <button type="button" class="pp-tab-btn" data-tab="tree" onclick="ppSwitchTab('tree')">
+                Kesim Ağacı (Tampon → Bobin) <span class="badge-count">@Model.TamponCutTree.Count</span>
+            </button>
+            <button type="button" class="pp-tab-btn" data-tab="waiting" onclick="ppSwitchTab('waiting')">
+                Bekleyen Tamponlar <span class="badge-count">@Model.WaitingTampons.Count</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: PLC READINGS -->
+        <div class="pp-tab-panel active" id="pp-panel-plc">
+            @if (Model.PlcReading == null || !Model.PlcReading.Any())
+            {
+                <div class="pp-empty">Gösterilecek PLC verisi bulunamadı.</div>
+            }
+            else
+            {
+                foreach (var grp in Model.PlcReading.GroupBy(x => x.Group ?? "Diğer"))
+                {
+                    <div class="pp-plc-group">
+                        <h6>@grp.Key</h6>
+                        <div class="pp-plc-grid">
+                            @foreach (var r in grp.OrderBy(x => x.DisplayName))
+                            {
+                                <div class="pp-plc-card">
+                                    <div class="name">@r.DisplayName</div>
+                                    <div class="value">@r.Value.ToString("N2") <small>@r.Unit</small></div>
+                                    <div class="time">@r.ReadingTime.ToString("dd.MM.yyyy HH:mm:ss")</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- TAB 2: COMBINE DETAILS -->
+        <div class="pp-tab-panel" id="pp-panel-combine">
+            <div class="pp-panel-toolbar">
+                <h6>Kombinasyon Detayları</h6>
+                <input type="search" class="pp-local-search" data-target="tbl-combine" placeholder="Bu tabloda ara..." style="border:1px solid var(--pp-border);border-radius:6px;padding:6px 10px;font-size:.8rem;" />
+            </div>
+            @if (Model.SentezIntegrationsGetCombineDetails == null || !Model.SentezIntegrationsGetCombineDetails.Any())
+            {
+                <div class="pp-empty">Kombinasyon kaydı bulunamadı.</div>
+            }
+            else
+            {
+                <div class="pp-table-scroll">
+                    <table class="pp-table" id="tbl-combine">
+                        <thead>
+                            <tr>
+                                <th>Fiş Tarihi</th>
+                                <th>Kombine No</th>
+                                <th>Planlanan Set / Enleri</th>
+                                <th>Stok Adı</th>
+                                <th>Miktar (kg)</th>
+                                <th>Set Tekrar Sayısı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.SentezIntegrationsGetCombineDetails.OrderByDescending(x => x.ReceiptDate))
+                            {
+                                <tr>
+                                    <td>@c.ReceiptDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td><span class="pp-chip pp-chip-neutral">@c.CombinationNo</span></td>
+                                    <td>@c.AssignedResources</td>
+                                    <td>@c.InventoryName</td>
+                                    <td>@c.Quantity.ToString("N2")</td>
+                                    <td>@c.FinishDailyQuantity</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <!-- TAB 3: PRODUCTION DETAILS -->
+        <div class="pp-tab-panel" id="pp-panel-prod">
+            <div class="pp-panel-toolbar">
+                <h6>Üretim Detayları</h6>
+                <input type="search" id="ppProdSearch" placeholder="Bu tabloda ara..." style="border:1px solid var(--pp-border);border-radius:6px;padding:6px 10px;font-size:.8rem;" />
+            </div>
+            <div class="pp-type-filter">
+                <button type="button" data-type="all" class="active" onclick="ppSetTypeFilter('all', this)">Tümü (@Model.Summary.TotalProd)</button>
+                <button type="button" data-type="tampon" onclick="ppSetTypeFilter('tampon', this)">Tampon (@Model.Summary.TamponCount)</button>
+                <button type="button" data-type="bobin" onclick="ppSetTypeFilter('bobin', this)">Bobin (@Model.Summary.BobinCount)</button>
+            </div>
+            @if (Model.SentezIntegrationsGetProductionDetails == null || !Model.SentezIntegrationsGetProductionDetails.Any())
+            {
+                <div class="pp-empty">Üretim kaydı bulunamadı.</div>
+            }
+            else
+            {
+                <div class="pp-table-scroll">
+                    <table class="pp-table" id="tbl-prod">
+                        <thead>
+                            <tr>
+                                <th>Tip</th>
+                                <th>Fiş Tarihi</th>
+                                <th>Başlangıç</th>
+                                <th>Bitiş</th>
+                                <th>Seri No</th>
+                                <th>Miktar</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>En (cm)</th>
+                                <th>Kombine No</th>
+                                <th>Bağlı Tampon</th>
+                                <th>Set No / Poz.</th>
+                                <th>Açıklama</th>
+                                <th>Personel</th>
+                                <th>Hız</th>
+                                <th>İş Emri No</th>
+                                <th>Teslim Tarihi</th>
+                                <th>Strap</th>
+                                <th>Sarım</th>
+                                <th>Stoper</th>
+                                <th>Etiket</th>
+                                <th>Depo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.SentezIntegrationsGetProductionDetails
+                                                    .OrderByDescending(x => x.ReceiptDate))
+                            {
+                                SentezIntegrationsGetProductionDetailsDto? parentTampon = null;
+
+                               
+                                var isTampon =
+                                !string.IsNullOrEmpty(p.SerialCode) &&
+                                p.SerialCode.Length == 12;
+
+                                
+                                var isBobin =
+                                !string.IsNullOrEmpty(p.SerialCode) &&
+                                p.SerialCode.Length > 12;
+
+                                if (isBobin)
+                                {
+                                    var tamponSeriNo = p.SerialCode!.Substring(0, 12);
+
+                                    parentTampon = Model.SentezIntegrationsGetProductionDetails
+                                    .FirstOrDefault(x =>
+                                    !string.IsNullOrEmpty(x.SerialCode) &&
+                                    x.SerialCode.Length == 12 &&
+                                    x.SerialCode == tamponSeriNo);
+                                }
+
+                                <tr data-type="@(isTampon ? "tampon" : "bobin")">
+                                    <td>
+                                        @if (isTampon)
+                                        {
+                                            <span class="pp-chip pp-chip-tampon">Tampon</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pp-chip pp-chip-bobin">Bobin</span>
+                                        }
+                                    </td>
+                                    <td>@(p.ReceiptDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(p.StartTime?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(p.EndTime?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(p.SerialCode ?? "-")</td>
+                                    <td>@(p.Quantity?.ToString("N2") ?? "-")</td>
+                                    <td>@(p.InventoryCode ?? "-")</td>
+                                    <td>@(p.InventoryName ?? "-")</td>
+                                    <td>@(p.WidthCM?.ToString("N1") ?? "-")</td>
+                                    <td>@(p.CombinationNo ?? "-")</td>
+                                    <td>@(parentTampon?.SerialCode ?? "-")</td>
+                                    <td>@(p.SetNumber?.ToString() ?? "-") / @(p.SetPosition?.ToString() ?? "-")</td>
+                                    <td>@(p.Explanation ?? "-")</td>
+                                    <td>@(p.EmployeeName ?? "-")</td>
+                                    <td>@(p.ResourceSpeed?.ToString("N1") ?? "-")</td>
+                                    <td>@(p.WorkOrderNo ?? "-")</td>
+                                    <td>@(p.DeliveryDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                                    <td>
+                                        @if (p.IsStrapping == 1)
+                                        {
+                                            <span class="pp-chip pp-chip-on">Evet</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pp-chip pp-chip-off">Hayır</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (p.IsWrapping == 1)
+                                        {
+                                            <span class="pp-chip pp-chip-on">Evet</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pp-chip pp-chip-off">Hayır</span>
+                                        }
+                                    </td>
+                                    <td>@(p.StopperAt?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(p.LabelAt?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(p.WarehouseAt?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <!-- TAB 4: KESİM AĞACI (TAMPON -> BOBİN) -->
+        <div class="pp-tab-panel" id="pp-panel-tree">
+            <div class="pp-panel-toolbar">
+                <h6>Tampon → Bobin Kesim Ağacı</h6>
+                <span class="pp-chip pp-chip-neutral">Kesim Verimi: @Model.Summary.CuttingYieldPercent.ToString("N1")%</span>
+            </div>
+            @if (!Model.TamponCutTree.Any())
+            {
+                <div class="pp-empty">Kesilmiş tampon kaydı bulunamadı.</div>
+            }
+            else
+            {
+                foreach (var node in Model.TamponCutTree)
+                {
+                    var t = node.Tampon;
+                    <div class="pp-tree-node">
+                        <div class="pp-tree-parent" onclick="ppToggleNode(this)">
+                            <svg class="pp-tree-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18" /></svg>
+                            <span class="pp-chip pp-chip-tampon">Tampon</span>
+                            <span class="pp-tree-serial">@(t.SerialCode ?? "-")</span>
+                            <span class="pp-tree-meta">@(t.InventoryName ?? "-")</span>
+                            <span class="pp-tree-meta">@(t.Quantity?.ToString("N2") ?? "-") kg</span>
+                            <span class="pp-tree-meta">En: @(t.WidthCM?.ToString("N1") ?? "-") cm</span>
+                            <span class="pp-tree-meta">@(t.ReceiptDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</span>
+                            <span class="pp-chip pp-chip-neutral" style="margin-left:auto;">@node.BobinCount bobin · @node.BobinQtySum.ToString("N0") kg · Verim %@node.NodeYieldPercent.ToString("N0")</span>
+                        </div>
+                        <div class="pp-tree-children">
+                            <table class="pp-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fiş Tarihi</th>
+                                        <th>Seri No</th>
+                                        <th>Stok Kodu</th>
+                                        <th>Stok Adı</th>
+                                        <th>Miktar</th>
+                                        <th>En (cm)</th>
+                                        <th>Kombine No</th>
+                                        <th>Sarım</th>
+                                        <th>Depo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var b in node.Bobinler)
+                                    {
+                                        <tr>
+                                            <td>@(b.ReceiptDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                            <td>@(b.SerialCode ?? "-")</td>
+                                            <td>@(b.InventoryCode ?? "-")</td>
+                                            <td>@(b.InventoryName ?? "-")</td>
+                                            <td>@(b.Quantity?.ToString("N2") ?? "-")</td>
+                                            <td>@(b.WidthCM?.ToString("N1") ?? "-")</td>
+                                            <td>@(b.CombinationNo ?? "-")</td>
+                                            <td>
+                                                @if (b.IsWrapping == 1)
+                                                {
+                                                    <span class="pp-chip pp-chip-on">Evet</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="pp-chip pp-chip-off">Hayır</span>
+                                                }
+                                            </td>
+                                            <td>@(b.WarehouseAt?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            }
+
+            @if (Model.UnmatchedBobinList != null && Model.UnmatchedBobinList.Any())
+            {
+                <div class="pp-plc-group" style="margin-top:20px;">
+                    <h6>Eşleşmeyen Bobinler (Tampon Bulunamadı) — @Model.UnmatchedBobinList.Count adet</h6>
+                    <div class="pp-table-scroll">
+                        <table class="pp-table">
+                            <thead>
+                                <tr>
+                                    <th>Fiş Tarihi</th>
+                                    <th>Seri No</th>
+                                    <th>Stok Kodu</th>
+                                    <th>Stok Adı</th>
+                                    <th>Miktar</th>
+                                    <th>En (cm)</th>
+                                    <th>Kombine No</th>
+                                    <th>ParentId</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.UnmatchedBobinList)
+                                {
+                                    <tr>
+                                        <td>@(b.ReceiptDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                        <td>@(b.SerialCode ?? "-")</td>
+                                        <td>@(b.InventoryCode ?? "-")</td>
+                                        <td>@(b.InventoryName ?? "-")</td>
+                                        <td>@(b.Quantity?.ToString("N2") ?? "-")</td>
+                                        <td>@(b.WidthCM?.ToString("N1") ?? "-")</td>
+                                        <td>@(b.CombinationNo ?? "-")</td>
+                                        <td>@(b.ParentId?.ToString() ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- TAB 5: BEKLEYEN TAMPONLAR -->
+        <div class="pp-tab-panel" id="pp-panel-waiting">
+            <div class="pp-panel-toolbar">
+                <h6>Bekleyen Tamponlar (Henüz Kesilmemiş)</h6>
+                <span class="pp-chip pp-chip-neutral">Toplam: @Model.WaitingTampons.Sum(x => x.Quantity ?? 0).ToString("N0") kg</span>
+            </div>
+            @if (!Model.WaitingTampons.Any())
+            {
+                <div class="pp-empty">Bekleyen tampon bulunamadı, tüm tamponlar kesilmiş.</div>
+            }
+            else
+            {
+                <div class="pp-table-scroll">
+                    <table class="pp-table">
+                        <thead>
+                            <tr>
+                                <th>Fiş Tarihi</th>
+                                <th>Seri No</th>
+                                <th>Stok Kodu</th>
+                                <th>Stok Adı</th>
+                                <th>Miktar</th>
+                                <th>En (cm)</th>
+                                <th>Kombine No</th>
+                                <th>İş Emri No</th>
+                                <th>Depo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model.WaitingTampons)
+                            {
+                                <tr>
+                                    <td>@(t.ReceiptDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                    <td>@(t.SerialCode ?? "-")</td>
+                                    <td>@(t.InventoryCode ?? "-")</td>
+                                    <td>@(t.InventoryName ?? "-")</td>
+                                    <td>@(t.Quantity?.ToString("N2") ?? "-")</td>
+                                    <td>@(t.WidthCM?.ToString("N1") ?? "-")</td>
+                                    <td>@(t.CombinationNo ?? "-")</td>
+                                    <td>@(t.WorkOrderNo ?? "-")</td>
+                                    <td>@(t.WarehouseAt?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function ppSwitchTab(tab) {
+        document.querySelectorAll('.pp-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.querySelectorAll('.pp-tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('pp-panel-' + tab).classList.add('active');
+    }
+
+    function ppToggleNode(headerEl) {
+        headerEl.parentElement.classList.toggle('open');
+    }
+
+    document.querySelectorAll('.pp-local-search').forEach(function (input) {
+        input.addEventListener('input', function () {
+            var term = this.value.trim().toLowerCase();
+            var table = document.getElementById(this.dataset.target);
+            if (!table) return;
+            table.querySelectorAll('tbody tr').forEach(function (row) {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+    });
+
+    var ppCurrentTypeFilter = 'all';
+    function ppApplyProdFilters() {
+        var term = (document.getElementById('ppProdSearch').value || '').trim().toLowerCase();
+        var table = document.getElementById('tbl-prod');
+        if (!table) return;
+        table.querySelectorAll('tbody tr').forEach(function (row) {
+            var typeOk = ppCurrentTypeFilter === 'all' || row.dataset.type === ppCurrentTypeFilter;
+            var searchOk = !term || row.innerText.toLowerCase().includes(term);
+            row.style.display = (typeOk && searchOk) ? '' : 'none';
+        });
+    }
+    function ppSetTypeFilter(type, btn) {
+        ppCurrentTypeFilter = type;
+        document.querySelectorAll('.pp-type-filter button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        ppApplyProdFilters();
+    }
+    var ppProdSearchEl = document.getElementById('ppProdSearch');
+    if (ppProdSearchEl) { ppProdSearchEl.addEventListener('input', ppApplyProdFilters); }
+
+    document.getElementById('ppGlobalSearch').addEventListener('input', function () {
+        var term = this.value.trim().toLowerCase();
+        var activePanel = document.querySelector('.pp-tab-panel.active');
+        if (!activePanel) return;
+        activePanel.querySelectorAll('table.pp-table tbody tr').forEach(function (row) {
+            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+        });
+    });
+
+    document.getElementById('ppDateFilter').addEventListener('change', function () {
+        var val = this.value;
+        if (!val) {
+            document.querySelectorAll('table.pp-table tbody tr').forEach(r => r.style.display = '');
+            return;
+        }
+        var parts = val.split('-');
+        var target = parts[2] + '.' + parts[1] + '.' + parts[0];
+        document.querySelectorAll('table.pp-table').forEach(function (table) {
+            table.querySelectorAll('tbody tr').forEach(function (row) {
+                var firstCell = row.querySelector('td');
+                row.style.display = (firstCell && firstCell.innerText.indexOf(target) === 0) ? '' : 'none';
+            });
+        });
+    });
+</script>

@@ -11,25 +11,26 @@ namespace BusinessLayer.Abstract
 
         Task<SentezUpdateResponseDto?> InsertMachineRandoman(double workhours);
 
-        Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetPreviousDaySalesAsync();
-        Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetSalesAsync();
+        Task<SentezIntegrationsResponsoDto<SentezSalesResponseDto>?> GetPreviousDaySalesAsync();
+        Task<SentezIntegrationsResponsoDto<SentezSalesResponseDto>?> GetSalesAsync();
 
-        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysProductionAsync();
+        Task<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>?> GetLas7DaysProductionAsync(DateTime? startDate, DateTime? endDate);
 
-        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysSalesAsync();
+        Task<SentezIntegrationsResponsoDto<AdminDashboardSales>?> GetLas7DaysSalesAsync(DateTime? startDate, DateTime? endDate);
 
-        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas7DaysRawMaterilsAsync();
-
-        Task<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>?> GetLas30DaysProductionAsync();
+        Task<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>?> GetLas7DaysRawMaterilsAsync(DateTime? startDate, DateTime? endDate);
+        Task<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>?> GetLas30DaysProductionAsync();
 
         Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsStockAsync();
 
         Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsPreviousDayStockAsync();
 
-        public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
+        public Task<SentezIntegrationsResponsoDto<SentezSalesResponseDto>?> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate);
 
         public Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetStockWithByDateRange(DateTime startDate, DateTime endDate);
         public Task<SentezIntegrationsResponsoDto<SentezIntegrationsGetStockByInventoryCode>?> GetStockByInventoryCode(string inventoryCode);
+
+        public Task<SentezIntegrationsResponsoDto<SentezIntegrationsGetStockByInventoryCode>?> GetStockByInventoryCodeAndWidthCM(string inventoryCode, double WidthCM);
 
     }
 }

@@ -12,6 +12,8 @@ namespace AIAgent.Services.Abstract.Production
 
         Task<List<SentezIntegrationsGetStockByInventoryCode>> GetStockByInventoryCode(string inventoryCode);
 
+        Task<List<SentezIntegrationsGetStockByInventoryCode>> GetStockByInventoryCodeAndWidthCM(string inventoryCode, double WidthCM);
+
 
 
 

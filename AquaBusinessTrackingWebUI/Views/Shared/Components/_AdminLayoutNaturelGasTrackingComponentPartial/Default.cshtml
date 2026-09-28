@@ -60,6 +60,7 @@
         color: #aaa;
         margin-top: 2px;
     }
+
     .pill {
         display: inline-block;
         font-size: 11px;
@@ -95,24 +96,32 @@
     var chartgas = last7Days
         .Select(d => Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date)?.NaturelGas ?? 0)
         .ToList();
+
+    var chartM3PerKg = last7Days
+        .Select(d =>
+        {
+            var s = Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date);
+            return (s != null && s.GasPerKg > 0) ? (double?)Math.Round((double)s.GasPerKg, 3) : null;
+        })
+        .ToList();
 }
 
 <div class="page-section" id="dogalgaz">
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">Son 30 Gün Üretim</div>
+            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Üretim</div>
             <div class="kpi-val">@((Model.TotalRemaning).ToString("N2"))</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Toplam Doğal Gaz</div>
+            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Doğal Gaz Tüketimi</div>
             <div class="kpi-val">@Model.TotalGas.ToString("N2")</div>
             <div class="kpi-unit">m³</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">Kg Başına Gaz</div>
-            <div class="kpi-val">@Model.KwhPerTon.ToString("N2")</div>
+            <div class="kpi-lbl">Kg Başına Gaz - Ton Başına Gaz</div>
+            <div class="kpi-val">@Model.GasPerKg.ToString("N2") - @Model.GasPerTon.ToString("N2")</div>
             <div class="kpi-unit">m³ / Kg</div>
         </div>
     </div>
@@ -122,19 +131,9 @@
         <div class="col-12 mb-3">
             <div class="card h-100">
                 <div class="card-title p-3">
-                    <i class="ti ti-chart-bar"></i> Günlük Üretim &amp; Doğal Gaz
+                    <i class="ti ti-chart-bar"></i> Günlük Üretim, Doğal Gaz &amp; m³/Kg (Son 7 Gün)
                 </div>
-                <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
-                    <span>
-                        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>
-                        Üretim (Kg)
-                    </span>
-                    <span>
-                        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>
-                        Doğal Gaz (m³)
-                    </span>
-                </div>
-                <div class="chart-wrap">
+                <div class="chart-wrap" style="height:280px">
                     <canvas id="gasChart"></canvas>
                 </div>
             </div>
@@ -160,7 +159,7 @@
                             {
                                 <tr>
                                     <td>@item.ReceiptDate.ToString("dd.MM")</td>
-                                    <td>@item.DailyConsumption.ToString("N2") m³</td>
+                                    <td>@item.StandartCubicmeter.ToString("N2") m³</td>
                                     <td>@item.kW.ToString("N2")</td>
                                 </tr>
                             }
@@ -168,7 +167,7 @@
                         <tfoot class="table-light">
                             <tr class="fw-bold">
                                 <td>Toplam</td>
-                                <td>@Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.DailyConsumption).ToString("N2") m³</td>
+                                <td>@Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.StandartCubicmeter).ToString("N2") m³</td>
                                 <td>@Model.NaturelGas.OrderByDescending(x => x.ReceiptDate).Take(7).Sum(x => x.kW).ToString("N2")</td>
                             </tr>
                         </tfoot>
@@ -199,19 +198,19 @@
                                 <tr>
                                     <td>@item.Date.ToString("dd.MM")</td>
                                     <td class="text-success">@item.Production.ToString("N2")</td>
-                                    <td>@((daily?.KwhPerTon ?? 0).ToString("N3")) m³/Kg</td>
+                                    <td>@((daily?.GasPerKg ?? 0).ToString("N3")) m³/Kg</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot class="table-light">
                             <tr class="fw-bold">
                                 <td>Toplam</td>
-                                <td class="text-success" >@Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Production).ToString("N2")</td>
+                                <td class="text-success">@Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Production).ToString("N2")</td>
                                 <td>
                                     @{
                                         var totalM3 = Model.DailyStats
                                         .Where(x => Model.Remaning.Select(r => r.Date.Date).Contains(x.Date.Date))
-                                        .Sum(x => x.KwhPerTon * x.Production);
+                                        .Sum(x => x.GasPerKg * x.Production);
                                         var totalProduction = Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Production);
                                         var avgM3PerKg = totalProduction > 0 ? (totalM3 / totalProduction) : 0;
                                     }
@@ -232,27 +231,60 @@
 
         const labels = @Html.Raw(Json.Serialize(chartLabels));
         const prodVal = @Html.Raw(Json.Serialize(chartProd));
-        const energyVal = @Html.Raw(Json.Serialize(chartgas));
+        const gasVal  = @Html.Raw(Json.Serialize(chartgas));
+         const m3PerKg  = @Html.Raw(Json.Serialize(chartM3PerKg));
 
-        const existing = Chart.getChart('gasChart');
-        if (existing) existing.destroy();
+           Chart.getChart('gasChart')?.destroy();
 
         new Chart(document.getElementById('gasChart'), {
             type: 'bar',
             data: {
                 labels,
                 datasets: [
-                    { label: 'Üretim (ton)', data: prodVal, backgroundColor: '#378ADD', yAxisID: 'y' },
-                    { label: 'Doğal Gaz (m³)', data: energyVal, backgroundColor: '#F09595', yAxisID: 'y1' }
+                    {
+                        type: 'bar',
+                        label: 'Üretim (kg)',
+                        data: prodVal,
+                        backgroundColor: 'rgba(55,138,221,0.75)',
+                        yAxisID: 'y',
+                        order: 3
+                    },
+                    {
+                        type: 'line',
+                        label: 'Doğal Gaz (m³)',
+                        data: gasVal,
+                        borderColor: '#E24B4A',
+                        backgroundColor: '#E24B4A',
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        order: 2
+                    },
+                    {
+                        type: 'line',
+                        label: 'm³ / kg',
+                        data: m3PerKg,
+                        borderColor: '#1D9E75',
+                        backgroundColor: '#1D9E75',
+                        borderDash: [6, 4],
+                        tension: 0.3,
+                        spanGaps: true,
+                        yAxisID: 'y2',
+                        order: 1
+                    }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
                 plugins: { legend: { display: true } },
                 scales: {
-                    y: { position: 'left', grid: { color: 'rgba(0,0,0,0.06)' } },
-                    y1: { position: 'right', grid: { drawOnChartArea: false } }
+                    y:  { position: 'left', beginAtZero: true,
+                          title: { display: true, text: 'kg' } },
+                    y1: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false },
+                          title: { display: true, text: 'm³' }, ticks: { color: '#E24B4A' } },
+                    y2: { position: 'right', grid: { drawOnChartArea: false },
+                          title: { display: true, text: 'm³/kg' }, ticks: { color: '#1D9E75' } }
                 }
             }
         });

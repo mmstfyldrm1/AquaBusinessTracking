@@ -4,6 +4,18 @@
     ViewData["Title"] = "Günlük Tüketim Raporu";
     Layout = "~/Views/_UserLayout/Index.cshtml";
     var controller = "Planning/GetDailyConsumables";
+
+    string actionName = string.Empty;
+
+    if (ViewBag.FavMenu == 1)
+    {
+        actionName = "DeleteFavorite";
+    }
+    else
+    {
+        actionName = "AddFavorite";
+    }
+
 }
 @model PlanningDto
 
@@ -311,11 +323,11 @@
     </div>
 
     <a asp-controller="UserDashboard"
-       asp-action="AddFavorite"
+       asp-action="@actionName"
        asp-route-url="@controller"
        class="btn btn-light btn-sm border rounded-pill px-3">
-        <i class="bx bx-star text-warning me-1"></i>
-        Favorilere Ekle
+        <i class="bx @(ViewBag.FavMenu == 1 ? "bxs-star text-warning" : "bx-star text-secondary") me-1"></i>
+        @(ViewBag.FavMenu == 1 ? "Favorilerde" : "Favorilere Ekle")
     </a>
 </div>
 

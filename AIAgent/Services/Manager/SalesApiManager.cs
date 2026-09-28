@@ -1,6 +1,6 @@
 ﻿using AIAgent.Models.Sales;
 using AIAgent.Services.Abstract.Sales;
-using DTOLayer.Dtos.SentezProductionDtos;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
 using System.Net.Http.Json;
 
 namespace AIAgent.Services.Manager
@@ -14,7 +14,7 @@ namespace AIAgent.Services.Manager
             _httpClient = httpClient;
         }
 
-        public async Task<List<SentezProductionDto>> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate)
+        public async Task<List<SentezSalesResponseDto>> GetSalesGetbyDateAsync(DateTime startDate, DateTime endDate)
         {
             var response = await _httpClient.GetAsync($"SentezIntegrations/searchSales?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
 

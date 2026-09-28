@@ -1,10 +1,22 @@
 ﻿@using DTOLayer.Dtos.BasinDtos.BasinMeasurement
 @model List<BasinMeasurementDto>
 @{
-    ViewData["Title"] = "GetMeasurementList";
+    ViewData["Title"] = "GetBasinMeasurementList";
     Layout = "~/Views/_UserLayout/Index.cshtml";
     int counter = 1;
-    var controller = "BasinMeasurement/GetMeasurementList";
+    var controller = "BasinMeasurement/GetBasinMeasurementList";
+    var isFavorite = ViewBag.FavMenu;
+    string actionName = string.Empty;
+
+
+    if (isFavorite == 1)
+    {
+        actionName = "DeleteFavorite";
+    }
+    else
+    {
+        actionName = "AddFavorite";
+    }
 }
 
 <style>
@@ -45,11 +57,11 @@
     <h6 class="mb-0 text-uppercase">AAT Laboratuvar Ölçüm Defteri Tüketimleri</h6>
 
     <a asp-controller="UserDashboard"
-       asp-action="AddFavorite"
+       asp-action="@actionName"
        asp-route-url="@controller"
        class="btn btn-light btn-sm border rounded-pill px-3">
-        <i class="bx bx-star text-warning me-1"></i>
-        Favorilere Ekle
+        <i class="bx @(isFavorite == 1 ? "bxs-star text-warning" : "bx-star text-secondary") me-1"></i>
+        @(isFavorite == 1 ? "Favorilerde" : "Favorilere Ekle")
     </a>
 </div>
 

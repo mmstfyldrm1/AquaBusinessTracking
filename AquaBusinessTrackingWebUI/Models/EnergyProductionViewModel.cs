@@ -3,13 +3,13 @@ using DTOLayer.Dtos.ElectricDtos.CumulativeElectricityConsumptionDtos;
 
 public class EnergyProductionViewModel
 {
-    public List<AdminDahboardLast7DaysStock> Remaning { get; set; } = new();
+    public List<AdminDahboardDaysStock> Remaning { get; set; } = new();
     public List<CumulativeElectricityConsumptionDto> Electric { get; set; } = new();
 
     public decimal TotalElectricity => Electric.Sum(x => x.Consumption);
-    public decimal TotalProduction => Remaning.Sum(x => x.Remaning);
-    public decimal KwhPerTon => TotalProduction > 0
-        ? Math.Round(TotalElectricity / (TotalProduction / 1000), 2)
+    public decimal TotalProduction => Remaning.Sum(x => x.Production);
+    public decimal KwhPerkg => TotalProduction > 0
+        ? Math.Round(TotalElectricity / (TotalProduction), 2)
         : 0;
 
     public List<DailyEnergyDto> DailyStats =>
@@ -26,6 +26,11 @@ public class EnergyProductionViewModel
                  : 0
          })
          .ToList();
+
+    public decimal KwhPerTons =>
+    TotalProduction > 0
+        ? Math.Round(TotalElectricity / (TotalProduction / 1000m), 2)
+        : 0;
 }
 
 public class DailyEnergyDto

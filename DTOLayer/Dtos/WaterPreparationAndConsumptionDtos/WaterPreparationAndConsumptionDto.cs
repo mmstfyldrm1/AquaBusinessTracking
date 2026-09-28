@@ -8,8 +8,6 @@
 
         public string InventoryName { get; set; }
 
-
-
         public decimal IncomingQuantity { get; set; }
 
         public decimal ConsumedQuantity { get; set; }

@@ -40,6 +40,38 @@ namespace BusinessLayer.Concrete.Integrations
             return result;
         }
 
+
+        public async Task<List<PlcReadingDto>> GetMachineAndTagsByDate(int machineId, DateTime startDate, DateTime endDate)
+        {
+            var tags = (await _uow.Repository<DB_PlcTags>().TGetAll())
+                .Where(t => t.MachineId == machineId && t.IsActive)
+                .ToList();
+
+            var readings = (await _uow.Repository<DB_PlcReading>().TGetAll())
+                .Where(r =>
+                    r.ReadingTime >= startDate &&
+                    r.ReadingTime <= endDate &&
+                    tags.Select(t => t.RecId).Contains(r.PlcTagId))
+                .OrderBy(r => r.ReadingTime)
+                .ToList();
+
+            var result = readings.Select(r =>
+            {
+                var tag = tags.First(t => t.RecId == r.PlcTagId);
+
+                return new PlcReadingDto
+                {
+                    DisplayName = tag.DisplayName,
+                    Group = tag.Group,
+                    Unit = tag.Unit,
+                    Value = r.Value,
+                    ReadingTime = r.ReadingTime
+                };
+            }).ToList();
+
+            return result;
+        }
+
         public async Task<List<DB_PlcMachine>> GetActiveMachinesAsync()
             => (await _uow.Repository<DB_PlcMachine>().TGetAll())
                 .Where(m => m.IsActive)

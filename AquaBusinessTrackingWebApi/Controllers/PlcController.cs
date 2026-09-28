@@ -10,18 +10,14 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly IPlcService _plcService;
         private readonly ILogger<PlcController> _logger;
 
-        public PlcController(
-            IPlcService plcService,
-            ILogger<PlcController> logger)
+        public PlcController(IPlcService plcService, ILogger<PlcController> logger)
         {
             _plcService = plcService;
             _logger = logger;
         }
 
         [HttpGet("readings/{machineId}")]
-        public async Task<IActionResult> GetReadings(
-            int machineId,
-            [FromQuery] int count = 50)
+        public async Task<IActionResult> GetReadings(int machineId, [FromQuery] int count = 50)
         {
             _logger.LogInformation(
                 "PLC okuma değerleri istendi. MachineId={MachineId}, Count={Count}, User={User}",
@@ -81,5 +77,25 @@ namespace AquaBusinessTrackingWebApi.Controllers
                     "PLC makine bilgileri alınırken hata oluştu.");
             }
         }
+
+        [HttpGet("readingsByDate/{machineId}/by-date/{startDate}/{endDate}")]
+        public async Task<IActionResult> GetReadingsByDate(int machineId, DateTime startDate, DateTime endDate)
+        {
+            _logger.LogInformation("PLC okuma değerleri istendi. MachineId={MachineId}, StartDate={StartDate}, EndDate={EndDate}, User={User}", machineId, startDate, endDate, User?.Identity?.Name);
+            try
+            {
+                var result = await _plcService.GetMachineAndTagsByDate(machineId, startDate, endDate);
+                _logger.LogInformation("PLC okuma değerleri başarıyla getirildi. MachineId={MachineId}, RecordCount={Count}", machineId, result.Count());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "PLC okuma değerleri alınırken hata oluştu. MachineId={MachineId}", machineId);
+                return StatusCode(500, "PLC okuma verileri alınırken hata oluştu.");
+
+
+            }
+        }
+
     }
 }

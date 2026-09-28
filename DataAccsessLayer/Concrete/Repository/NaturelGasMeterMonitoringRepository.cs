@@ -36,17 +36,18 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<DB_NaturelGasMeterMonitoring>> GetLast30DaysNaturelGas()
         {
-            DateTime startDate = DateTime.Today.AddDays(-6);
+            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             DateTime endDate = DateTime.Today.AddDays(1);
 
             return await _context.Db_NaturelGasMeterMonitoring
                 .AsNoTracking()
-                .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
+                .Where(x => x.ReceiptDate >= startDate &&
+                            x.ReceiptDate < endDate)
                 .GroupBy(x => x.ReceiptDate!.Value.Date)
                 .Select(g => new DB_NaturelGasMeterMonitoring
                 {
                     ReceiptDate = g.Key,
-                    DailyConsumption = g.Sum(x => x.DailyConsumption),
+                    StandartCubicmeter = g.Sum(x => x.StandartCubicmeter),
                     kW = g.Sum(x => x.kW)
                 })
                 .OrderBy(x => x.ReceiptDate)

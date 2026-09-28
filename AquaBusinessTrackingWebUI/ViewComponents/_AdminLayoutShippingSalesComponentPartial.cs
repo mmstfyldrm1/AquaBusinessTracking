@@ -3,6 +3,7 @@ using AquaBusinessTrackingWebUI.Services;
 using DTOLayer.Dtos.AdminDashboardDtos;
 using DTOLayer.Dtos.ChartDtos;
 using DTOLayer.Dtos.SalesScale;
+using DTOLayer.Dtos.SentezIntegrationsDtos;
 using DTOLayer.Dtos.SentezProductionDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -23,9 +24,9 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var emptySentez = new SentezIntegrationsResponsoDto<SentezProductionDto>
+            var emptySentez = new SentezIntegrationsResponsoDto<SentezSalesResponseDto>
             {
-                Data = new List<SentezProductionDto>()
+                Data = new List<SentezSalesResponseDto>()
 
             };
             var emptyModel = new AdminDashboardSalesShippingViewModel
@@ -42,6 +43,10 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
 
             try
             {
+                var today = DateTime.Today;
+                var starts = today.AddDays(-6);
+                var qs = $"?startDate={starts:yyyy-MM-dd}&endDate={today:yyyy-MM-dd}";
+
                 decimal totalPreviousDay = 0;
                 decimal totalAll = 0;
                 var client = _httpClientFactory.CreateClient();
@@ -51,34 +56,33 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var previousDayTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getpreviousdaySales", cts.Token);
                 var stockTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getSales", cts.Token);
                 var salesTask = client.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/sales", cts.Token);
-                var salesTrendTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/GetLas7DaysSalesAsync", cts.Token);
+                var salesTrendTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/GetLas7DaysSalesAsync/{qs}", cts.Token);
 
                 await Task.WhenAll(previousDayTask, stockTask, salesTask, salesTrendTask);
 
                 var previousDay = previousDayTask.Result.IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<SentezProductionDto>>(
-                        await previousDayTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
-                    : emptySentez;
+                   ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<SentezSalesResponseDto>>(
+                       await previousDayTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
+                   : emptySentez;
 
                 var stock = stockTask.Result.IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<SentezProductionDto>>(
+                    ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<SentezSalesResponseDto>>(
                         await stockTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? emptySentez
                     : emptySentez;
 
 
                 var sales = salesTrendTask.Result.IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>>(
+                ? System.Text.Json.JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDashboardSales>>(
                     await salesTrendTask.Result.Content.ReadAsStringAsync(),
                     jsonOptions)
-                    ?? new SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>()
-                : new SentezIntegrationsResponsoDto<AdminDahboardLast7DaysStock>();
-
+                    ?? new SentezIntegrationsResponsoDto<AdminDashboardSales>()
+                : new SentezIntegrationsResponsoDto<AdminDashboardSales>();
 
 
 
                 var salesTrend = sales.Data
                 .OrderBy(x => x.Date)
-                .Select(x => new ChartPointDto { Date = x.Date, Value = x.Production })
+                .Select(x => new ChartPointDto { Date = x.Date, Value = x.Sales })
                 .ToList();
 
                 if (!salesTask.Result.IsSuccessStatusCode)
@@ -97,8 +101,8 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var start = DateTime.Today;
                 var end = start.AddDays(1);
 
-                totalPreviousDay = previousDay.Data.Sum(x => x.Production);
-                totalAll += stock.Data.Sum(x => x.Production);
+                totalPreviousDay = previousDay.Data.Sum(x => x.Sales);
+                totalAll += stock.Data.Sum(x => x.Sales);
 
                 return View(new AdminDashboardSalesShippingViewModel
                 {

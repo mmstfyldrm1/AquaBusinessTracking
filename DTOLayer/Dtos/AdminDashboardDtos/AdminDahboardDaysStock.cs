@@ -1,6 +1,6 @@
 ﻿namespace DTOLayer.Dtos.AdminDashboardDtos
 {
-    public class AdminDahboardLast7DaysStock
+    public class AdminDahboardDaysStock
     {
         public DateTime Date { get; set; }
         public decimal Production { get; set; }

@@ -11,9 +11,6 @@ namespace AquaBusinessTrackingWebApi.Controllers
     public class UserDashboardController : ControllerBase
     {
         private readonly IFavoriteMenuItemService _favoriteMenu;
-
-
-
         public UserDashboardController(IFavoriteMenuItemService favoriteMenu)
         {
             _favoriteMenu = favoriteMenu;
@@ -37,6 +34,17 @@ namespace AquaBusinessTrackingWebApi.Controllers
         public async Task<IActionResult> AddFavorite(UserDashboardAddFavoriteModuleDto dto)
         {
             var result = await _favoriteMenu.AddFavorite(dto);
+
+            if (!result)
+                return BadRequest("Bu modül zaten favorilerde.");
+
+            return Ok();
+        }
+
+        [HttpPost("deleteFavorite")]
+        public async Task<IActionResult> DeleteFavorite(UserDashboardAddFavoriteModuleDto dto)
+        {
+            var result = await _favoriteMenu.DeleteFavorite(dto);
 
             if (!result)
                 return BadRequest("Bu modül zaten favorilerde.");

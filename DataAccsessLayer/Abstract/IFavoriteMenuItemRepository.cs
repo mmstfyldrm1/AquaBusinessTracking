@@ -7,6 +7,8 @@ namespace DataAccsessLayer.Abstract
         public Task<List<DB_FavoriteMenuItem>> GetFavoriteMenuItemsByUserIdAsync(int userId);
 
         public Task<bool> AddFavorite(DB_FavoriteMenuItem dto);
+
+        public Task<bool> DeleteFavorite(DB_FavoriteMenuItem dto);
     }
 
 }

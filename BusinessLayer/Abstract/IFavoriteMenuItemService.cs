@@ -7,5 +7,8 @@ namespace BusinessLayer.Abstract
         public Task<List<UserDashboardFavoriteMenuDto>> GetFavoriteMenuItemsByUserIdAsync(int userId);
 
         public Task<bool> AddFavorite(UserDashboardAddFavoriteModuleDto dto);
+
+
+        public Task<bool> DeleteFavorite(UserDashboardAddFavoriteModuleDto dto);
     }
 }

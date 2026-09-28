@@ -38,20 +38,20 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("districts/{recId}")]
-        public async Task<IActionResult> GetCurrentAccountDistricts(int recId)
+        [HttpGet("districts/{recId}/{cityId}")]
+        public async Task<IActionResult> GetCurrentAccountDistricts(int recId, int cityId)
         {
             _logger.LogInformation("Günlük  Sevkiyat Sipariş Plan Sentez Cari Hesap  İlçe detayları istendi.");
-            var result = await _sentezCurrentAccountQueryService.GetCurrentAccountDistrict(recId);
+            var result = await _sentezCurrentAccountQueryService.GetCurrentAccountDistrict(recId, cityId);
             _logger.LogInformation("Günlük  Sevkiyat Sipariş Plan Sentez Cari Hesap  İlçe detayları başarıyla getirildi.");
             return Ok(result);
         }
 
-        [HttpGet("neighborhoods/{recId}")]
-        public async Task<IActionResult> GetCurrentAccountAddress(int recId)
+        [HttpGet("neighborhoods/{recId}/{cityId}")]
+        public async Task<IActionResult> GetCurrentAccountAddress(int recId, int cityId)
         {
             _logger.LogInformation("Günlük  Sevkiyat Sipariş Plan Sentez Cari Hesap  Mahalle detayları istendi.");
-            var result = await _sentezCurrentAccountQueryService.GetCurrentAccountAddress(recId);
+            var result = await _sentezCurrentAccountQueryService.GetCurrentAccountAddress(recId, cityId);
             _logger.LogInformation("Günlük  Sevkiyat Sipariş Plan Sentez Cari Hesap  Mahalle detayları başarıyla getirildi.");
             return Ok(result);
         }
@@ -90,6 +90,15 @@ namespace AquaBusinessTrackingWebApi.Controllers
         {
             _logger.LogInformation("Update Is Status istendi.");
             var result = await _service.UpdateIsStatus(id);
+            _logger.LogInformation("güncellendi");
+            return Ok(result);
+        }
+
+        [HttpPut("updateIsActiveStatus/{id}")]
+        public async Task<IActionResult> UpdateIsActiveStatus(int id)
+        {
+            _logger.LogInformation("Update Is Status istendi.");
+            var result = await _service.UpdateIsActiveStatus(id);
             _logger.LogInformation("güncellendi");
             return Ok(result);
         }

@@ -10,8 +10,9 @@ namespace DTOLayer.Dtos.AuthDtos
         public string? UserName { get; set; }
         public string? Email { get; set; }
 
+
         public List<string> Role { get; set; }
 
-        public DateTime ExpireDate { get; set; } = DateTime.UtcNow.AddHours(2);
+        public DateTime ExpireDate { get; set; }
     }
 }

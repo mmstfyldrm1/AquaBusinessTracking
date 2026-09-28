@@ -34,5 +34,11 @@ namespace BusinessLayer.Concrete
             var result = await _repo.UpdateIsStatus(id);
             return result;
         }
+
+        public async Task<bool> UpdateIsActiveStatus(int id)
+        {
+            var result = await _repo.UpdateIsActiveStatus(id);
+            return result;
+        }
     }
 }

@@ -17,12 +17,14 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly AuthorizedHttpClientService _httpClientFactory;
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
+        private readonly UserFavoriteService _userFavoriteService;
 
-        public WastePaperControlController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService)
+        public WastePaperControlController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, UserFavoriteService userFavoriteService)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
@@ -33,6 +35,17 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
             var client = _httpClientFactory.CreateClient();
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "WastePaperControl/GetWastePaperControlList");
+            if (value == 1)
+            {
+                ViewBag.FavMenu = 1;
+            }
+            else
+            {
+                ViewBag.FavMenu = 0;
+            }
+
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/WastePaperControl/details");
             if (!response.IsSuccessStatusCode)
                 return View(new List<WastePaperControlDto>());

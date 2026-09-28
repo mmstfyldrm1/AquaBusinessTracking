@@ -48,6 +48,25 @@ namespace DataAccsessLayer.Concrete.Repository
             return true;
         }
 
+        public async Task<bool> DeleteFavorite(DB_FavoriteMenuItem dto)
+        {
+            var existingEntity = await _context.Db_FavoriteMenuItem
+               .FirstOrDefaultAsync(x =>
+                   x.AppUserId == dto.AppUserId &&
+                   x.Url == dto.Url);
+
+            if (existingEntity != null)
+            {
+
+                var result = _context.Remove(existingEntity);
+
+                return true;
+
+            }
+            return false;
+
+        }
+
         public async Task<List<DB_FavoriteMenuItem>> GetFavoriteMenuItemsByUserIdAsync(int userId)
         {
             return await _context.Db_FavoriteMenuItem

@@ -41,14 +41,17 @@ namespace AIAgent.Orchestration.Manager
                 {
                     role = "system",
                     content =
-                         "Sen bir MES sisteminin yapay zeka asistanısın. " +
-                         "Üretim, makine, enerji ve fabrika verileri hakkında " +
-                         "cevap verirken mevcut Tool'ları kullan. " +
-                         "ÖNEMLİ: Cevabını SADECE tool'lardan dönen veriye dayandır. " +
-                         "Tool sonucu boşsa veya alakasız kayıt içeriyorsa bunu açıkça belirt, " +
-                         "asla veri uydurma veya tahmin yürütme. " +
-                         "Liste halinde birden fazla kayıt dönerse, her kaydı ayrı ayrı değerlendir; " +
-                         "kullanıcı özellikle belirtmediyse otomatik toplama yapma, kayıtları listele."
+                        "You are an AI assistant for a MES (Manufacturing Execution System). " +
+                        "When answering questions about production, machines, energy, factory operations, and MES data, use the available Tools. " +
+                        "IMPORTANT: Base your answer ONLY on the data returned by the Tools. " +
+                        "If the Tool result is empty or contains irrelevant records, clearly state this. " +
+                        "Never fabricate data, make assumptions, estimates, or predictions. " +
+                        "If multiple records are returned, evaluate each record separately; unless the user explicitly requests it, do not automatically aggregate or combine the records, list them individually. " +
+                        "If answering the question requires information from more than one Tool, call all the necessary Tools — " +
+                        "either together in the same step if they are independent of each other, " +
+                        "or one after another if the result of one Tool is needed as input for another. " +
+                        "Do not stop after calling only one Tool if the user's question clearly requires additional data from other Tools. " +
+                        "Always respond to the user in Turkish, regardless of the language of the system prompt, Tool results, or user query."
                 },
                 new
                 {
@@ -77,10 +80,42 @@ namespace AIAgent.Orchestration.Manager
             for (int i = 0; i < maxToolCalls; i++)
             {
                 var response = await SendToNvidiaAsync(apiKey, maxTokens, model, messages, tools);
+
+                Console.WriteLine("========== AI RAW RESPONSE ==========");
+                Console.WriteLine(response);
+                Console.WriteLine("=====================================");
+
+                using var documents = JsonDocument.Parse(response);
+
+                var roots = documents.RootElement;
+
+                if (!roots.TryGetProperty("choices", out var choices))
+                {
+                    throw new Exception(
+                        $"NVIDIA response içinde 'choices' bulunamadı.\nResponse: {response}");
+                }
+
+                if (choices.GetArrayLength() == 0)
+                {
+                    throw new Exception(
+                        $"NVIDIA response 'choices' boş döndü.\nResponse: {response}");
+                }
+
+                var messageElements = choices[0].GetProperty("message");
+
+                Console.WriteLine("========== AI MESSAGE ==========");
+                Console.WriteLine(messageElements.GetRawText());
+                Console.WriteLine("================================");
+
+
+
                 using var document = JsonDocument.Parse(response);
 
                 var root = document.RootElement;
                 var messageElement = root.GetProperty("choices")[0].GetProperty("message");
+
+
+
 
                 // Model doğrudan cevap verdiyse
                 if (!messageElement.TryGetProperty("tool_calls", out var toolCalls))
@@ -104,8 +139,16 @@ namespace AIAgent.Orchestration.Manager
                 var cleanAssistantMessage = new Dictionary<string, object?>
                 {
                     ["role"] = "assistant",
-                    ["content"] = contentValue
                 };
+
+                if (contentValue != null)
+                {
+                    cleanAssistantMessage["content"] = contentValue;
+                }
+                else
+                {
+                    cleanAssistantMessage["content"] = "";
+                }
 
                 if (toolCallsValue.HasValue)
                 {
@@ -151,31 +194,45 @@ namespace AIAgent.Orchestration.Manager
                 model = model,
                 messages = messages,
                 tools = tools,
-                max_tokens = decimal.Parse(maxTokens),
-                temperature = 0,
-                stream = false,
-                chat_template_kwargs = new { thinking = true }
+                max_tokens = int.Parse(maxTokens),
+                temperature = 1,
+                top_p = 0.95,
+                stream = false
             };
 
             var jsonBody = JsonSerializer.Serialize(requestBody);
 
+            const int maxRetries = 5;
+            Exception? lastException = null;
 
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://integrate.api.nvidia.com/v1/chat/completions");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-            request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
-            using var response = await _httpClient.SendAsync(request);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
-                throw new Exception(
-                    $"NVIDIA API Hatası | " +
-                    $"StatusCode: {(int)response.StatusCode} {response.StatusCode} | " +
-                    $"Reason: {response.ReasonPhrase} | " +
-                    $"Response: {responseContent}");
+                using var request = new HttpRequestMessage(HttpMethod.Post, "https://integrate.api.nvidia.com/v1/chat/completions");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                using var response = await _httpClient.SendAsync(request);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return responseContent;
+                }
+
+                lastException = new Exception(
+                    $"NVIDIA API Hatası | StatusCode: {(int)response.StatusCode} {response.StatusCode} | Response: {responseContent}");
+
+                if ((int)response.StatusCode >= 500 && attempt < maxRetries)
+                {
+                    Console.WriteLine($"NVIDIA 5xx döndü ({attempt}. deneme), tekrar deneniyor...");
+                    await Task.Delay(TimeSpan.FromMilliseconds(5000 * attempt)); // 0.5s, 1s, 1.5s
+                    continue;
+                }
+
+                throw lastException;
             }
 
-            return responseContent;
+            throw lastException!;
         }
     }
 }

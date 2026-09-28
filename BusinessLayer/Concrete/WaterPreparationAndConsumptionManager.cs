@@ -22,6 +22,15 @@ namespace BusinessLayer.Concrete
             return dtos;
         }
 
+        public async Task<List<WaterPreparationAndConsumptionDto>> GetTodayConsumption()
+        {
+            var entities = await _repo.GetTodayConsumption();
+            var dtos = _mapper.Map<List<WaterPreparationAndConsumptionDto>>(entities);
+            return dtos;
+        }
+
+
+
         public async Task<List<WaterPreparationAndConsumptionDto>> GetWithDetails()
         {
             var entities = await _repo.GetWithDetails();

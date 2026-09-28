@@ -17,22 +17,35 @@ namespace AquaBusinessTrackingWebUI.Controllers
         private readonly AuthorizedHttpClientService _httpClientFactory;
         private readonly ApiSettings _apiSettings;
         private readonly CurrentUserService _currentUserService;
+        private readonly UserFavoriteService _userFavoriteService;
 
-        public VechileFuelLogsController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService)
+        public VechileFuelLogsController(AuthorizedHttpClientService httpClientFactory, IOptions<ApiSettings> apiSettings, CurrentUserService currentUserService, UserFavoriteService userFavoriteService)
         {
             _httpClientFactory = httpClientFactory;
             _apiSettings = apiSettings.Value;
             _currentUserService = currentUserService;
+            _userFavoriteService = userFavoriteService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetVechileFuelLogsList()
         {
-            if (!_currentUserService.HasPermission("MALZEMEDEPO.VehicleFuelLogs.View"))
+            if (!_currentUserService.HasPermission("MALZEMEDEPO.VechileFuelLogs.View"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
             var client = _httpClientFactory.CreateClient();
+            int appUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var value = await _userFavoriteService.GetUserFavorites(appUserId, "VechileFuelLogs/GetVechileFuelLogsList");
+            if (value == 1)
+            {
+                ViewBag.FavMenu = 1;
+            }
+            else
+            {
+                ViewBag.FavMenu = 0;
+            }
+
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/VechileFuelLogs/details");
             if (!response.IsSuccessStatusCode)
                 return View(new List<VechileFuelLogsDto>());
@@ -51,7 +64,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             if (id.HasValue)
             {
-                if (!_currentUserService.HasPermission("MALZEMEDEPO.VehicleFuelLogs.Update"))
+                if (!_currentUserService.HasPermission("MALZEMEDEPO.VechileFuelLogs.Update"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -74,7 +87,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             }
             else
             {
-                if (!_currentUserService.HasPermission("MALZEMEDEPO.VehicleFuelLogs.Add"))
+                if (!_currentUserService.HasPermission("MALZEMEDEPO.VechileFuelLogs.Add"))
                 {
                     return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
                 }
@@ -129,7 +142,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!_currentUserService.HasPermission("MALZEMEDEPO.VehicleFuelLogs.Delete"))
+            if (!_currentUserService.HasPermission("MALZEMEDEPO.VechileFuelLogs.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }

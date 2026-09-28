@@ -8,6 +8,8 @@ namespace BusinessLayer.Abstract
 
         public Task<List<DailyShipmentPlanDto>> GetActivePlan();
 
+        public Task<bool> UpdateIsActiveStatus(int id);
+
         public Task<bool> UpdateIsStatus(int id);
     }
 }

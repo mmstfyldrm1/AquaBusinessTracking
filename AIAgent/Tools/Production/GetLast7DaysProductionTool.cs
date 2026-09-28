@@ -11,9 +11,9 @@ namespace AIAgent.Tools.Production
             _productionApiService = productionApiService;
         }
 
-        public string Name => "get_last_7_days_production";
+        public string Name => "get_last_7_days_production_tool";
 
-        public string Description => "Üretim API'sinden günlük üretim verilerini getirir.";
+        public string Description => "Retrieves daily production data from the Production API for the last 7 days. Always respond to the user in Turkish.";
 
         public object ParametersSchema => new
         {

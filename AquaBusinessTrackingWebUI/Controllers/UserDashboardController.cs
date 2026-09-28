@@ -86,6 +86,69 @@ namespace AquaBusinessTrackingWebUI.Controllers
             TempData["SuccessMessage"] = "Favorilere eklendi.";
             return Redirect($"~/{url}");
         }
+
+        public async Task<IActionResult> DeleteFavorite(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return BadRequest("URL belirtilmedi.");
+            }
+
+            var ControllerName = url.Split('/')[0];
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var appUserId))
+            {
+                return Unauthorized("Kullanıcı kimliği doğrulanamadı.");
+            }
+
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.GetAsync(
+                $"{_apiSettings.BaseUrl}/Permission/getPermisionsName?permisionsName={ControllerName}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode((int)response.StatusCode, "Yetki bilgisi alınırken hata oluştu.");
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<PermissionDto>>(json);
+
+            if (values == null || !values.Any())
+            {
+                return NotFound("İlgili yetki bulunamadı.");
+            }
+
+            var permission = values.FirstOrDefault(v => v.Controller == ControllerName);
+
+            if (permission == null)
+            {
+                return NotFound("İlgili yetki bulunamadı.");
+            }
+
+            var dto = new UserDashboardAddFavoriteModuleDto
+            {
+                Controller = permission.Description,
+                ModuleId = permission.RecId,
+                AppUserId = appUserId,
+                Url = $"{url}",
+                DisplayOrder = 1,
+                DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value)
+            };
+
+            var addFavoriteResponse = await client.PostAsJsonAsync(
+                $"{_apiSettings.BaseUrl}/UserDashboard/deleteFavorite", dto);
+
+            if (!addFavoriteResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = await addFavoriteResponse.Content.ReadAsStringAsync();
+                return StatusCode((int)addFavoriteResponse.StatusCode, "Favori eklenirken hata oluştu.");
+            }
+
+            TempData["SuccessMessage"] = "Favori Silindi";
+            return Redirect($"~/{url}");
+        }
     }
 }
 

@@ -63,19 +63,23 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<CumulativeElectricityConsumptionDto>> GetLast30DaysElectricConsumable()
         {
-            DateTime startDate = DateTime.Today.AddDays(-6);
+            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             DateTime endDate = DateTime.Today.AddDays(1);
 
             var data = await _context.Db_CumulativeElectricityConsumption
                 .AsNoTracking()
                 .Include(x => x.ElectricMeterLocation)
                 .Where(x => x.ReceiptDate >= startDate && x.ReceiptDate < endDate)
+                .Where(x => x.ElectricMeterLocationId != 4)
                 .GroupBy(x => new
                 {
                     Date = x.ReceiptDate!.Value.Date,
                     LocationName = x.ElectricMeterLocation != null
                         ? x.ElectricMeterLocation.LocationName
                         : "Bilinmeyen"
+
+
+
                 })
                 .Select(g => new CumulativeElectricityConsumptionDto
                 {
@@ -83,6 +87,7 @@ namespace DataAccsessLayer.Concrete.Repository
                     LocationName = g.Key.LocationName,
                     Consumption = g.Sum(x => x.Consumption)
                 })
+                .OrderBy(x => x.ReceiptDate)
                 .ToListAsync();
 
             return data;

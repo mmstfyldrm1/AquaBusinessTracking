@@ -2,6 +2,7 @@
 using AIAgent.Orchestration.Abstract;
 using AIAgent.Orchestration.Manager;
 using AIAgent.Services.Abstract.Electric;
+using AIAgent.Services.Abstract.PlcMachine;
 using AIAgent.Services.Abstract.Production;
 using AIAgent.Services.Abstract.RawMaterials;
 using AIAgent.Services.Abstract.Sales;
@@ -9,6 +10,7 @@ using AIAgent.Services.Abstract.Shipment;
 using AIAgent.Services.Manager;
 using AIAgent.Tools;
 using AIAgent.Tools.Electric;
+using AIAgent.Tools.PlcMachine;
 using AIAgent.Tools.Production;
 using AIAgent.Tools.RawMaterials;
 using AIAgent.Tools.Sales;
@@ -70,7 +72,6 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityRepository, CirculationTankAirPressureMeasurementTurbidityRepository>();
             Services.AddScoped<ICirculationTankAirPressureMeasurementTurbidityService, CirculationTankAirPressureMeasurementTurbidityManager>();
             Services.AddScoped<ILogisticsTrackingReportRepository, LogisticsTrackingReportRepository>();
-            Services.AddScoped<ISentezCurrentAccountQueryService, SentezCurrentAccountQueryManager>();
             Services.AddScoped<ILogisticsTrackingReportService, LogisticsTrackingReportManager>();
             Services.AddScoped<INaturelGasMeterMonitoringRepository, NaturelGasMeterMonitoringRepository>();
             Services.AddScoped<INaturelGasMeterMonitoringService, NaturelGasMeterMonitoringManager>();
@@ -134,7 +135,14 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddSingleton<IPlcReader, OpcUaPlcReader>();
             Services.AddHostedService<PlcHoursReadingService>();
             Services.AddHostedService<MachineRandomanJob>();
-            Services.AddScoped<ISentezIntegrationsService, SentezIntegrationsManager>();
+            Services.AddHttpClient<ISentezIntegrationsService, SentezIntegrationsManager>()
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+                PooledConnectionIdleTimeout = TimeSpan.FromSeconds(30)
+            });
+            Services.AddScoped<ISentezProductionQueryService, SentezProductionQueryManager>();
+            Services.AddScoped<ISentezCurrentAccountQueryService, SentezCurrentAccountQueryManager>();
             Services.AddScoped<ISentezQueryService, SentezQueryManager>();
             Services.AddSignalR();
             Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -166,46 +174,56 @@ namespace AquaBusinessTrackingWebApi.Containers
                 client =>
                 {
                     client.BaseAddress = new Uri(
-                        "https://localhost:7255/api/");
+                        "http://localhost:7255/api/");
                 }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
             Services.AddHttpClient<IShipmentApiService, ShipmentApiManager>(
                client =>
                {
                    client.BaseAddress = new Uri(
-                       "https://localhost:7255/api/");
+                       "http://localhost:7255/api/");
                }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
             Services.AddHttpClient<IElectricApiService, ElectricApiManager>(
               client =>
               {
                   client.BaseAddress = new Uri(
-                      "https://localhost:7255/api/");
+                      "http://localhost:7255/api/");
               }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
             Services.AddHttpClient<IRawMaterialsApiService, RawMaterialsApiManager>(
             client =>
             {
                 client.BaseAddress = new Uri(
-                    "https://localhost:7255/api/");
+                    "http://localhost:7255/api/");
             }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
             Services.AddHttpClient<ISalesApiService, SalesApiManager>(
             client =>
             {
                 client.BaseAddress = new Uri(
-                    "https://localhost:7255/api/");
+                    "http://localhost:7255/api/");
+            }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
+            Services.AddHttpClient<IPlcMachineApiService, PlcMachineApiManager>(
+            client =>
+            {
+                client.BaseAddress = new Uri(
+                    "http://localhost:7255/api/");
             }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
             Services.AddScoped<AiToolRegistry>();
             Services.AddScoped<IAiTool, GetLast7DaysProductionTool>();
-            Services.AddScoped<IAiTool, GetLast30DaysShipment>();
-            Services.AddScoped<IAiTool, GetWithBySearchSalesScale>();
-            Services.AddScoped<IAiTool, GetWithBySearchCumulativeElectricConsumption>();
-            Services.AddScoped<IAiTool, GetWithBySearchRawMaterialsIntake>();
-            Services.AddScoped<IAiTool, GetByDateRangeSales>();
-            Services.AddScoped<IAiTool, GetWithProductionByDate>();
-            Services.AddScoped<IAiTool, GetProductionStockByInventoryCode>();
+            Services.AddScoped<IAiTool, GetLast30DaysShipmentTool>();
+            Services.AddScoped<IAiTool, GetWithBySearchSalesScaleTool>();
+            Services.AddScoped<IAiTool, GetWithBySearchCumulativeElectricConsumptionTool>();
+            Services.AddScoped<IAiTool, GetWithBySearchRawMaterialsIntakeTool>();
+            Services.AddScoped<IAiTool, GetByDateRangeSalesTool>();
+            Services.AddScoped<IAiTool, GetWithProductionByDateTool>();
+            Services.AddScoped<IAiTool, GetProductionStockByInventoryCodeTool>();
+            Services.AddScoped<IAiTool, GetStockByInventoryCodeAndWidthCMTool>();
+            Services.AddScoped<IAiTool, GetPlcMachineTagsDataByDateTools>();
+
             Services.AddHttpClient<IAiService, AiManager>(
                 client =>
                 {

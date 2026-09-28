@@ -43,7 +43,7 @@ namespace DataAccsessLayer.Seed
             
                 // ================= MALZEME DEPO =================
                 ("MALZEMEDEPO", "SentezNotOrders", "Sentezde Siparişi Olmayanlar"),
-                ("MALZEMEDEPO", "VehicleFuelLogs", "Araç Yakıt Takip Raporu"),
+                ("MALZEMEDEPO", "VechileFuelLogs", "Araç Yakıt Takip Raporu"),
             
                 // ================= YAŞ KISIM =================
                 ("YASKISIM", "MachineStop", "Yaş Kısım"),
@@ -85,6 +85,7 @@ namespace DataAccsessLayer.Seed
                 // ================= PLANLAMA =================
                 ("PLANLAMA", "Planning", "Dün Sarf Edilenler"),
                 ("PLANLAMA", "PlanningScorBoardView", "Plan Formu Takibi"),
+                ("PLANLAMA", "DetailProduction", "Detaylı Üretim Takibi"),
             
                 // ================= KAĞIT KANTAR =================
                 ("KAGITKANTAR", "RawMaterials", "Hammadde Takip"),
@@ -102,7 +103,11 @@ namespace DataAccsessLayer.Seed
                 // ================= AYARLAR =================
                 ("AYARLAR", "Users", "Kullanıcı Listesi"),
                 ("AYARLAR", "Roles", "Rol Listesi"),
-                ("AYARLAR", "Shift", "Vardiya Listesi")
+                ("AYARLAR", "Shift", "Vardiya Listesi"),
+
+
+                 // ================= AI =================
+                ("AI", "AiController", "Ask"),
             };
 
             var existing = context.Db_Permission

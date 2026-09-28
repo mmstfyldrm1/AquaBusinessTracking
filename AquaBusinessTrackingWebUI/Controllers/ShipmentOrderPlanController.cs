@@ -51,7 +51,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
 
 
-            var planResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/ShipmentOrderPlan/details");
+            var planResponse = await client.GetAsync($"{_apiSettings.BaseUrl}/ShipmentOrderPlan/GetTodayPlan");
             var plans = new List<ShipmentOrderPlanDto>();
             if (planResponse.IsSuccessStatusCode)
             {
@@ -207,7 +207,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteDetail(int id)
         {
-            if (!_currentUserService.HasPermission("M2KANTAR.ShipmentOrderPlan.Update"))
+            if (!_currentUserService.HasPermission("M2KANTAR.ShipmentOrderPlan.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
@@ -220,7 +220,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteShipmentOrderPlan(int id)
         {
-            if (!_currentUserService.HasPermission("ShipmentOrderPlan.Delete"))
+            if (!_currentUserService.HasPermission("M2KANTAR.ShipmentOrderPlan.Delete"))
             {
                 return Json(new { success = false, message = "Bu İşlem için yetkiniz bulunmamaktadır" });
             }
