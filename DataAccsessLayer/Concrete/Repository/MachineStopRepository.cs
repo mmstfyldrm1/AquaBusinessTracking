@@ -26,7 +26,7 @@ namespace DataAccsessLayer.Concrete.Repository
         public async Task<List<StopChartDto>> GetStopChart()
         {
             var durusData = await _context.Db_MachineStop
-             .GroupBy(x => x.BreakLocation)
+             .GroupBy(x => x.PointofRupture)
              .Select(x => new StopChartDto
              {
                  Reason = x.Key,

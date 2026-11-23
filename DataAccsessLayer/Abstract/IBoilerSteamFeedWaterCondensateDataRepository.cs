@@ -7,5 +7,11 @@ namespace DataAccsessLayer.Abstract
         Task<List<DB_BoilerSteamFeedWaterCondensateData>> GetWithDetails();
 
         Task<List<DB_BoilerSteamFeedWaterCondensateData>> GetPreviousDay();
+
+        public Task<List<DB_BoilerSteamFeedWaterCondensateData>> GetLast30DaysBoilerConsumable();
+
+        public Task<List<DB_BoilerSteamFeedWaterCondensateData>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
+
     }
 }

@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+
+@{
+    @inject AquaBusinessTrackingWebUI.Services.CurrentUserService CurrentUser
+}
+
+
+@if (CurrentUser.HasPermission("KAGITSATINALMA.SupplierDashboard.View"))
+{
+    @await Component.InvokeAsync("_SupplierDashboardSummaryComponentPartial")
+
+    @await Component.InvokeAsync("_SupplierDashboardBySupplierComponentPartial")
+
+    @await Component.InvokeAsync("_SupplierDashboardByDateComponentPartial")
+
+    @* @await Component.InvokeAsync("_SupplierDashboardQualityComponentPartial") *@
+
+    @await Component.InvokeAsync("_SupplierDashboardMaterialDistributionComponentPartial")
+
+    @await Component.InvokeAsync("_SupplierDashboardTrendComponentPartial")
+}
+

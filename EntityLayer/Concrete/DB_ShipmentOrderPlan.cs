@@ -13,11 +13,18 @@ namespace EntityLayer.Concrete
 
         public string CurrentAccountName { get; set; }
 
+        public int? DailyShipmentPlanId { get; set; }
+
         public DateTime PlanDate { get; set; }
 
         public int Status { get; set; }
 
-        public List<DB_ShipmentOrderPlanDetail> ShipmentOrderPlanDetail { get; set; }
-            = new List<DB_ShipmentOrderPlanDetail>();
+        public List<DB_ShipmentOrderPlanDetail> ShipmentOrderPlanDetail { get; set; } = new List<DB_ShipmentOrderPlanDetail>();
+
+        public DB_DailyShipmentPlan DailyShipmentPlan { get; set; }
+
+
+
+
     }
 }

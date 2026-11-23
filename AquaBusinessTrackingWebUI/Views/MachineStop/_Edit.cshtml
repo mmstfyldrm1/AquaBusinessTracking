@@ -1,20 +1,319 @@
 ﻿@using DTOLayer.Dtos.MachineStopDtos
 @model ModalViewModel<MachineStopDto>
 
-<div class="modal fade" id="machineStopModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+<style>
+    /* =========================================================
+           MACHINE STOP MODAL
+           ========================================================= */
+
+    #machineStopModal .modal-dialog {
+        max-width: 1050px;
+    }
+
+    #machineStopModal .modal-content {
+        border: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, .15);
+    }
+
+    /* Header */
+    #machineStopModal .modal-header {
+        padding: 18px 24px;
+        background: linear-gradient(135deg, #f8f9fa, #ffffff);
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    #machineStopModal .modal-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #212529;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+        #machineStopModal .modal-title::before {
+            content: "";
+            width: 4px;
+            height: 22px;
+            border-radius: 5px;
+            background: #198754;
+        }
+
+    /* Body */
+    #machineStopModal .modal-body {
+        padding: 24px;
+        background: #fff;
+    }
+
+    /* Labels */
+    #machineStopModal .form-label {
+        margin-bottom: 7px;
+        font-size: .82rem;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    /* Normal inputs */
+    #machineStopModal .form-control,
+    #machineStopModal .form-select {
+        min-height: 38px;
+        border-color: #dee2e6;
+        border-radius: 7px;
+        font-size: .875rem;
+        transition: all .15s ease;
+    }
+
+        #machineStopModal .form-control:focus,
+        #machineStopModal .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12);
+        }
+
+    /* Date time */
+    #machineStopModal input[type="datetime-local"] {
+        padding: 7px 10px;
+    }
+
+    /* Number */
+    #machineStopModal input[type="number"] {
+        text-align: left;
+    }
+
+    /* Textarea */
+    #machineStopModal textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* =========================================================
+           SELECT2
+           ========================================================= */
+
+    #machineStopModal .select2-container {
+        width: 100% !important;
+    }
+
+        #machineStopModal
+        .select2-container .select2-selection--single {
+            height: 38px !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 7px !important;
+            background: #fff !important;
+            display: flex !important;
+            align-items: center !important;
+            transition: all .15s ease;
+        }
+
+            #machineStopModal
+            .select2-container .select2-selection--single
+            .select2-selection__rendered {
+                color: #212529 !important;
+                line-height: 36px !important;
+                padding-left: 11px !important;
+                padding-right: 35px !important;
+                font-size: .875rem;
+            }
+
+            #machineStopModal
+            .select2-container .select2-selection--single
+            .select2-selection__placeholder {
+                color: #6c757d !important;
+            }
+
+            #machineStopModal
+            .select2-container .select2-selection--single
+            .select2-selection__arrow {
+                height: 36px !important;
+                width: 30px !important;
+                right: 4px !important;
+                top: 1px !important;
+            }
+
+    #machineStopModal
+    .select2-container--open
+    .select2-selection--single {
+        border-color: #86b7fe !important;
+        box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12) !important;
+    }
+
+    /* Dropdown */
+    #machineStopModal .select2-dropdown {
+        border: 1px solid #dee2e6 !important;
+        border-radius: 8px !important;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+    }
+
+    /* Search */
+    #machineStopModal .select2-search--dropdown {
+        padding: 8px !important;
+        background: #fff;
+    }
+
+        #machineStopModal
+        .select2-search--dropdown
+        .select2-search__field {
+            height: 35px;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+            padding: 5px 9px;
+            font-size: .85rem;
+            outline: none;
+        }
+
+            #machineStopModal
+            .select2-search--dropdown
+            .select2-search__field:focus {
+                border-color: #86b7fe !important;
+                box-shadow: 0 0 0 .15rem rgba(13, 110, 253, .1);
+            }
+
+    /* Options */
+    #machineStopModal .select2-results__option {
+        padding: 8px 11px !important;
+        font-size: .85rem;
+        color: #343a40;
+        cursor: pointer;
+    }
+
+    #machineStopModal .select2-results__option--highlighted {
+        background: #f1f5f9 !important;
+        color: #212529 !important;
+    }
+
+    #machineStopModal
+    .select2-results__option[aria-selected="true"] {
+        background: #e9f2ff !important;
+        color: #0d6efd !important;
+        font-weight: 500;
+    }
+
+    /* =========================================================
+           INPUT GROUP - KAYIT EDEN
+           ========================================================= */
+
+    #machineStopModal .input-group-text {
+        background: #f8f9fa;
+        border-color: #dee2e6;
+        color: #6c757d;
+    }
+
+    #machineStopModal .input-group .form-control:disabled {
+        background: #f8f9fa;
+        color: #495057;
+        opacity: 1;
+    }
+
+    /* =========================================================
+           SÜRE KAYBI
+           ========================================================= */
+
+    #machineStopModal .duration-wrapper {
+        position: relative;
+    }
+
+        #machineStopModal .duration-wrapper .duration-unit {
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: .75rem;
+            pointer-events: none;
+        }
+
+        #machineStopModal .duration-wrapper input {
+            padding-right: 58px;
+        }
+
+    /* =========================================================
+           FOOTER
+           ========================================================= */
+
+    #machineStopModal .modal-footer {
+        padding: 15px 24px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+        #machineStopModal .modal-footer .btn {
+            min-width: 105px;
+            border-radius: 7px;
+            font-size: .85rem;
+            font-weight: 500;
+        }
+
+    #machineStopModal .btn-success {
+        box-shadow: 0 3px 8px rgba(25, 135, 84, .18);
+    }
+
+    /* Select2 modal z-index */
+    #machineStopModal .select2-container {
+        z-index: 1060;
+    }
+
+    #machineStopModal .select2-dropdown {
+        z-index: 1061;
+    }
+
+    /* =========================================================
+           MOBİL
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+        #machineStopModal .modal-body
+
+    {
+        padding: 16px;
+    }
+
+    #machineStopModal .modal-header {
+        padding: 15px 16px;
+    }
+
+    #machineStopModal .modal-footer {
+        padding: 12px 16px;
+    }
+
+    #machineStopModal .col-md-6,
+    #machineStopModal .col-md-4,
+    #machineStopModal .col-md-12 {
+        width: 100%;
+    }
+
+    }
+</style>
+
+
+<div class="modal fade"
+     id="machineStopModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+
         <div class="modal-content">
 
+            <!-- HEADER -->
             <div class="modal-header">
-                <h5 class="modal-title">@Model.ModalTitle</h5>
+
+                <h5 class="modal-title">
+                    @Model.ModalTitle
+                </h5>
 
                 <button type="button"
                         class="btn-close"
-                        data-bs-dismiss="modal">
+                        data-bs-dismiss="modal"
+                        aria-label="Kapat">
                 </button>
+
             </div>
 
-            <form method="post" action="/MachineStop/Edit">
+
+            <form method="post"
+                  action="/MachineStop/Edit">
 
                 <div class="modal-body">
 
@@ -22,92 +321,256 @@
 
                         @if (Model.IsEdit)
                         {
-                            <input type="hidden" asp-for="Entity.RecId" />
+                            <input type="hidden"
+                                   asp-for="Entity.RecId" />
                         }
 
-                        <!-- Fiş Tarihi -->
-                        <div class="col-md-6">
-                            <label class="form-label">Fiş Tarihi</label>
 
-                            <input type="datetime-local" required
-                                   asp-for="Entity.ReceiptDate"
-                                   class="form-control" />
-                        </div>
+                        <!-- TARİH / SAAT -->
+                        <div class="col-md-4">
 
-                        <!-- Başlangıç -->
-                        <div class="col-md-6">
-                            <label class="form-label">Başlangıç Saati</label>
+                            <label class="form-label">
+                                Fiş Tarihi
+                            </label>
 
                             <input type="datetime-local"
-                                   asp-for="Entity.StartTime"
+                                   required
+                                   name="Entity.ReceiptDate"
+                                   value="@(Model.Entity.ReceiptDate?.ToString("yyyy-MM-ddTHH:mm"))"
                                    class="form-control" />
+
                         </div>
 
-                        <!-- Bitiş -->
-                        <div class="col-md-6">
-                            <label class="form-label">Bitiş Saati</label>
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Başlangıç Saati
+                            </label>
 
                             <input type="datetime-local"
-                                   asp-for="Entity.EndTime"
+                                   name="Entity.StartTime"
+                                   value="@(Model.Entity.StartTime?.ToString("yyyy-MM-ddTHH:mm"))"
                                    class="form-control" />
+
                         </div>
 
-                        <!-- Süre Kaybı -->
-                        <div class="col-md-4">
-                            <label class="form-label">Süre Kaybı (Dakika)</label>
 
-                            <input type="number"
-                                   step="0.01"
-                                   asp-for="Entity.DowntimeDuration"
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Bitiş Saati
+                            </label>
+
+                            <input type="datetime-local"
+                                   name="Entity.EndTime"
+                                   value="@(Model.Entity.EndTime?.ToString("yyyy-MM-ddTHH:mm"))"
                                    class="form-control" />
+
                         </div>
 
-                        <!-- Kopma Yeri -->
+
+                        <!-- SÜRE -->
                         <div class="col-md-4">
-                            <label class="form-label">Kopma Yeri</label>
 
-                            <input type="text"
-                                   asp-for="Entity.BreakLocation"
-                                   class="form-control"
-                                   placeholder="Kopma yeri giriniz" />
+                            <label class="form-label">
+                                Süre Kaybı
+                            </label>
+
+                            <div class="duration-wrapper">
+
+                                <input type="number"
+                                       step="0.01"
+                                       asp-for="Entity.DowntimeDuration"
+                                       class="form-control"
+                                       placeholder="Otomatik hesaplanır" />
+
+                                <span class="duration-unit">
+                                    dakika
+                                </span>
+
+                            </div>
+
                         </div>
 
-                        <!-- Duruş Nedeni -->
+
+                        <!-- KOPMA YERİ -->
                         <div class="col-md-4">
-                            <label class="form-label">Duruş Nedeni</label>
 
-                            <input type="text"
-                                   asp-for="Entity.DowntimeReason"
-                                   class="form-control"
-                                   placeholder="Duruş nedeni giriniz" />
+                            <label class="form-label">
+                                Kopma Yeri
+                            </label>
+
+                            <select asp-for="Entity.PointofRupture"
+                                    class="form-select select2-machine-stop"
+                                    data-placeholder="Kopma yeri seçiniz">
+
+                                <option value=""></option>
+
+                                <option value="1. Kurutma Grubu">1. Kurutma Grubu</option>
+                                <option value="2. Kurutma Grubu">2. Kurutma Grubu</option>
+                                <option value="2. Press">2. Press</option>
+                                <option value="3. Kurutma Grubu">3. Kurutma Grubu</option>
+                                <option value="4. Kurutma Grubu">4. Kurutma Grubu</option>
+                                <option value="4. Press">4. Press</option>
+                                <option value="5. Kurutma Grubu">5. Kurutma Grubu</option>
+                                <option value="6. Kurutma Grubu">6. Kurutma Grubu</option>
+                                <option value="7. Kurutma Grubu">7. Kurutma Grubu</option>
+                                <option value="Belirsiz">Belirsiz</option>
+                                <option value="Birden Fazla">Birden Fazla</option>
+                                <option value="Kurutma">Kurutma</option>
+                                <option value="Mal Sarıcı">Mal Sarıcı</option>
+                                <option value="Ön Kurutma">Ön Kurutma</option>
+                                <option value="Pick-up">Pick-up</option>
+                                <option value="Press">Press</option>
+                                <option value="Size Press">Size Press</option>
+                                <option value="Yaklaşım Akışı">Yaklaşım Akışı</option>
+                                <option value="Yardımcı Tesisler">Yardımcı Tesisler</option>
+
+                            </select>
+
                         </div>
 
-                        <!-- Açıklama -->
+
+                        <!-- DURUŞ NEDENİ -->
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Duruş Nedeni
+                            </label>
+
+                            <select asp-for="Entity.ReasonDisconnection"
+                                    class="form-select select2-machine-stop"
+                                    data-placeholder="Duruş nedeni seçiniz">
+
+                                <option value=""></option>
+
+                                <option value="Bakım / değişim">Bakım / değişim</option>
+                                <option value="Devreye alma / kağıt bağlama">Devreye alma / kağıt bağlama</option>
+                                <option value="Ekipman değişimi">Ekipman değişimi</option>
+                                <option value="Elektrik arızası">Elektrik arızası</option>
+                                <option value="Enerji kesintisi / dalgalanma">Enerji kesintisi / dalgalanma</option>
+                                <option value="Fıskiye / kesici problemi">Fıskiye / kesici problemi</option>
+                                <option value="Gergi / draw problemi">Gergi / draw problemi</option>
+                                <option value="Halat / ip problemi">Halat / ip problemi</option>
+                                <option value="Hamur hazırlama / besleme">Hamur hazırlama / besleme</option>
+                                <option value="Hamur hazırlama arızası">Hamur hazırlama arızası</option>
+                                <option value="Hamur yokluğu">Hamur yokluğu</option>
+                                <option value="Hidrolik arıza">Hidrolik arıza</option>
+                                <option value="Iskarta bozulması">Iskarta bozulması</option>
+                                <option value="Kenar patlağı">Kenar patlağı</option>
+                                <option value="Kopma – nedeni belirtilmemiş">Kopma – nedeni belirtilmemiş</option>
+                                <option value="Malzeme / tambur bekleme">Malzeme / tambur bekleme</option>
+                                <option value="Mekanik arıza">Mekanik arıza</option>
+                                <option value="Mekanik ekipman problemi">Mekanik ekipman problemi</option>
+                                <option value="Nedeni belirtilmemiş">Nedeni belirtilmemiş</option>
+                                <option value="Nem / kuruluk profili">Nem / kuruluk profili</option>
+                                <option value="Pislik / kirlenme">Pislik / kirlenme</option>
+                                <option value="Pnömatik / hava arızası">Pnömatik / hava arızası</option>
+                                <option value="Proses / kalite problemi">Proses / kalite problemi</option>
+                                <option value="Sensör / otomasyon">Sensör / otomasyon</option>
+                                <option value="Sensör / otomasyon arızası">Sensör / otomasyon arızası</option>
+                                <option value="Tatil / üretim dışı">Tatil / üretim dışı</option>
+                                <option value="Temizlik">Temizlik</option>
+                                <option value="Yardımcı tesis problemi">Yardımcı tesis problemi</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- EKİPMAN -->
                         <div class="col-md-12">
-                            <label class="form-label">Açıklama</label>
+
+                            <label class="form-label">
+                                Ekipman / Olay
+                            </label>
+
+                            <select asp-for="Entity.Equipment"
+                                    class="form-select select2-machine-stop"
+                                    data-placeholder="Ekipman / olay seçiniz">
+
+                                <option value=""></option>
+
+                                <option value="Belirtilmemiş">Belirtilmemiş</option>
+                                <option value="Buhar / kondens">Buhar / kondens</option>
+                                <option value="Elektrik / enerji">Elektrik / enerji</option>
+                                <option value="Fıskiye / kesici">Fıskiye / kesici</option>
+                                <option value="Gergi / draw ayarı">Gergi / draw ayarı</option>
+                                <option value="Hamur hazırlama ekipmanı">Hamur hazırlama ekipmanı</option>
+                                <option value="Hamur kasası / seviye">Hamur kasası / seviye</option>
+                                <option value="Hamur yokluğu">Hamur yokluğu</option>
+                                <option value="Hidrolik / yağ sistemi">Hidrolik / yağ sistemi</option>
+                                <option value="Iskarta / trim">Iskarta / trim</option>
+                                <option value="Kağıt bağlama / devreye alma">Kağıt bağlama / devreye alma</option>
+                                <option value="Kağıt geçirme ipi / halatı">Kağıt geçirme ipi / halatı</option>
+                                <option value="Kağıt sarma / sıkışma">Kağıt sarma / sıkışma</option>
+                                <option value="Keçe">Keçe</option>
+                                <option value="Kenar patlağı">Kenar patlağı</option>
+                                <option value="Kurutma silindiri">Kurutma silindiri</option>
+                                <option value="Mekanik ekipman">Mekanik ekipman</option>
+                                <option value="Motor / sürücü">Motor / sürücü</option>
+                                <option value="Nem / kuruluk profili">Nem / kuruluk profili</option>
+                                <option value="Pislik / kirlenme">Pislik / kirlenme</option>
+                                <option value="Planlı bakım / değişim">Planlı bakım / değişim</option>
+                                <option value="Pnömatik / hava">Pnömatik / hava</option>
+                                <option value="Pompa">Pompa</option>
+                                <option value="Press sifonu">Press sifonu</option>
+                                <option value="Raspa / doktor">Raspa / doktor</option>
+                                <option value="Resmî tatil / üretim dışı">Resmî tatil / üretim dışı</option>
+                                <option value="Sensör / otomasyon">Sensör / otomasyon</option>
+                                <option value="Su sistemi">Su sistemi</option>
+                                <option value="Tambur / tampon">Tambur / tampon</option>
+                                <option value="Temizlik / yıkama">Temizlik / yıkama</option>
+                                <option value="Vakrol / vakum">Vakrol / vakum</option>
+                                <option value="Vals / rulman / rulo">Vals / rulman / rulo</option>
+                                <option value="Voltaj Oynaması">Voltaj Oynaması</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- AÇIKLAMA -->
+                        <div class="col-md-12">
+
+                            <label class="form-label">
+                                Açıklama
+                            </label>
 
                             <textarea asp-for="Entity.Explanation"
-                                      rows="4"
+                                      rows="3"
                                       class="form-control"
-                                      placeholder="Açıklama giriniz">
-                            </textarea>
+                                      placeholder="Duruşla ilgili ek açıklama giriniz..."></textarea>
+
                         </div>
 
-                        <!-- Vardiya -->
-                        <div class="col-md-6">
-                            <label class="form-label">Vardiya</label>
 
-                            <select asp-for="Entity.ShiftId" required
+                        <!-- VARDİYA -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Vardiya
+                            </label>
+
+                            <select asp-for="Entity.ShiftId"
+                                    required
                                     asp-items="ViewBag.Shifts"
                                     class="form-select">
 
                                 <option value="">Vardiya Seçiniz</option>
 
                             </select>
+
                         </div>
 
+
+                        <!-- KAYIT EDEN -->
                         <div class="col-md-6">
-                            <label class="form-label">Kayıt Eden</label>
+
+                            <label class="form-label">
+                                Kayıt Eden
+                            </label>
 
                             <div class="input-group">
 
@@ -121,11 +584,11 @@
                                        disabled />
 
                             </div>
+
                         </div>
 
-                     
 
-                        <!-- Hidden Alanlar -->
+                        <!-- HIDDEN -->
                         <input type="hidden" asp-for="Entity.DepartmentId" />
                         <input type="hidden" asp-for="Entity.AppUserId" />
                         <input type="hidden" asp-for="Entity.InsertDate" />
@@ -139,18 +602,23 @@
 
                 </div>
 
+
+                <!-- FOOTER -->
                 <div class="modal-footer">
 
                     <button type="button"
                             class="btn btn-light"
                             data-bs-dismiss="modal">
+
                         İptal
+
                     </button>
 
                     <button type="submit"
                             class="btn btn-success px-4">
 
-                        <ion-icon name="save-outline" class="me-1"></ion-icon>
+                        <ion-icon name="save-outline"
+                                  class="me-1"></ion-icon>
 
                         @(Model.IsEdit ? "Güncelle" : "Kaydet")
 
@@ -161,5 +629,7 @@
             </form>
 
         </div>
+
     </div>
 </div>
+

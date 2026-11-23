@@ -1,8 +1,21 @@
 using AquaBusinessTrackingWebApi.Containers;
 using AquaBusinessTrackingWebApi.Services;
+using BusinessLayer.Abstract;
+using BusinessLayer.Abstract.MailService.@abstract;
+using BusinessLayer.Abstract.MailService.concrete;
+using BusinessLayer.Abstract.MailService.settings;
+using BusinessLayer.Concrete;
+using BusinessLayer.Email;
+using BusinessLayer.Reports;
+using BusinessLayer.Reports.@abstract;
+using BusinessLayer.Reports.concrete;
+using BusinessLayer.ScheduledTasks.Abstract;
+using BusinessLayer.ScheduledTasks.Concrete;
 using DataAccsessLayer;
 using DataAccsessLayer.Seed;
 using EntityLayer.Concrete;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +26,34 @@ using Serilog;
 using Serilog.Events;
 using System.Text;
 
-
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHangfire(configuration =>
+{
+    configuration
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(
+            builder.Configuration.GetConnectionString("HangfireConnection"),
+            new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.FromSeconds(15),
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            });
+});
+builder.Services.AddScoped<IPdfReportService, PdfReportService>();
+builder.Services.AddScoped<IReportEmailService, ReportEmailService>();
+builder.Services.AddScoped<IReportEmailJob, ReportEmailJob>();
 
+
+
+builder.Services.AddHangfireServer();
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -99,15 +135,21 @@ builder.Host.UseSerilog();
 
 
 // Add services to the container.
-
+builder.Services.AddScoped<
+    IEmailReportRecipientService,
+    EmailReportRecipientManager>();
 builder.Services.AddControllers();
 builder.Services.ContainerDependencies();
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
-});
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddDbContext<AquaBusinessTrackingContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IReportFileService, ReportFileService>();
 
 builder.Services.AddIdentity<DB_AppUser, DB_AppRole>()
     .AddEntityFrameworkStores<AquaBusinessTrackingContext>()
@@ -197,9 +239,13 @@ builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(@"C:\AquaAPI\DataProtection-Keys"))
     .SetApplicationName("AquaBusinessTracking");
 
-
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+});
 
 var app = builder.Build();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -211,7 +257,22 @@ using (var scope = app.Services.CreateScope())
     {
         await PermissionSeed.SeedAsync(context);
     }
+
+    // Hangfire recurring job
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+    RecurringJob.AddOrUpdate<IReportEmailJob>(
+     "daily-machine-report",
+     job => job.SendDailyMachineReportAsync(),
+     "0 9 * * *",
+     new RecurringJobOptions
+     {
+         TimeZone = TimeZoneInfo.FindSystemTimeZoneById(
+             "Turkey Standard Time")
+     });
 }
+
+
 
 app.UseCors("AllowAll");
 app.UseSwagger();

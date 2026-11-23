@@ -10,6 +10,8 @@ namespace EntityLayer.Concrete
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RecId { get; set; }
 
+        public long? ExternalSeq { get; set; }
+
         public DateTime ScaleDate { get; set; } = DateTime.Now;
 
         public DateTime ScaleHours { get; set; } = DateTime.Now;
@@ -18,11 +20,11 @@ namespace EntityLayer.Concrete
 
         public string DeliveryNumber { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
 
         public string TruckPlate { get; set; }
 
-
+        public int CurrentAccountId { get; set; }
 
         public decimal DeliveryQuantity { get; set; }
 

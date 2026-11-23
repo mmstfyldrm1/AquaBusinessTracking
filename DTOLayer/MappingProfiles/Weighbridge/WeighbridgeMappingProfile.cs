@@ -15,6 +15,7 @@ namespace DTOLayer.MappingProfiles.Weighbridge
             CreateMap<DB_SalesScale, UpdateSalesScaleDto>().ReverseMap();
             CreateMap<DB_SalesScale, SalesScaleDto>().ReverseMap();
 
+
             CreateMap<DB_SalesScale, SalesScaleDto>()
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))

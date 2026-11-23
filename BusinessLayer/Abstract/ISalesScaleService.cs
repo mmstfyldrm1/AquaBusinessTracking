@@ -7,7 +7,10 @@ namespace BusinessLayer.Abstract
         public Task<List<SalesScaleDto>> GetWithDetails();
 
         public Task<List<SalesScaleDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
         public Task<List<SalesScaleDto>> GetWithLast30Days();
+
+        Task<SalesScaleDto?> GetByExternalSeq(long? externalSeq);
 
 
 

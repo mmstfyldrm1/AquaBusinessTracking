@@ -7,6 +7,10 @@
 
         public string CurrentAccountCode { get; set; }
 
+        public int? DailyShipmentPlanId { get; set; }
+
+        public string? ShipmentNo { get; set; }
+
         public string CurrentAccountName { get; set; }
 
         public DateTime PlanDate { get; set; }
@@ -30,6 +34,7 @@
         public DateTime? DeleteDate { get; set; }
 
         public int ShiftId { get; set; }
+
         public Int16? InUse { get; set; }
 
         public int? DeletedBy { get; set; }

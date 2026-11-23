@@ -6,7 +6,7 @@
 
 <style>
     .sop-page {
-        --sop-bg: #F6F7F9;
+        --sop-bg: #FFFFFF;
         --sop-surface: #FFFFFF;
         --sop-border: #E2E5EA;
         --sop-text: #1C222B;
@@ -79,7 +79,7 @@
     }
 
         .sop-btn-primary:hover {
-            background: #235a91;
+            background: #245a94;
         }
 
     .sop-empty {
@@ -237,6 +237,7 @@
 
     tr.sop-detail-row {
         display: none;
+        background-color: #FFFFFF;
     }
 
     tr.sop-plan-row.sop-plan-open + tr.sop-detail-row {
@@ -244,28 +245,26 @@
     }
 
     .sop-detail-cell {
-        background: var(--sop-bg);
+        background: #FFFFFF;
         padding: 0 !important;
         white-space: normal !important;
     }
 
     .sop-detail-wrap {
-        padding: 12px 16px 16px 42px;
-    }
-
-    .sop-detail-empty {
-        color: var(--sop-text-muted);
-        font-size: 0.85rem;
-        padding: 6px 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 16px 20px;
+        background: #FFFFFF;
     }
 
     .sop-detail-table {
         width: 100%;
+        table-layout: auto;
         border-collapse: collapse;
         font-size: 0.82rem;
-        background: var(--sop-surface);
+        background: #FFFFFF;
         border: 1px solid var(--sop-border);
-        border-radius: 6px;
+        border-radius: 7px;
         overflow: hidden;
     }
 
@@ -348,6 +347,7 @@
                                 <tr>
                                     <th></th>
                                     <th>Plan Tarihi</th>
+                                    <th>Sevkiyat No</th>
                                     <th>Teslim Tarihi</th>
                                     <th>Vardiya</th>
                                     <th>Oluşturan</th>
@@ -364,21 +364,24 @@
                                     <tr class="sop-plan-row" data-toggle="sop-plan">
                                         <td><button type="button" class="sop-expand-btn">&rsaquo;</button></td>
                                         <td>@plan.PlanDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@plan.ShipmentNo</td>
                                         <td>@plan.ReceiptDate.ToString("dd.MM.yyyy")</td>
                                         <td>@plan.ShiftName</td>
                                         <td>@plan.CreatedByName</td>
                                         <td><span class="sop-badge">Durum: @plan.Status</span></td>
                                         <td>@details.Count kalem</td>
-                                        <td class="sop-row-actions">
-                                            <button type="button" class="sop-link" onclick="openModal(@plan.RecId)">Düzenle</button>
-                                            <form method="post" action="@Url.Action("DeleteShipmentOrderPlan", "ShipmentOrderPlan")" onsubmit="return confirm('Bu planı silmek istediğinize emin misiniz?');" class="sop-inline-form">
-                                                <input type="hidden" name="id" value="@plan.RecId" />
-                                                <button type="submit" class="sop-link sop-link-danger">Sil</button>
-                                            </form>
+                                        <td>
+                                            <div class="sop-row-actions">
+                                                <button type="button" class="sop-link" onclick="openModal(@plan.RecId)">Düzenle</button>
+                                                <form method="post" action="@Url.Action("DeleteShipmentOrderPlan", "ShipmentOrderPlan")" onsubmit="return confirm('Bu planı silmek istediğinize emin misiniz?');" class="sop-inline-form">
+                                                    <input type="hidden" name="id" value="@plan.RecId" />
+                                                    <button type="submit" class="sop-link sop-link-danger">Sil</button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="sop-detail-row">
-                                        <td colspan="8" class="sop-detail-cell">
+                                        <td colspan="9" class="sop-detail-cell">
                                             <div class="sop-detail-wrap">
                                                 @if (!details.Any())
                                                 {
@@ -569,7 +572,7 @@
 
         var ddlCompanyEl = modalEl.querySelector('#ddlCompany');
 
-        // Bu formda cari seçim alanı yoksa sessizce çık
+       
         if (!ddlCompanyEl) {
             return;
         }
@@ -583,10 +586,6 @@
         var $ddlCompany     = $(ddlCompanyEl);
 
         function apiFetch(path) {
-            // NOT: cari listesi endpoint'i DailyShipmentPlan controller'ında
-            // tanımlı (paylaşılan Sentez entegrasyonu). Kendi projende bu
-            // endpoint farklı bir controller'daysa "DailyShipmentPlan"
-            // kısmını ona göre değiştir.
             return fetch(`${apiBase}/DailyShipmentPlan/${path}`, {
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
@@ -594,8 +593,7 @@
             });
         }
 
-        // Select2'yi başlat. dropdownParent ZORUNLU: modal içindeyken
-        // bunu vermezsen açılır liste modal'ın arkasında/dışında render olabilir.
+
         $ddlCompany.select2({
             theme: 'bootstrap-5',
             placeholder: 'Cari Seçiniz',
@@ -619,15 +617,12 @@
                 });
 
                 $ddlCompany.trigger('change.select2');
-
-                // Düzenleme (edit) modunda zaten kayıtlı bir cari varsa
-                // (hidden alanda recId doluysa) Select2'de otomatik seçili göster
                 if (hdnCompanyRecId && hdnCompanyRecId.value) {
                     $ddlCompany.val(hdnCompanyRecId.value).trigger('change');
                 }
             });
 
-        // Cari seçilince -> kodu ve hidden recId'yi otomatik doldur
+
         $ddlCompany.on('change', function () {
 
             var recId = this.value;

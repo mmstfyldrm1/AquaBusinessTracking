@@ -2,6 +2,7 @@
 using AIAgent.Orchestration.Abstract;
 using AIAgent.Orchestration.Manager;
 using AIAgent.Services.Abstract.Electric;
+using AIAgent.Services.Abstract.NaturelGas;
 using AIAgent.Services.Abstract.PlcMachine;
 using AIAgent.Services.Abstract.Production;
 using AIAgent.Services.Abstract.RawMaterials;
@@ -10,6 +11,7 @@ using AIAgent.Services.Abstract.Shipment;
 using AIAgent.Services.Manager;
 using AIAgent.Tools;
 using AIAgent.Tools.Electric;
+using AIAgent.Tools.NaturelGas;
 using AIAgent.Tools.PlcMachine;
 using AIAgent.Tools.Production;
 using AIAgent.Tools.RawMaterials;
@@ -18,8 +20,16 @@ using AIAgent.Tools.Shipment;
 using AquaBusinessTrackingWebApi.Services;
 using BusinessLayer.Abstract;
 using BusinessLayer.Abstract.Integrations;
+using BusinessLayer.Abstract.MailService.@abstract;
+using BusinessLayer.Abstract.MailService.concrete;
+using BusinessLayer.Abstract.Reports;
 using BusinessLayer.Concrete;
 using BusinessLayer.Concrete.Integrations;
+using BusinessLayer.Concrete.Reports;
+using BusinessLayer.Reports.@abstract;
+using BusinessLayer.Reports.concrete;
+using BusinessLayer.ScheduledTasks.Abstract;
+using BusinessLayer.ScheduledTasks.Concrete;
 using DataAccsessLayer.Abstract;
 using DataAccsessLayer.Abstract.Integrations;
 using DataAccsessLayer.Concrete.Repository;
@@ -166,6 +176,14 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<GenerateTokenService>();
             Services.AddScoped<IQueryService, QueryManager>();
             Services.AddScoped<IQueryRepository, QueryRepository>();
+            Services.AddScoped<ISentezSupplierQueryService, SentezSupplierQueryManager>();
+            Services.AddScoped<IMachineDailyReportService, MachineDailyReportManager>();
+
+            Services.AddScoped<IPdfReportService, PdfReportService>();
+            Services.AddScoped<IMachineDailyReportService, MachineDailyReportManager>();
+
+            Services.AddScoped<IReportEmailService, ReportEmailService>();
+            Services.AddScoped<IReportEmailJob, ReportEmailJob>();
 
             Services.AddTransient<JwtAuthorizationHandler>();
             Services.AddHttpContextAccessor();
@@ -212,6 +230,13 @@ namespace AquaBusinessTrackingWebApi.Containers
                     "http://localhost:7255/api/");
             }).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
+            Services.AddHttpClient<INaturelGasApiService, NaturelGasManager>(
+            client =>
+            {
+                client.BaseAddress = new Uri(
+                    "http://localhost:7255/api/");
+            }).AddHttpMessageHandler<JwtAuthorizationHandler>();
+
             Services.AddScoped<AiToolRegistry>();
             Services.AddScoped<IAiTool, GetLast7DaysProductionTool>();
             Services.AddScoped<IAiTool, GetLast30DaysShipmentTool>();
@@ -223,6 +248,7 @@ namespace AquaBusinessTrackingWebApi.Containers
             Services.AddScoped<IAiTool, GetProductionStockByInventoryCodeTool>();
             Services.AddScoped<IAiTool, GetStockByInventoryCodeAndWidthCMTool>();
             Services.AddScoped<IAiTool, GetPlcMachineTagsDataByDateTools>();
+            Services.AddScoped<IAiTool, GetWithBySearchNaturelGasTool>();
 
             Services.AddHttpClient<IAiService, AiManager>(
                 client =>

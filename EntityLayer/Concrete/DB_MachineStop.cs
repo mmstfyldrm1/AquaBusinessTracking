@@ -9,8 +9,9 @@ namespace EntityLayer.Concrete
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public decimal? DowntimeDuration { get; set; }
-        public string? BreakLocation { get; set; }
-        public string? DowntimeReason { get; set; }
+        public string? PointofRupture { get; set; }
+        public string? ReasonDisconnection { get; set; }
+        public string? Equipment { get; set; }
         public string? Explanation { get; set; }
     }
 }

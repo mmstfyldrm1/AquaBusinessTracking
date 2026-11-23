@@ -74,7 +74,7 @@
                         <th>Tarih</th>
                         <th>Saat</th>
                         <th>İrsaliye No</th>
-                        <th>Cari</th>
+                        <th>Cari Adı</th>
                         <th>Plaka</th>
                         <th>Sevkiyat Miktar</th>
                         <th>Kantar Miktar</th>
@@ -146,7 +146,7 @@
                         <th>Tarih</th>
                         <th>Saat</th>
                         <th>İrsaliye No</th>
-                        <th>Cari</th>
+                        <th>Cari Adı</th>
                         <th>Plaka</th>
                         <th>Sevkiyat Miktar</th>
                         <th>Kantar Miktar</th>
@@ -177,62 +177,223 @@
 <div id="modalContainer"></div>
 
 <script>
-           function openModal(id = null) {
+
+    // SAYFA YÜKLENDİĞİNDE
+    $(document).ready(function () {
+
+        // DataTable
+        if ($('#example2').length && !$.fn.DataTable.isDataTable('#example2')) {
+            $('#example2').DataTable({
+                stateSave: true,
+                stateDuration: 60 * 60 * 24,
+                order: []
+            });
+        }
+
+    });
+
+
+    // MODAL AÇMA
+    async function openModal(id = null) {
+
         const url = id
             ? `/SalesScale/Edit/${id}`
             : `/SalesScale/Edit`;
 
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                document.getElementById('modalContainer').innerHTML = html;
-                const modalEl = document.getElementById('salesScaleModal');
-                const modal = new bootstrap.Modal(modalEl);
+        try {
 
-                modal.show();
+            const response = await fetch(url);
 
-                const form = modalEl.querySelector('form');
-                form.addEventListener('submit', function (e) {
+            if (!response.ok) {
+                throw new Error('Modal yüklenemedi.');
+            }
+
+            const html = await response.text();
+
+            const container = document.getElementById('modalContainer');
+
+            container.innerHTML = html;
+
+            const modalEl = document.getElementById('salesScaleModal');
+
+            if (!modalEl) {
+                throw new Error('salesScaleModal elementi bulunamadı.');
+            }
+
+            const modal = new bootstrap.Modal(modalEl);
+
+            // FORM İŞLEMLERİ
+            const form = modalEl.querySelector('form');
+
+            if (form) {
+
+                form.addEventListener('submit', async function (e) {
+
                     e.preventDefault();
 
-                    fetch('/SalesScale/Edit', {
-                        method: 'POST',
-                        body: new FormData(this)
-                    })
-                    .then(r => {
-                        if (r.ok) {
+                    const submitButton = form.querySelector('[type="submit"]');
+
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    try {
+
+                        const saveResponse = await fetch(form.action || '/SalesScale/Edit', {
+                            method: 'POST',
+                            body: new FormData(form)
+                        });
+
+                        if (saveResponse.ok) {
+
                             modal.hide();
-                            location.reload(null, false);
+
+                            modalEl.addEventListener('hidden.bs.modal', function () {
+                                container.innerHTML = '';
+                                location.reload();
+                            }, { once: true });
+
+                        } else {
+
+                            const errorText = await saveResponse.text();
+
+                            console.error('Kayıt hatası:', errorText);
+
+                            alert('Kayıt sırasında bir hata oluştu.');
+
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                            }
                         }
-                    });
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        alert('Sunucuya bağlanırken hata oluştu.');
+
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                        }
+                    }
+
                 });
+            }
 
-             const incoming = document.getElementById("Entity_ScaleQuantity");
-             const consumed = document.getElementById("Entity_DeliveryQuantity");
-             const remaining = document.getElementById("Entity_ScaleGap");
+            // CARİ SELECT2
+            initCompanySelect2(modalEl);
 
-             function calculateRemaining() {
+            // MİKTAR HESAPLAMA
+            const incoming = modalEl.querySelector('#Entity_ScaleQuantity');
+            const consumed = modalEl.querySelector('#Entity_DeliveryQuantity');
+            const remaining = modalEl.querySelector('#Entity_ScaleGap');
 
-                 const incomingValue = parseFloat(incoming.value) || 0;
-                 const consumedValue = parseFloat(consumed.value) || 0;
-              
+            if (incoming && consumed && remaining) {
 
-                 const result = incomingValue - consumedValue;
+                function calculateRemaining() {
 
-                 remaining.value = result.toFixed(2);
+                    const incomingValue = parseFloat(
+                        incoming.value.replace(',', '.')
+                    ) || 0;
+
+                    const consumedValue = parseFloat(
+                        consumed.value.replace(',', '.')
+                    ) || 0;
+
+                    remaining.value = (incomingValue - consumedValue).toFixed(2);
+                }
+
+                incoming.addEventListener('input', calculateRemaining);
+                consumed.addEventListener('input', calculateRemaining);
+
+                calculateRemaining();
+            }
+
+            modal.show();
+
+        } catch (error) {
+
+            console.error('Modal hatası:', error);
+
+            alert('Form açılırken bir hata oluştu.');
+        }
+    }
+
+
+    // CARİ SELECT2
+    function initCompanySelect2(modalEl) {
+
+         var ddlCompanyEl = modalEl.querySelector('#ddlCompany');
+
+
+         if (!ddlCompanyEl) {
+             return;
+         }
+
+         var formEl        = modalEl.querySelector('form');
+         var apiBase        = (formEl.dataset.apiBase || '').replace(/\/$/, '');
+         var jwtToken        = formEl.dataset.jwt || '';
+         var txtCompanyCode  = modalEl.querySelector('#txtCompanyCode');
+         var hdnCompanyName  = modalEl.querySelector('#hdnCompanyName');
+         var hdnCompanyRecId = modalEl.querySelector('#hdnCompanyRecId');
+         var $ddlCompany     = $(ddlCompanyEl);
+
+         function apiFetch(path) {
+             return fetch(`${apiBase}/DailyShipmentPlan/${path}`, {
+                 headers: {
+                     'Authorization': `Bearer ${jwtToken}`
+                 }
+             });
+         }
+
+
+         $ddlCompany.select2({
+             theme: 'bootstrap-5',
+             placeholder: 'Cari Seçiniz',
+             width: '100%',
+             dropdownParent: $(modalEl),
+             allowClear: true
+         });
+
+         // Cari listesini yükle
+         apiFetch('currentaccount')
+             .then(function (r) { return r.json(); })
+             .then(function (response) {
+
+                 var data = response.data || [];
+
+                 data.forEach(function (item) {
+                     var opt = new Option(item.currentAccountName, item.recId, false, false);
+                     opt.dataset.code = item.currentAccountCode;
+                     opt.dataset.name = item.currentAccountName;
+                     ddlCompanyEl.appendChild(opt);
+                 });
+
+                 $ddlCompany.trigger('change.select2');
+                 if (hdnCompanyRecId && hdnCompanyRecId.value) {
+                     $ddlCompany.val(hdnCompanyRecId.value).trigger('change');
+                 }
+             });
+
+
+         $ddlCompany.on('change', function () {
+
+             var recId = this.value;
+             var selectedOption = this.options[this.selectedIndex];
+
+             if (!recId) {
+                 if (txtCompanyCode) txtCompanyCode.value = '';
+                 if (hdnCompanyName) hdnCompanyName.value = '';
+                 if (hdnCompanyRecId) hdnCompanyRecId.value = '';
+                 return;
              }
 
-             incoming.addEventListener("input", calculateRemaining);
-             consumed.addEventListener("input", calculateRemaining);
+             if (txtCompanyCode)  txtCompanyCode.value  = selectedOption.dataset.code || '';
+             if (hdnCompanyName)  hdnCompanyName.value  = selectedOption.dataset.name || '';
+             if (hdnCompanyRecId) hdnCompanyRecId.value = recId;
+         });
+     }
 
-
-             calculateRemaining();
-            });
-        $(document).ready(function () {
-        $('#salesScaleTable').DataTable({
-            stateSave: true,
-            stateDuration: 60 * 60 * 24
-        });
-    });
-    }
 </script>
+
+

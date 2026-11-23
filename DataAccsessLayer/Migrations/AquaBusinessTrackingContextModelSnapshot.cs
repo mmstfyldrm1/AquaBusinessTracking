@@ -17,7 +17,7 @@ namespace DataAccsessLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -1435,6 +1435,74 @@ namespace DataAccsessLayer.Migrations
                     b.ToTable("Db_ElectricShiftWork");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_EmailReportRecipient", b =>
+                {
+                    b.Property<int>("RecId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecId"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<short?>("InUse")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("ReceiptDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReportCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("ReportCode", "EmailAddress")
+                        .IsUnique()
+                        .HasFilter("[DeleteDate] IS NULL");
+
+                    b.ToTable("DB_EmailReportRecipient", (string)null);
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_FavoriteMenuItem", b =>
                 {
                     b.Property<int>("RecId")
@@ -1997,9 +2065,6 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("BreakLocation")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
@@ -2012,11 +2077,11 @@ namespace DataAccsessLayer.Migrations
                     b.Property<decimal?>("DowntimeDuration")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("DowntimeReason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Equipment")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
@@ -2026,6 +2091,12 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<DateTime?>("InsertDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PointofRupture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReasonDisconnection")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ReceiptDate")
                         .HasColumnType("datetime2");
@@ -2776,8 +2847,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CurrentAccountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CurrentAccountName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -2791,6 +2864,9 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<decimal>("EmptyQuantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("ExternalSeq")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("FilledQuantity")
                         .HasColumnType("decimal(18,2)");
@@ -3005,8 +3081,10 @@ namespace DataAccsessLayer.Migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CurrentAccountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CurrentAccountName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DeleteDate")
@@ -3024,6 +3102,9 @@ namespace DataAccsessLayer.Migrations
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
+
+                    b.Property<long?>("ExternalSeq")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("GapDesicion")
                         .IsRequired()
@@ -3457,6 +3538,9 @@ namespace DataAccsessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DailyShipmentPlanId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
@@ -3493,6 +3577,8 @@ namespace DataAccsessLayer.Migrations
                     b.HasKey("RecId");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("DailyShipmentPlanId");
 
                     b.HasIndex("DepartmentId");
 
@@ -5037,6 +5123,27 @@ namespace DataAccsessLayer.Migrations
                     b.Navigation("Shift");
                 });
 
+            modelBuilder.Entity("EntityLayer.Concrete.DB_EmailReportRecipient", b =>
+                {
+                    b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.HasOne("EntityLayer.Concrete.DB_Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Shift");
+                });
+
             modelBuilder.Entity("EntityLayer.Concrete.DB_FavoriteMenuItem", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.DB_AppUser", "AppUser")
@@ -5620,6 +5727,10 @@ namespace DataAccsessLayer.Migrations
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("EntityLayer.Concrete.DB_DailyShipmentPlan", "DailyShipmentPlan")
+                        .WithMany()
+                        .HasForeignKey("DailyShipmentPlanId");
+
                     b.HasOne("EntityLayer.Concrete.DB_Department", "Department")
                         .WithMany("ShipmentOrderPlan")
                         .HasForeignKey("DepartmentId")
@@ -5631,6 +5742,8 @@ namespace DataAccsessLayer.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("DailyShipmentPlan");
 
                     b.Navigation("Department");
 

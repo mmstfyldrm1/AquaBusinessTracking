@@ -4,9 +4,13 @@
     {
         public TimeSpan ScaleHours { get; set; } = DateTime.Now.TimeOfDay;
 
+        public long? ExternalSeq { get; set; }
+
         public string WaybillNo { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
+
+        public int CurrentAccountId { get; set; }
 
         public string TruckPlate { get; set; }
 

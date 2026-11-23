@@ -1,6 +1,7 @@
 ﻿using DataAccsessLayer.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace DataAccsessLayer.Concrete.Repository
 {
@@ -92,6 +93,20 @@ namespace DataAccsessLayer.Concrete.Repository
             _logger.LogInformation("Entity güncellendi (SaveChanges bekleniyor). ({Entity})", typeof(T).Name);
 
             await Task.CompletedTask;
+        }
+
+        public async Task<List<T>> TGetAll(Expression<Func<T, bool>> predicate)
+        {
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            _logger.LogInformation(
+                "{Entity} filtreli olarak getiriliyor.",
+                typeof(T).Name);
+
+            return await _context.Set<T>()
+                .Where(predicate)
+                .ToListAsync();
         }
     }
 }

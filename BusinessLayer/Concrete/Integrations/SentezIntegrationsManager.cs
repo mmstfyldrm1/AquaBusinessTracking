@@ -21,14 +21,14 @@ namespace BusinessLayer.Concrete.Integrations
 
             try
             {
-                var loginResponse = await _httpClient.PostAsync("http://10.54.100.110:8484/api/Authentication/Login?userCode=Sentez8&password=Mustafa.41045416&companyCode=54500&userType=0", null);
+                var loginResponse = await _httpClient.PostAsync("http://10.154.210.69:34123/api/Authentication/Login?userCode=Sentez8&password=Mustafa.41045416&companyCode=54500&userType=0", null);
                 var loginResult = await loginResponse.Content.ReadFromJsonAsync<SentezLoginDto>();
 
                 var token = loginResult?.Data;
 
                 var request = new HttpRequestMessage(
                     HttpMethod.Post,
-                    "http://10.54.100.110:8484/api/Utility/UtilityQuery");
+                    "http://10.154.210.69:34123/api/Utility/UtilityQuery");
 
                 request.Headers.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
@@ -79,12 +79,12 @@ namespace BusinessLayer.Concrete.Integrations
         public async Task<SentezUpdateResponseDto?> ExecuteUpdateQueryAsync(string query)
         {
             var loginResponse = await _httpClient.PostAsync(
-         "http://10.54.100.110:8484/api/Authentication/Login?userCode=Sentez8&password=Mustafa.41045416&companyCode=54500&userType=0",
+         "http://10.154.210.69:34123/api/Authentication/Login?userCode=Sentez8&password=Mustafa.41045416&companyCode=54500&userType=0",
          null);
             var loginResult = await loginResponse.Content.ReadFromJsonAsync<SentezLoginDto>();
             var token = loginResult?.Data;
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://10.54.100.110:8484/api/Utility/UtilityNonQuery");
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://10.154.210.69:34123/api/Utility/UtilityNonQuery");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             request.Content = JsonContent.Create(new { query });
 

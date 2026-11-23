@@ -11,7 +11,6 @@
         public string District { get; set; }
         public string? Address { get; set; }
         public DateTime ReceiptDate { get; set; } = DateTime.Now;
-
         public int DepartmentId { get; set; }
 
         public string ShiftName { get; set; }

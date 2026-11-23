@@ -86,8 +86,8 @@ namespace AquaBusinessTrackingWebUI.Controllers
             {
                 Value = x.RecId.ToString(),
                 Text = x.ShipmentNo.ToString(),
-            })
-                 .ToList() ?? new();
+            }).ToList() ?? new();
+
 
             ViewBag.Plans = plans;
 

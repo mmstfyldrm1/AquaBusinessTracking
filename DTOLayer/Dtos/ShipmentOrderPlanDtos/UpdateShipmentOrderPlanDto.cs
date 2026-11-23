@@ -23,7 +23,7 @@
 
         public DateTime? UpdateDate { get; set; }
 
-
+        public int? DailyShipmentPlanId { get; set; }
 
         public DateTime? DeleteDate { get; set; }
 

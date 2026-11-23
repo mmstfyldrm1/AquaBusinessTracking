@@ -7,5 +7,10 @@ namespace BusinessLayer.Abstract
         public Task<List<RawMaterialIntakesDto>> GetWithDetails();
 
         public Task<List<RawMaterialIntakesDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
+
+        public Task<RawMaterialIntakesDto?> GetByExternalSeq(long? externalSeq);
+
     }
+
+
 }

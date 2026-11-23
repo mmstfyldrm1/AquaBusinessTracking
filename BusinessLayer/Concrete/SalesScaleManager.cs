@@ -35,5 +35,14 @@ namespace BusinessLayer.Concrete
             var dtos = _mapper.Map<List<SalesScaleDto>>(entities);
             return dtos;
         }
+
+        public async Task<SalesScaleDto?> GetByExternalSeq(long? externalSeq)
+        {
+            var entity = await _repo.GetByExternalSeq(externalSeq);
+            return _mapper.Map<SalesScaleDto>(entity);
+        }
+
+
+
     }
 }

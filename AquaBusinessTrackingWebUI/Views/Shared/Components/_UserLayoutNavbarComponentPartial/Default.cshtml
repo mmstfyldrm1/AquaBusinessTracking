@@ -61,12 +61,17 @@
                             </div>
                             <div class="app-title">Personeller</div>
                         </div>
-                        <div class="col text-center">
-                            <div class="app-box mx-auto bg-gradient-info text-white">
-                                <ion-icon name="business-outline"></ion-icon>
-                            </div>
-                            <div class="app-title">Firmalar / Cariler</div>
-                        </div>
+                        @if (CurrentUser.HasPermission("KAGITSATINALMA.SupplierDashboard.View"))
+                        {
+                            <a href="~/SupplierDashboard/Index" class="col text-center text-decoration-none text-reset">
+
+                                <div class="app-box mx-auto bg-gradient-info text-white">
+                                    <ion-icon name="business-outline"></ion-icon>
+                                </div>
+                                <div class="app-title">Hammadde Tedarik</div>
+
+                            </a>
+                        }
                         @if (CurrentUser.HasPermission("PLANLAMA.DetailProduction.View"))
                         {
                             <a href="~/DetailProduction/Index" class="col text-center text-decoration-none text-reset">

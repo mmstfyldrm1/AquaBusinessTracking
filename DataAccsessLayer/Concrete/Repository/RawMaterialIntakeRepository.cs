@@ -37,5 +37,11 @@ namespace DataAccsessLayer.Concrete.Repository
 
             return await query.ToListAsync();
         }
+
+        public async Task<DB_RawMaterialIntake?> GetByExternalSeq(long? externalSeq)
+        {
+            return await _context.Db_RawMaterialIntake.FirstOrDefaultAsync(x => x.ExternalSeq == externalSeq && x.DeleteDate == null);
+
+        }
     }
 }

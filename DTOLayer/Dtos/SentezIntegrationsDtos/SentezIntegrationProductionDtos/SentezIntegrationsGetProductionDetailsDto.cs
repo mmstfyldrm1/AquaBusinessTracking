@@ -4,7 +4,7 @@
     {
         public decimal? RecId { get; set; }
 
-        public decimal? ParentId { get; set; }
+        public decimal? ParentSerialId { get; set; }
         public DateTime? ReceiptDate { get; set; }
 
         public DateTime? StartTime { get; set; }

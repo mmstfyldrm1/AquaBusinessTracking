@@ -8,7 +8,11 @@
 
         public string WaybillNo { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
+
+        public string? CurrentAccountCode { get; set; }
+
+        public int CurrentAccountId { get; set; }
 
         public string TruckPlate { get; set; }
 
@@ -23,7 +27,7 @@
 
         public decimal NetQuantity { get; set; }
 
-        public DateTime? ReceiptDate { get; set; }
+        public DateTime? ReceiptDate { get; set; } = DateTime.Now;
 
         public int? ShiftId { get; set; }
         public int? AppUserId { get; set; }

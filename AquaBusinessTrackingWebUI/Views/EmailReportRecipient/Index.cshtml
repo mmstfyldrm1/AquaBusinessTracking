@@ -1,0 +1,319 @@
+﻿```cshtml
+@model List<AquaBusinessTrackingWebUI.Models.Email.EmailReportRecipientViewModel>
+
+@{
+    ViewData["Title"] = "E-posta Rapor Alıcıları";
+    Layout = "~/Views/_UserLayout/Index.cshtml";
+}
+
+<div class="container-fluid">
+
+    <!-- Sayfa Başlığı -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">E-posta Rapor Alıcıları</h4>
+            <p class="text-muted mb-0">
+                Zamanlanmış raporların gönderileceği adresleri yönetin.
+            </p>
+        </div>
+
+        <button type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#addRecipientModal">
+            <i class="fas fa-plus"></i> Yeni Alıcı
+        </button>
+    </div>
+
+    <!-- Bildirimler -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Alıcı Listesi -->
+    <div class="card">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Rapor Kodu</th>
+                            <th>E-posta Adresi</th>
+                            <th>Durum</th>
+                            <th class="text-end">İşlemler</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            @item.ReportCode
+                                        </span>
+                                    </td>
+
+                                    <td>@item.EmailAddress</td>
+
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge bg-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Pasif</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <!-- Düzenle -->
+                                        <button type="button"
+                                                class="btn btn-sm btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal_@item.RecId">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+
+                                        <!-- Sil -->
+                                        <form asp-controller="EmailReportRecipient"
+                                              asp-action="Delete"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Bu alıcıyı silmek istediğinize emin misiniz?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@item.RecId" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fas fa-envelope-open fa-2x mb-2"></i>
+                                    <p class="mb-0">Henüz e-posta alıcısı eklenmemiş.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Düzenleme Modalları -->
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <div class="modal fade"
+                 id="editModal_@item.RecId"
+                 tabindex="-1"
+                 aria-hidden="true">
+
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <form asp-controller="EmailReportRecipient"
+                              asp-action="Update"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-edit me-2"></i>
+                                    E-posta Alıcısını Düzenle
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <input type="hidden"
+                                       name="RecId"
+                                       value="@item.RecId" />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Rapor Kodu</label>
+
+                                    <select name="ReportCode"
+                                            class="form-select"
+                                            required>
+
+                                        <option value="DAILY_PRODUCTION"
+                                                selected="@(item.ReportCode == "DAILY_PRODUCTION")">
+                                            Günlük Üretim
+                                        </option>
+
+                                        <option value="DAILY_ENERGY"
+                                                selected="@(item.ReportCode == "DAILY_ENERGY")">
+                                            Günlük Enerji
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">E-posta Adresi</label>
+
+                                    <input type="email"
+                                           name="EmailAddress"
+                                           class="form-control"
+                                           value="@item.EmailAddress"
+                                           maxlength="320"
+                                           required />
+                                </div>
+
+                                <div class="form-check form-switch">
+                                    <input type="checkbox"
+                                           name="IsActive"
+                                           value="true"
+                                           class="form-check-input"
+                                           id="active_@item.RecId"
+                                           checked="@item.IsActive" />
+
+                                    <label class="form-check-label"
+                                           for="active_@item.RecId">
+                                        Aktif
+                                    </label>
+
+                                    <input type="hidden"
+                                           name="IsActive"
+                                           value="false" />
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    İptal
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>
+                                    Güncelle
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+<!-- Yeni Alıcı Modalı -->
+<div class="modal fade"
+     id="addRecipientModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form asp-controller="EmailReportRecipient"
+                  asp-action="Add"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-envelope me-2"></i>
+                        Yeni E-posta Alıcısı
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Rapor Kodu</label>
+
+                        <select name="ReportCode"
+                                class="form-select"
+                                required>
+
+                            <option value="">Rapor seçiniz</option>
+                            <option value="DAILY_PRODUCTION">Günlük Üretim</option>
+                            <option value="DAILY_ENERGY">Günlük Enerji</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">E-posta Adresi</label>
+
+                        <input type="email"
+                               name="EmailAddress"
+                               class="form-control"
+                               maxlength="320"
+                               placeholder="ornek@firma.com"
+                               required />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>
+                        Kaydet
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+```

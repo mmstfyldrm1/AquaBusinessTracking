@@ -1,7 +1,7 @@
 ﻿@using DTOLayer.Dtos.PapperMachineChemicalDtos
 @model ModalViewModel<PapperMachineChemicalDto>
 
-    <style>
+<style>
     .select2-container {
         width: 100% !important;
     }
@@ -21,7 +21,7 @@
         .select2-container .select2-selection__arrow {
             height: calc(2.25rem + 2px) !important;
         }
-    </style>
+</style>
 
 <div class="modal fade" id="papperMachineChemicalModal" tabindex="-1">
 
@@ -68,31 +68,32 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Stok Kodu</label>
+                            <label class="form-label">Stok Adı</label>
 
-                            <select asp-for="Entity.InventoryCode"
-                                    id="InventoryCode" required
+                            <select asp-for="Entity.InventoryName"
+                                    id="InventoryName"
+                                    required
                                     class="form-select inventory-select">
 
                                 <option value="">Seçiniz</option>
 
                                 @foreach (var item in ViewBag.InventoryList)
                                 {
-                                    <option value="@item.Value" data-name="@item.Text">
-                                        @item.Value
+                                    <option value="@item.Text" data-code="@item.Value">
+                                        @item.Text
                                     </option>
                                 }
                             </select>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Stok Adı</label>
+                            <label class="form-label">Stok Kodu</label>
 
                             <input type="text"
-                                   asp-for="Entity.InventoryName"
-                                   id="InventoryName"
+                                   asp-for="Entity.InventoryCode"
+                                   id="InventoryCode"
                                    class="form-control"
-                                   placeholder="Stok adı giriniz" />
+                                   readonly />
                         </div>
 
                         <!-- GELEN MİKTAR -->
@@ -137,6 +138,7 @@
                                    class="form-control"
                                    placeholder="Kalan miktar giriniz"
                                    readonly
+                                   hidden="true"
                                    step="0.01" />
 
 
@@ -157,7 +159,7 @@
 
                         </div>
 
-                      
+
 
                         <!-- VARDIYA -->
                         <div class="col-md-6">
@@ -231,4 +233,3 @@
 
 
 
-    

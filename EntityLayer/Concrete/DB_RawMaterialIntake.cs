@@ -7,11 +7,15 @@ namespace EntityLayer.Concrete
         [Key]
         public int RecId { get; set; }
 
+        public long? ExternalSeq { get; set; }
+
         public TimeSpan ScaleHours { get; set; } = DateTime.Now.TimeOfDay;
 
         public string WaybillNo { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
+
+        public int CurrentAccountId { get; set; }
 
         public string TruckPlate { get; set; }
 

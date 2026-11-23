@@ -21,14 +21,19 @@
                 </th>
 
                 <th>
+                   Ekipman
+                </th>
+
+                <th>
                    Süre (dk)
                 </th>
             </tr>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.BreakLocation</td>
-                    <td>@item.DowntimeReason</td>
+                    <td>@item.PointofRupture</td>
+                    <td>@item.ReasonDisconnection</td>
+                    <td>@item.Equipment</td>
                     <td>@item.DowntimeDuration</td>
                 </tr>
                

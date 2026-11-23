@@ -9,6 +9,8 @@
 
         public DateTime ScaleHours { get; set; } = DateTime.Now;
 
+        public int CurrentAccountId { get; set; }
+
         public decimal ScaleNo { get; set; }
 
         public string DeliveryNumber { get; set; }
@@ -17,6 +19,8 @@
         public string ShiftName { get; set; }
 
         public string CurrentAccountName { get; set; }
+
+        public string CurrentAccountCode { get; set; }
 
         public string TruckPlate { get; set; }
 

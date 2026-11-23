@@ -1,0 +1,124 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@model DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardSummaryDto
+<div class="row g-3">
+    <h5>Bugün Gelen</h5>
+    <!-- Toplam Giriş -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    Toplam Giriş
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.TotalQuantity.ToString("N0")
+                </h4>
+
+                <span class="text-muted">
+                    Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Net Miktar -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    Net Miktar
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.NetQuantity.ToString("N0")
+                </h4>
+
+                <span class="text-muted">
+                    Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Onaylanan -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    Onaylanan
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.ApprovedQuantity.ToString("N0")
+                </h4>
+
+                <span class="text-muted">
+                    Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Reddedilen -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    Reddedilen
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.RejectedQuantity.ToString("N0")
+                </h4>
+
+                <span class="text-muted">
+                    Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- İade -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    İade Miktarı
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.ReturnedQuantity.ToString("N0")
+                </h4>
+
+                <span class="text-muted">
+                    Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Kesinti -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small mb-2">
+                    Kesinti Oranı
+                </div>
+
+                <h4 class="fw-bold mb-1">
+                    @Model.DeductionRate.ToString("N2")%
+                </h4>
+
+                <span class="text-muted">
+                    @Model.TotalDeduction.ToString("N0") Kg
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>

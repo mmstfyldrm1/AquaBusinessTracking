@@ -2,8 +2,83 @@
 @using AquaBusinessTrackingWebUI.Models
 @model ModalViewModel<SalesScaleDto>
 
-  
 
+<style>
+    #salesScaleModal .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    #salesScaleModal .form-control,
+    #salesScaleModal .form-select {
+        font-size: 13px;
+    }
+
+    #salesScaleModal .modal-body {
+        padding: 16px;
+    }
+
+    #salesScaleModal .modal-footer {
+        padding: 10px 16px;
+    }
+
+    #salesScaleModal .form-control:focus,
+    #salesScaleModal .form-select:focus {
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, .10);
+    }
+
+    /* ===== SELECT2: diğer form-control'ler gibi görünsün ===== */
+    #salesScaleModal .select2-container {
+        width: 100% !important;
+    }
+
+        #salesScaleModal .select2-container .select2-selection--single {
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 13px;
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            display: flex;
+            align-items: center;
+        }
+
+    #salesScaleModal .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        padding: 0;
+        line-height: 1.5;
+        font-size: 13px;
+        color: #212529;
+    }
+
+    #salesScaleModal .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+        top: 50%;
+        transform: translateY(-50%);
+        right: .5rem;
+    }
+
+    #salesScaleModal .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    #salesScaleModal .select2-container--bootstrap-5.select2-container--open .select2-selection {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, .10);
+    }
+
+    #salesScaleModal .select2-dropdown {
+        font-size: 13px;
+        border: 1px solid #ced4da;
+        border-radius: .375rem;
+        z-index: 2000;
+    }
+
+    #salesScaleModal .select2-results__options {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    #salesScaleModal .select2-search--dropdown .select2-search__field {
+        font-size: 13px;
+        border-radius: .375rem;
+    }
+</style>
 
 <div class="modal fade" id="salesScaleModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -14,10 +89,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form method="post" action="/SalesScale/Edit">
+            <form method="post" action="/SalesScale/Edit"
+                  data-api-base="@ViewBag.ApiBaseUrl"
+                  data-jwt="@ViewBag.JwtToken">
                 <div class="modal-body">
 
                     <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+                    <input type="hidden" asp-for="Entity.CurrentAccountId" id="hdnCompanyRecId" />
 
                     @if (Model.IsEdit)
                     {
@@ -41,39 +119,56 @@
                             <input type="time" asp-for="Entity.ScaleHours" class="form-control" />
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <label class="form-label">İrsaliye No</label>
                             <input type="text" asp-for="Entity.DeliveryNumber" class="form-control" />
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label">Cari Adı</label>
-                            <input type="text" asp-for="Entity.CurrentAccountName" class="form-control" />
+                        <div class="col-md-3">
+                            <label class="form-label">Cari Kodu</label>
+                            <input type="text" id="txtCompanyCode"
+                                   asp-for="Entity.CurrentAccountCode"
+                                   class="form-control" readonly
+                                   placeholder="Otomatik dolar" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Cari Adı (Firma)</label>
+                            <select id="ddlCompany" class="form-select" style="width:100%;" required>
+                                <option value="">Cari Seçiniz</option>
+                            </select>
+                            <input type="hidden" asp-for="Entity.CurrentAccountName" id="hdnCompanyName" />
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Araç Plaka</label>
-                            <input type="text" asp-for="Entity.TruckPlate" class="form-control" placeholder="34 ABC 123" />
+                            <input type="text" asp-for="Entity.TruckPlate"
+                                   class="form-control" placeholder="34 ABC 123" />
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Sevkiyat Miktar</label>
-                            <input type="text" step="0.01"   asp-for="Entity.DeliveryQuantity" class="form-control" />
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.DeliveryQuantity" class="form-control" />
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Kantar Miktar</label>
-                            <input type="number" step="0.01"  asp-for="Entity.ScaleQuantity" class="form-control"  />
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.ScaleQuantity" class="form-control" />
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Fark</label>
-                            <input type="number"  asp-for="Entity.ScaleGap" class="form-control" readonly="true"/>
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.ScaleGap"
+                                   class="form-control bg-light fw-bold" readonly />
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Sorumlu </label>
-                            <select asp-for="Entity.GapSuperVisiorId" required asp-items="ViewBag.Users" class="form-select">
+                            <label class="form-label">Sorumlu</label>
+                            <select asp-for="Entity.GapSuperVisiorId"
+                                    required asp-items="ViewBag.Users" class="form-select">
                                 <option value="">Sorumlu Kişi Seçiniz</option>
                             </select>
                         </div>
@@ -85,7 +180,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Vardiya</label>
-                            <select asp-for="Entity.ShiftId" required asp-items="ViewBag.Shifts" class="form-select">
+                            <select asp-for="Entity.ShiftId"
+                                    required asp-items="ViewBag.Shifts" class="form-select">
                                 <option value="">Vardiya Seçiniz</option>
                             </select>
                         </div>
@@ -96,7 +192,8 @@
                                 <span class="input-group-text">
                                     <ion-icon name="person-outline"></ion-icon>
                                 </span>
-                                <input type="text" class="form-control" value="@ViewBag.AppUserName" disabled />
+                                <input type="text" class="form-control"
+                                       value="@ViewBag.AppUserName" disabled />
                             </div>
                         </div>
 
@@ -108,7 +205,10 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+
                     <button type="submit" class="btn btn-success px-4">
                         <ion-icon name="save-outline" class="me-1"></ion-icon>
                         @(Model.IsEdit ? "Güncelle" : "Kaydet")
@@ -119,4 +219,3 @@
         </div>
     </div>
 </div>
-

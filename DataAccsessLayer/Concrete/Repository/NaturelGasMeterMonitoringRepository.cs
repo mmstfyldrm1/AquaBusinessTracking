@@ -36,7 +36,7 @@ namespace DataAccsessLayer.Concrete.Repository
 
         public async Task<List<DB_NaturelGasMeterMonitoring>> GetLast30DaysNaturelGas()
         {
-            DateTime startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            DateTime startDate = DateTime.Now.AddDays(-30); //new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             DateTime endDate = DateTime.Today.AddDays(1);
 
             return await _context.Db_NaturelGasMeterMonitoring
@@ -52,6 +52,17 @@ namespace DataAccsessLayer.Concrete.Repository
                 })
                 .OrderBy(x => x.ReceiptDate)
                 .ToListAsync();
+        }
+
+        public async Task<List<DB_NaturelGasMeterMonitoring>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+
+            var query = _context.Db_NaturelGasMeterMonitoring
+                .Include(x => x.Shift)
+                .Include(x => x.AppUser)
+                .Where(x => x.ReceiptDate >= StartDate && x.ReceiptDate < EndDate);
+
+            return await query.ToListAsync();
         }
     }
 }

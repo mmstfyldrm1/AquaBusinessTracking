@@ -50,7 +50,11 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
             var response = await client.GetAsync($"{_apiSettings.BaseUrl}/SalesScale/details");
             if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
                 return View(new List<SalesScaleDto>());
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<SalesScaleDto>>(json);
             if (values == null || !values.Any())
@@ -97,6 +101,7 @@ namespace AquaBusinessTrackingWebUI.Controllers
             await LoadUserListAsync();
             await LoadShiftListAsync();
             ViewBag.AppUserName = User.Identity?.Name;
+
 
             if (id.HasValue)
             {

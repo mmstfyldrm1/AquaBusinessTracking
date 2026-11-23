@@ -71,6 +71,7 @@ namespace DataAccsessLayer.Seed
                 ("ADMIN", "AdminLayoutStatisticComponentPartial", "Plc Özet Tablosu"),
                 ("ADMIN", "AdminLayoutStockComponentPartial", "Üretim Stok Tablosu"),
                 ("ADMIN", "AdminLayoutSummaryComponentPartial", "Genel Özet"),
+                ("ADMIN", "AdminLayoutBoilerComponentPartial", "Buhar"),
             
                 // ================= BOBIN KESME =================
                 ("BOBINKESME", "WinderCoilLength", "Bobin Takip"),
@@ -81,6 +82,7 @@ namespace DataAccsessLayer.Seed
                 ("KAGITSATINALMA", "WastePaperCost", "Hammadde Maliyet"),
                 ("KAGITSATINALMA", "MassWasteSupplier", "Kütle Denklik Firma Bazlı"),
                 ("KAGITSATINALMA", "MassWasteBalance", "Kütle Denklik Atık Kodu Bazlı"),
+                 ("KAGITSATINALMA", "SupplierDashboard", "Tedarikçi Portalı"),
             
                 // ================= PLANLAMA =================
                 ("PLANLAMA", "Planning", "Dün Sarf Edilenler"),

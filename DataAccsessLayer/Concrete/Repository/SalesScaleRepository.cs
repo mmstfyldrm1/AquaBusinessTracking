@@ -63,5 +63,11 @@ namespace DataAccsessLayer.Concrete.Repository
 
             return await query.ToListAsync();
         }
+
+        public async Task<DB_SalesScale?> GetByExternalSeq(long? externalSeq)
+        {
+            return await _context.Db_SalesScale.FirstOrDefaultAsync(x => x.ExternalSeq == externalSeq && x.DeleteDate == null);
+
+        }
     }
 }

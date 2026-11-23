@@ -25,9 +25,20 @@ namespace AIAgent.Orchestration.Manager
             if (string.IsNullOrWhiteSpace(message))
                 return "Lütfen bir soru yazın.";
 
+            var provider = _configuration["AI:Provider"] ?? "Nvidia";
+
             var apiKey = _configuration["Nvidia:ApiKey"];
             var model = _configuration["Nvidia:Model"];
             var maxTokens = _configuration["Nvidia:MaxTokens"];
+
+            if (provider.Equals("Nvidia", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrWhiteSpace(apiKey))
+                    throw new Exception("NVIDIA API Key bulunamadı.");
+
+                if (string.IsNullOrWhiteSpace(model))
+                    throw new Exception("NVIDIA Model bulunamadı.");
+            }
 
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new Exception("NVIDIA API Key bulunamadı.");
@@ -62,7 +73,7 @@ namespace AIAgent.Orchestration.Manager
 
             var tools = _toolRegistry
                 .GetAll()
-                .Select(tool => new
+                .Select(tool => (object)new
                 {
                     type = "function",
                     function = new
@@ -79,7 +90,14 @@ namespace AIAgent.Orchestration.Manager
 
             for (int i = 0; i < maxToolCalls; i++)
             {
-                var response = await SendToNvidiaAsync(apiKey, maxTokens, model, messages, tools);
+                var response = provider.Equals("Local", StringComparison.OrdinalIgnoreCase)
+                     ? await SendToLocalAsync(messages, tools)
+                     : await SendToNvidiaAsync(
+                         apiKey!,
+                         maxTokens!,
+                         model!,
+                         messages,
+                         tools);
 
                 Console.WriteLine("========== AI RAW RESPONSE ==========");
                 Console.WriteLine(response);
@@ -185,6 +203,54 @@ namespace AIAgent.Orchestration.Manager
 
             throw new Exception("AI maksimum Tool çağrısı limitine ulaştı.");
 
+        }
+
+        private async Task<string> SendToLocalAsync(List<object> messages, List<object> tools)
+        {
+            var baseUrl = _configuration["LocalAI:BaseUrl"];
+            var model = _configuration["LocalAI:Model"];
+            var maxTokens = _configuration["LocalAI:MaxTokens"];
+
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new Exception("LocalAI BaseUrl bulunamadı.");
+
+            if (string.IsNullOrWhiteSpace(model))
+                throw new Exception("LocalAI Model bulunamadı.");
+
+            var requestBody = new
+            {
+                model = model,
+                messages = messages,
+                tools = tools,
+                max_tokens = int.Parse(maxTokens ?? "2048"),
+                temperature = 0,
+                stream = false
+            };
+
+            var jsonBody = JsonSerializer.Serialize(requestBody);
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                baseUrl);
+
+            request.Content = new StringContent(
+                jsonBody,
+                Encoding.UTF8,
+                "application/json");
+
+            using var response = await _httpClient.SendAsync(request);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return responseContent;
+            }
+
+            throw new Exception(
+                $"LM Studio API Hatası | " +
+                $"StatusCode: {(int)response.StatusCode} {response.StatusCode} | " +
+                $"Response: {responseContent}");
         }
 
         public async Task<string> SendToNvidiaAsync(string apiKey, string maxTokens, string model, List<object> messages, object tools)

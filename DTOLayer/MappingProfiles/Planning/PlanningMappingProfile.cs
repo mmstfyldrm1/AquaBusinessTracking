@@ -45,11 +45,17 @@ namespace DTOLayer.MappingProfiles.Planning
             CreateMap<DB_ShipmentOrderPlan, UpdateShipmentOrderPlanDto>().ReverseMap();
             CreateMap<DB_ShipmentOrderPlan, ShipmentOrderPlanDto>().ReverseMap();
 
+
+
             CreateMap<DB_ShipmentOrderPlan, ShipmentOrderPlanDto>()
                 .ForMember(x => x.ShiftName,
                     x => x.MapFrom(s => s.Shift != null ? s.Shift.ShiftName : null))
                 .ForMember(x => x.CreatedByName,
-                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null));
+                    x => x.MapFrom(s => s.AppUser != null ? s.AppUser.UserName : null))
+                .ForMember(x => x.ShipmentNo,
+                    x => x.MapFrom(s => s.DailyShipmentPlan != null ? s.DailyShipmentPlan.ShipmentNo : null));
+
+
 
 
             CreateMap<DB_ShipmentOrderPlanDetail, CreateShipmentOrderPlanDetailDto>().ReverseMap();

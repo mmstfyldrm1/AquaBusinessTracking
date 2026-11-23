@@ -7,7 +7,6 @@ namespace AquaBusinessTrackingWebUI.Models
     {
         public List<AdminDahboardDaysStock> Remaning { get; set; } = new();
         public List<NaturelGasMeterMonitoringDto> NaturelGas { get; set; } = new();
-
         public decimal TotalGas => NaturelGas.Sum(x => x.StandartCubicmeter);
         public decimal TotalRemaning => Remaning.Sum(x => x.Production);
         public decimal GasPerKg => TotalRemaning > 0 ? Math.Round(TotalGas / TotalRemaning, 2) : 0;

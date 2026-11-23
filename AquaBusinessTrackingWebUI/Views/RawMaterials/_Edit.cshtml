@@ -2,6 +2,83 @@
 @using AquaBusinessTrackingWebUI.Models
 @model ModalViewModel<RawMaterialIntakesDto>
 
+<style>
+    #rawMaterialsModal .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    #rawMaterialsModal .form-control,
+    #rawMaterialsModal .form-select {
+        font-size: 13px;
+    }
+
+    #rawMaterialsModal .modal-body {
+        padding: 16px;
+    }
+
+    #rawMaterialsModal .modal-footer {
+        padding: 10px 16px;
+    }
+
+    #rawMaterialsModal .form-control:focus,
+    #rawMaterialsModal .form-select:focus {
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, .10);
+    }
+
+    /* ===== SELECT2: diğer form-control'ler gibi görünsün ===== */
+    #rawMaterialsModal .select2-container {
+        width: 100% !important;
+    }
+
+        #rawMaterialsModal .select2-container .select2-selection--single {
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 13px;
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            display: flex;
+            align-items: center;
+        }
+
+    #rawMaterialsModal .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        padding: 0;
+        line-height: 1.5;
+        font-size: 13px;
+        color: #212529;
+    }
+
+    #rawMaterialsModal .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+        top: 50%;
+        transform: translateY(-50%);
+        right: .5rem;
+    }
+
+    #rawMaterialsModal .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    #rawMaterialsModal .select2-container--bootstrap-5.select2-container--open .select2-selection {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, .10);
+    }
+
+    #rawMaterialsModal .select2-dropdown {
+        font-size: 13px;
+        border: 1px solid #ced4da;
+        border-radius: .375rem;
+        z-index: 2000;
+    }
+
+    #rawMaterialsModal .select2-results__options {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    #rawMaterialsModal .select2-search--dropdown .select2-search__field {
+        font-size: 13px;
+        border-radius: .375rem;
+    }
+</style>
+
 <div class="modal fade" id="rawMaterialsModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -11,10 +88,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <form method="post" action="/RawMaterialIntakes/Edit">
+            <form method="post" action="/RawMaterials/Edit"
+                  data-api-base="@ViewBag.ApiBaseUrl"
+                  data-jwt="@ViewBag.JwtToken">
                 <div class="modal-body">
 
                     <input type="hidden" name="IsEdit" value="@Model.IsEdit.ToString().ToLower()" />
+                    <input type="hidden" asp-for="Entity.CurrentAccountId" id="hdnCompanyRecId" />
 
                     @if (Model.IsEdit)
                     {
@@ -40,17 +120,28 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">İrsaliye No</label>
                             <input type="text" asp-for="Entity.WaybillNo" class="form-control" />
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label">Cari Adı</label>
-                            <input type="text" asp-for="Entity.CurrentAccountName" class="form-control" />
+                        <div class="col-md-3">
+                            <label class="form-label">Cari Kodu</label>
+                            <input type="text" id="txtCompanyCode"
+                                   asp-for="Entity.CurrentAccountCode"
+                                   class="form-control" readonly
+                                   placeholder="Otomatik dolar" />
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
+                            <label class="form-label">Cari Adı (Firma)</label>
+                            <select id="ddlCompany" class="form-select" style="width:100%;" required>
+                                <option value="">Cari Seçiniz</option>
+                            </select>
+                            <input type="hidden" asp-for="Entity.CurrentAccountName" id="hdnCompanyName" />
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="form-label">Araç Plakası</label>
                             <input type="text" asp-for="Entity.TruckPlate" class="form-control" placeholder="34 ABC 123" />
                         </div>
@@ -62,40 +153,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label">İrsaliye Miktarı (Kg)</label>
-                            <input type="number"
-                                   step="0.01"
-                                   asp-for="Entity.WaybillQuantity"
-                                   class="form-control" />
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Dolu Ağırlık (Kg)</label>
-                            <input type="number"
-                                   step="0.01"
-                                   asp-for="Entity.FilledQuantity"
-                                   class="form-control" />
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Boş Ağırlık (Kg)</label>
-                            <input type="number"
-                                   step="0.01"
-                                   asp-for="Entity.EmptyQuantity"
-                                   class="form-control"  />
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Net Ağırlık (Kg)</label>
-                            <input type="number"
-                                   step="0.01"
-                                   asp-for="Entity.NetQuantity"
-                                   class="form-control"
-                                    />
-                        </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Kayıt Eden</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -106,6 +164,34 @@
                                        value="@ViewBag.AppUserName"
                                        disabled />
                             </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">İrsaliye Miktarı (Kg)</label>
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.WaybillQuantity"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Dolu Ağırlık (Kg)</label>
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.FilledQuantity"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Boş Ağırlık (Kg)</label>
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.EmptyQuantity"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Net Ağırlık (Kg)</label>
+                            <input type="number" step="0.01"
+                                   asp-for="Entity.NetQuantity"
+                                   class="form-control bg-light fw-bold" readonly />
                         </div>
 
                         <input type="hidden" asp-for="Entity.DepartmentId" />

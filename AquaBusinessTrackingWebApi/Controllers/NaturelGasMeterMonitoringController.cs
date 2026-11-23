@@ -13,9 +13,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly INaturelGasMeterMonitoringService _naturelGasMeterMonitoringService;
         private readonly ILogger<NaturelGasMeterMonitoringController> _logger;
 
-        public NaturelGasMeterMonitoringController(
-            INaturelGasMeterMonitoringService naturelGasMeterMonitoringService,
-            ILogger<NaturelGasMeterMonitoringController> logger)
+        public NaturelGasMeterMonitoringController(INaturelGasMeterMonitoringService naturelGasMeterMonitoringService, ILogger<NaturelGasMeterMonitoringController> logger)
         {
             _naturelGasMeterMonitoringService = naturelGasMeterMonitoringService;
             _logger = logger;
@@ -48,6 +46,20 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearcDetails(DateTime StartDate, DateTime EndDate)
+        {
+            _logger.LogInformation(
+              "Doğalgaz Sayaç İzleme detayları istendi. User={User}",
+              User?.Identity?.Name);
+
+            var result = await _naturelGasMeterMonitoringService.GetWithSearchDetails(StartDate, EndDate);
+
+            return Ok(result);
+        }
+
+
 
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -92,9 +104,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(
-            int id,
-            [FromBody] UpdateNaturelGasMeterMonitoringDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateNaturelGasMeterMonitoringDto dto)
         {
             _logger.LogInformation(
                 "Doğalgaz Sayaç İzleme kaydı güncelleniyor. Id={Id}",

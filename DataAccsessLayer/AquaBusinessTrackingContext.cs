@@ -79,7 +79,7 @@ namespace DataAccsessLayer
         public DbSet<DB_KazanEnergyConsumption> Db_KazanEnergyConsumption { get; set; }
         public DbSet<DB_ShipmentOrderPlan> Db_ShipmentOrderPlan { get; set; }
         public DbSet<DB_ShipmentOrderPlanDetail> Db_ShipmentOrderPlanDetail { get; set; }
-
+        public DbSet<DB_EmailReportRecipient> Db_EmailReportRecipient { get; set; }
 
     }
 }

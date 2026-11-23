@@ -3,6 +3,7 @@
     public class ShipmentOrderPlanDetailDto
     {
         public int RecId { get; set; }
+
         public int ShipmentPlanId { get; set; }
 
         public string OrderNo { get; set; }

@@ -250,7 +250,8 @@
 <div id="modalContainer"></div>
 
 <script>
-  function openModal(id = null) {
+    function openModal(id = null) {
+
         const url = id
             ? `/PapperMachineChemical/Edit/${id}`
             : `/PapperMachineChemical/Edit`;
@@ -258,28 +259,43 @@
         fetch(url)
             .then(r => r.text())
             .then(html => {
+
                 document.getElementById('modalContainer').innerHTML = html;
+
                 const modalEl = document.getElementById('papperMachineChemicalModal');
                 const modal = new bootstrap.Modal(modalEl);
 
                 modal.show();
 
-                 $(modalEl).find('.inventory-select').select2({
-                dropdownParent: $(modalEl),
-                placeholder: 'Stok kodu ara...',
-                allowClear: true,
-                tags: true,
-                width: '100%'
-                 });
 
-                 $(document).on('change', '#InventoryCode', function () {
-                 var stockName = $(this).find('option:selected').data('name');
+                // Select2
+                $(modalEl).find('.inventory-select').select2({
+                    dropdownParent: $(modalEl),
+                    placeholder: 'Stok adı ara...',
+                    allowClear: true,
+                    width: '100%'
+                });
 
-                   $('#InventoryName').val(stockName);
-                 });
 
+                // Stok adı seçilince stok kodunu getir
+                $(modalEl).find('#InventoryName').on('change', function () {
+
+                    const inventoryCode = $(this)
+                        .find('option:selected')
+                        .data('code') || '';
+
+                    $(modalEl)
+                        .find('#InventoryCode')
+                        .val(inventoryCode);
+
+                });
+
+
+                // Form submit
                 const form = modalEl.querySelector('form');
+
                 form.addEventListener('submit', function (e) {
+
                     e.preventDefault();
 
                     fetch('/PapperMachineChemical/Edit', {
@@ -287,39 +303,56 @@
                         body: new FormData(this)
                     })
                     .then(r => {
+
                         if (r.ok) {
                             modal.hide();
                             location.reload();
                         }
+
                     });
+
                 });
 
-            const incoming = document.getElementById("Entity_IncomingQuantity");
-            const consumed = document.getElementById("Entity_ConsumedQuantity");
-            const currentStock = document.getElementById("Entity_CurrentStock");
-            const remaining = document.getElementById("Entity_RemainingQuantity");
 
-            function calculateRemaining() {
+                // Miktar alanları
+                const incoming =
+                    document.getElementById("Entity_IncomingQuantity");
 
-                const incomingValue = parseFloat(incoming.value) || 0;
-                const consumedValue = parseFloat(consumed.value) || 0;
-                const currentStockValue = parseFloat(currentStock.value) || 0;
+                const consumed =
+                    document.getElementById("Entity_ConsumedQuantity");
 
-                const result = (incomingValue + currentStockValue) - consumedValue;
+                const currentStock =
+                    document.getElementById("Entity_CurrentStock");
 
-                remaining.value = result.toFixed(2);
-            }
+                const remaining =
+                    document.getElementById("Entity_RemainingQuantity");
 
-            incoming.addEventListener("input", calculateRemaining);
-            consumed.addEventListener("input", calculateRemaining);
-            currentStock.addEventListener("input", calculateRemaining);
 
-            calculateRemaining();
+                function calculateRemaining() {
+
+                    const incomingValue =
+                        parseFloat(incoming.value) || 0;
+
+                    const consumedValue =
+                        parseFloat(consumed.value) || 0;
+
+                    const currentStockValue =
+                        parseFloat(currentStock.value) || 0;
+
+                    const result =
+                        (incomingValue + currentStockValue) - consumedValue;
+
+                    remaining.value = result.toFixed(2);
+                }
+
+
+                incoming.addEventListener("input", calculateRemaining);
+                consumed.addEventListener("input", calculateRemaining);
+                currentStock.addEventListener("input", calculateRemaining);
+
+                calculateRemaining();
+
             });
-
-         
-         
-      
     }
 </script>
 

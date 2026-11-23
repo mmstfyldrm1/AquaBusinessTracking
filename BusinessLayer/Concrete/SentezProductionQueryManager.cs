@@ -19,7 +19,6 @@ namespace BusinessLayer.Concrete
         {
             var query = BuildGetProductionCombinationQuery();
             return await _service.ExecuteQueryAsync<SentezIntegrationsGetCombineDetailsDto>(query);
-
         }
 
         public async Task<SentezIntegrationsResponsoDto<SentezIntegrationsGetProductionDetailsDto>?> GetProductionDetails()
@@ -31,11 +30,12 @@ namespace BusinessLayer.Concrete
         private string BuildGetProductionDetailsQuery()
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
+            string previousDay = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
 
             var sb = new StringBuilder();
             sb.AppendLine($"select");
-            sb.AppendLine($"cr.RecId [RecId]");
-            sb.AppendLine($",cr.ParentId [ParentId]");
+            sb.AppendLine($"isc.RecId [RecId]");
+            sb.AppendLine($",isc.ParentSerialId [ParentSerialId]");
             sb.AppendLine($",cr.ReceiptDate [ReceiptDate]");
             sb.AppendLine($",cr.StartTime [StartTime]");
             sb.AppendLine($",cr.EndTime [EndTime]");
@@ -60,17 +60,14 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($",isc.ConsumptionReceiptId [ConsumptionReceiptId]");
             sb.AppendLine($",isc.SetNumber [SetNumber]");
             sb.AppendLine($",isc.SetPosition [SetPosition]");
-            sb.AppendLine($"");
             sb.AppendLine($"from Erp_InventorySerialCard isc with(nolock) ");
             sb.AppendLine($"left join Erp_CombinationReceipt cr with(nolock) on cr.RecId = isc.CombinationReceiptId");
             sb.AppendLine($"left join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
             sb.AppendLine($"left join Erp_Employee e with(nolock) on e.RecId = cr.EmployeeId");
             sb.AppendLine($"left join Erp_WorkOrder wo with(nolock) on wo.RecId = isc.WorkOrderId");
-            sb.AppendLine($"where (i.InventoryCode like '8%' or i.InventoryCode like '9%') and isc.CompanyId=22 and isc.SerialCode not like'E%' and cr.ReceiptDate='{date}'");
-            sb.AppendLine($"");
+            sb.AppendLine($"where (i.InventoryCode like '8%' or i.InventoryCode like '9%') and isc.CompanyId=22 and isc.SerialCode not like'E%' and cr.ReceiptDate >= '{previousDay}' and cr.ReceiptDate < '{date}'");
+
             sb.AppendLine($"order by isc.RecId desc");
-            sb.AppendLine($"");
-            sb.AppendLine($" ");
             return sb.ToString();
         }
 
@@ -92,7 +89,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"left join Erp_CombinationReceipt cr with(nolock) on cr.RecId = p.CombinationReceiptId");
             sb.AppendLine($"left join Erp_Inventory i with(nolock) on i.RecId = p.InventoryId");
             sb.AppendLine($"left join Erp_WorkOrder wo with(nolock) on wo.RecId = p.WorkOrderId");
-            sb.AppendLine($"where FinishDailyQuantity is not null and i.CompanyId=22 and cr.ReceiptDate ='{dateTime}'");
+            sb.AppendLine($"where FinishDailyQuantity is not null and i.CompanyId=22 and cr.ReceiptDate > GetDate()-1 and cr.ReceiptDate <= '{dateTime}'");
             sb.AppendLine($"");
             sb.AppendLine($"order by p.RecId desc");
             sb.AppendLine($"");

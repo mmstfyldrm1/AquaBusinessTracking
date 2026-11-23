@@ -1,0 +1,280 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@model SentezIntegrationsResponsoDto<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardTrendDto>
+
+@{
+    var items = (Model?.Data ?? Enumerable.Empty<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardTrendDto>())
+        .OrderBy(x => x.Date)
+        .ThenBy(x => x.SupplierName)
+        .ToList();
+
+    // JS tarafına sadece gereken alanları gönderiyoruz (tarih ISO: sıralama için güvenli)
+    var chartData = items.Select(x => new
+    {
+        date = x.Date.ToString("yyyy-MM-dd"),
+        supplier = x.SupplierName,
+        total = x.TotalQuantity,
+        net = x.NetQuantity,
+        approved = x.ApprovedQuantity,
+        rejected = x.RejectedQuantity,
+        returned = x.ReturnedQuantity,
+        deduction = x.TotalDeduction,
+        rate = x.DeductionRate
+    });
+}
+
+<br />
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <h5 class="mb-0">Tedarikçi Trendi</h5>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+            <span class="text-muted small">
+                Kayıt: <strong id="trendTotalRecords">@items.Count</strong>
+            </span>
+
+            <select id="trendMetric" class="form-select form-select-sm" style="width: 160px;" aria-label="Ölçü">
+                <option value="total" selected>Toplam Miktar</option>
+                <option value="net">Net Miktar</option>
+                <option value="approved">Onaylanan</option>
+                <option value="rejected">Reddedilen</option>
+                <option value="returned">İade</option>
+                <option value="deduction">Toplam Kesinti</option>
+                <option value="rate">Kesinti %</option>
+            </select>
+
+            <select id="trendTopN" class="form-select form-select-sm" style="width: 120px;" aria-label="Tedarikçi sayısı">
+                <option value="5" selected>İlk 5</option>
+                <option value="10">İlk 10</option>
+                <option value="0">Tümü</option>
+            </select>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Görünüm">
+                <button type="button" class="btn btn-primary" id="trendShowChart">Grafik</button>
+                <button type="button" class="btn btn-outline-primary" id="trendShowTable">Tablo</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (items.Count == 0)
+        {
+            <div class="text-center text-muted py-4">Veri bulunamadı.</div>
+        }
+        else
+        {
+            <!-- GRAFİK -->
+            <div id="trendChartWrap" style="position: relative; height: 400px;">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <!-- TABLO (yedek görünüm) -->
+            <div id="trendTableWrap" class="table-responsive" style="display:none; max-height: 420px; overflow-y:auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Tedarikçi</th>
+                            <th>Toplam Miktar</th>
+                            <th>Net Miktar</th>
+                            <th>Onaylanan</th>
+                            <th>Reddedilen</th>
+                            <th>İade</th>
+                            <th>Toplam Kesinti</th>
+                            <th>Kesinti %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items.OrderByDescending(x => x.Date).ThenBy(x => x.SupplierName))
+                        {
+                            <tr>
+                                <td><strong>@item.Date.ToString("dd.MM.yyyy")</strong></td>
+                                <td>@item.SupplierName</td>
+                                <td>@item.TotalQuantity.ToString("N0") kg</td>
+                                <td>@item.NetQuantity.ToString("N0") kg</td>
+                                <td>@item.ApprovedQuantity.ToString("N0") kg</td>
+                                <td>@item.RejectedQuantity.ToString("N0") kg</td>
+                                <td>@item.ReturnedQuantity.ToString("N0") kg</td>
+                                <td>@item.TotalDeduction.ToString("N0") kg</td>
+                                <td>%@item.DeductionRate.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@if (items.Count > 0)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const allData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
+
+            const canvas       = document.getElementById("trendChart");
+            const metricSelect = document.getElementById("trendMetric");
+            const topSelect    = document.getElementById("trendTopN");
+            const chartWrap    = document.getElementById("trendChartWrap");
+            const tableWrap    = document.getElementById("trendTableWrap");
+            const btnChart     = document.getElementById("trendShowChart");
+            const btnTable     = document.getElementById("trendShowTable");
+
+            const nf = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 });
+
+            const palette = [
+                "#3b4a6b", "#2e9e6b", "#d9534f", "#f0ad4e", "#4a9fd8",
+                "#8c6d46", "#9b6fb0", "#7a8f9e", "#c9628a", "#5fb3a1"
+            ];
+
+            const metricInfo = {
+                total:     { title: "Toplam Miktar (kg)", rate: false },
+                net:       { title: "Net Miktar (kg)",    rate: false },
+                approved:  { title: "Onaylanan (kg)",     rate: false },
+                rejected:  { title: "Reddedilen (kg)",    rate: false },
+                returned:  { title: "İade (kg)",          rate: false },
+                deduction: { title: "Toplam Kesinti (kg)", rate: false },
+                rate:      { title: "Kesinti (%)",        rate: true }
+            };
+
+            function formatDate(iso) {
+                return iso.split("-").reverse().join(".");
+            }
+
+            function buildData() {
+
+                const key = metricSelect.value;
+                const info = metricInfo[key];
+
+                const dates = Array.from(new Set(allData.map(r => r.date))).sort();
+
+                // Tedarikçileri toplam miktara göre sırala, ilk N'i al
+                const totals = new Map();
+                allData.forEach(function (r) {
+                    totals.set(r.supplier, (totals.get(r.supplier) || 0) + r.total);
+                });
+
+                let suppliers = Array.from(totals.entries())
+                    .sort((a, b) => b[1] - a[1])
+                    .map(e => e[0]);
+
+                const n = parseInt(topSelect.value);
+                if (n > 0) { suppliers = suppliers.slice(0, n); }
+
+                const lookup = new Map();
+                allData.forEach(r => lookup.set(r.supplier + "|" + r.date, r));
+
+                const manyPoints = dates.length > 45;
+
+                return {
+                    info: info,
+                    data: {
+                        labels: dates.map(formatDate),
+                        datasets: suppliers.map(function (s, i) {
+                            const color = palette[i % palette.length];
+                            return {
+                                label: s,
+                                data: dates.map(function (d) {
+                                    const r = lookup.get(s + "|" + d);
+                                    // Miktarlarda kayıt yoksa o gün 0 geldi; oranda veri yok (boşluk)
+                                    return r ? r[key] : (info.rate ? null : 0);
+                                }),
+                                borderColor: color,
+                                backgroundColor: color,
+                                borderWidth: 2,
+                                tension: 0.3,
+                                spanGaps: true,
+                                pointRadius: manyPoints ? 0 : 3,
+                                pointHoverRadius: 5
+                            };
+                        })
+                    }
+                };
+            }
+
+            let chart = null;
+
+            function render() {
+
+                const built = buildData();
+                const isRate = built.info.rate;
+
+                if (chart) { chart.destroy(); }
+
+                chart = new Chart(canvas, {
+                    type: "line",
+                    data: built.data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: "index", intersect: false },
+                        plugins: {
+                            legend: { position: "top" },
+                            tooltip: {
+                                // Büyük değerden küçüğe sırala, boş değerleri gizle
+                                itemSort: (a, b) => b.parsed.y - a.parsed.y,
+                                filter: ctx => ctx.parsed.y !== null,
+                                callbacks: {
+                                    label: function (ctx) {
+                                        const v = ctx.parsed.y;
+                                        return isRate
+                                            ? ` ${ctx.dataset.label}: %${v.toFixed(2)}`
+                                            : ` ${ctx.dataset.label}: ${nf.format(v)} kg`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: built.info.title },
+                                ticks: { callback: v => isRate ? "%" + v : nf.format(v) }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function showChart() {
+                chartWrap.style.display = "";
+                tableWrap.style.display = "none";
+                metricSelect.disabled = false;
+                topSelect.disabled = false;
+                btnChart.className = "btn btn-primary";
+                btnTable.className = "btn btn-outline-primary";
+                render();
+            }
+
+            function showTable() {
+                chartWrap.style.display = "none";
+                tableWrap.style.display = "";
+                metricSelect.disabled = true;
+                topSelect.disabled = true;
+                btnChart.className = "btn btn-outline-primary";
+                btnTable.className = "btn btn-primary";
+            }
+
+            metricSelect.addEventListener("change", render);
+            topSelect.addEventListener("change", render);
+            btnChart.addEventListener("click", showChart);
+            btnTable.addEventListener("click", showTable);
+
+            render();
+        });
+    </script>
+}

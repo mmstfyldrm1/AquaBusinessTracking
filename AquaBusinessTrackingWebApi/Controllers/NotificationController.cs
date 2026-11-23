@@ -32,24 +32,24 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok();
         }
 
-        //[HttpPost("send")]
-        //public async Task<IActionResult> Send(CreateNotificationDto dto)
-        //{
-        //    var created = await _notificationService.SendAsync(dto);
-        //    await _hub.Clients.Group($"user-{dto.UserId}").SendAsync("ReceiveNotification", created);
-        //    return Ok(created);
-        //}
-
-
         [HttpPost("send")]
-        public async Task<IActionResult> SendNotification([FromBody] CreateNotificationDto request)
+        public async Task<IActionResult> Send(CreateNotificationDto dto)
         {
-            if (string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Message))
-                return BadRequest("Başlık ve mesaj zorunludur.");
-
-            var result = await _notificationService.SendAsync(request);
-            return Ok(result);
+            var created = await _notificationService.SendAsync(dto);
+            await _hub.Clients.Group($"user-{dto.UserIds}").SendAsync("ReceiveNotification", created);
+            return Ok(created);
         }
+
+
+        //[HttpPost("send")]
+        //public async Task<IActionResult> SendNotification([FromBody] CreateNotificationDto request)
+        //{
+        //    if (string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Message))
+        //        return BadRequest("Başlık ve mesaj zorunludur.");
+
+        //    var result = await _notificationService.SendAsync(request);
+        //    return Ok(result);
+        //}
 
     }
 }

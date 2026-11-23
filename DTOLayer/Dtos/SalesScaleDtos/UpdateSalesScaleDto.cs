@@ -12,7 +12,9 @@
 
         public string DeliveryNumber { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
+
+        public int CurrentAccountId { get; set; }
 
         public string TruckPlate { get; set; }
 

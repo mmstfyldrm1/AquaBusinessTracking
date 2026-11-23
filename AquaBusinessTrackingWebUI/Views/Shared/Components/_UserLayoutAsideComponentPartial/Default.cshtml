@@ -139,13 +139,9 @@
                     <div class="menu-title">Kazan</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("KAZAN.KazanChemicals.View"))
-                    {
-                        <li><a href="~/KazanChemicals/GetKazanChemicalsList"><ion-icon name="ellipse-outline"></ion-icon>Kazan Kimysl.Tkp Sis.</a></li>
-                    }
                     @if (CurrentUser.HasPermission("KAZAN.BoilerSteamFeedWaterCondensateData.View"))
                     {
-                        <li><a href="~/BoilerSteamFeedWaterCondensateData/GetCondensateData"><ion-icon name="ellipse-outline"></ion-icon>Kazan Kondens Tkp. Sis.</a></li>
+                        <li><a href="~/BoilerSteamFeedWaterCondensateData/GetCondensateData"><ion-icon name="ellipse-outline"></ion-icon>Buhar ve Kondens Tkp Sis.</a></li>
                     }
                     @if (CurrentUser.HasPermission("KAZAN.NaturelGasMeterMonitoring.View"))
                     {
@@ -455,14 +451,6 @@
                     <div class="menu-title">Elektrik</div>
                 </a>
                 <ul>
-                    @if (CurrentUser.HasPermission("ELEKTRIK.ElectricMotorTracking.View"))
-                    {
-                        <li><a href="~/ElectricMotorTracking/GetMotorList"><ion-icon name="ellipse-outline"></ion-icon>Motor Takip</a></li>
-                    }
-                    @if (CurrentUser.HasPermission("ELEKTRIK.ElectricShiftWorking.View"))
-                    {
-                        <li><a href="~/ElectricShiftWorking/GetElectricShiftWorking"><ion-icon name="ellipse-outline"></ion-icon>Vardiya Takip</a></li>
-                    }
                     @if (CurrentUser.HasPermission("ELEKTRIK.ElectricMeterLocation.View"))
                     {
                         <li><a href="~/ElectricMeterLocation/GetMeterLocationList"><ion-icon name="ellipse-outline"></ion-icon>Sayaç Takip</a></li>

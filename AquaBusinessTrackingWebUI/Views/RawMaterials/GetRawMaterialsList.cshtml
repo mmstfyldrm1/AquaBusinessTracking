@@ -181,65 +181,174 @@
 <div id="modalContainer"></div>
 
 <script>
-    function openModal(id = null) {
+
+    // MODAL AÇMA
+    async function openModal(id = null) {
 
         const url = id
             ? `/RawMaterials/Edit/${id}`
             : `/RawMaterials/Edit`;
 
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
+        try {
 
-                document.getElementById('modalContainer').innerHTML = html;
+            const response = await fetch(url);
 
-                const modalEl = document.getElementById('rawMaterialsModal');
-                const modal = new bootstrap.Modal(modalEl);
+            if (!response.ok) {
+                throw new Error('Modal yüklenemedi.');
+            }
 
-                modal.show();
+            const html = await response.text();
+            const container = document.getElementById('modalContainer');
+            container.innerHTML = html;
 
-                // Form
-                const form = modalEl.querySelector('form');
+            const modalEl = document.getElementById('rawMaterialsModal');
 
-                form.addEventListener('submit', function (e) {
+            if (!modalEl) {
+                throw new Error('rawMaterialsModal elementi bulunamadı.');
+            }
+
+            const modal = new bootstrap.Modal(modalEl);
+
+            // FORM KAYDETME
+            const form = modalEl.querySelector('form');
+
+            if (form) {
+                form.addEventListener('submit', async function (e) {
                     e.preventDefault();
 
-                    fetch('/RawMaterials/Edit', {
-                        method: 'POST',
-                        body: new FormData(this)
-                    })
-                    .then(r => {
-                        if (r.ok) {
+                    const submitButton = form.querySelector('[type="submit"]');
+                    if (submitButton) submitButton.disabled = true;
+
+                    try {
+                        const saveResponse = await fetch(form.action || '/RawMaterials/Edit', {
+                            method: 'POST',
+                            body: new FormData(form)
+                        });
+
+                        if (saveResponse.ok) {
                             modal.hide();
-                            location.reload();
+                            modalEl.addEventListener('hidden.bs.modal', function () {
+                                container.innerHTML = '';
+                                location.reload();
+                            }, { once: true });
+                        } else {
+                            console.error('Kayıt hatası:', await saveResponse.text());
+                            alert('Kayıt sırasında bir hata oluştu.');
+                            if (submitButton) submitButton.disabled = false;
                         }
-                    });
+                    } catch (error) {
+                        console.error(error);
+                        alert('Sunucuya bağlanırken hata oluştu.');
+                        if (submitButton) submitButton.disabled = false;
+                    }
                 });
+            }
 
-                // Ağırlık alanları
-                const incoming = document.getElementById("Entity_FilledQuantity");
-                const consumed = document.getElementById("Entity_EmptyQuantity");
-                const remaining = document.getElementById("Entity_NetQuantity");
+            // CARİ SELECT2
+            initCompanySelect2(modalEl);
 
-                function calculateRemaining() {
+            // AĞIRLIK HESAPLAMA (Net = Dolu - Boş)
+            const filled = modalEl.querySelector('#Entity_FilledQuantity');
+            const empty = modalEl.querySelector('#Entity_EmptyQuantity');
+            const net = modalEl.querySelector('#Entity_NetQuantity');
 
-                    const incomingValue =
-                        parseFloat(incoming.value.replace(',', '.')) || 0;
+            if (filled && empty && net) {
 
-                    const consumedValue =
-                        parseFloat(consumed.value.replace(',', '.')) || 0;
-
-                    const result = incomingValue - consumedValue;
-
-                    remaining.value = result.toFixed(2);
+                function calculateNet() {
+                    const filledValue = parseFloat(filled.value.replace(',', '.')) || 0;
+                    const emptyValue = parseFloat(empty.value.replace(',', '.')) || 0;
+                    net.value = (filledValue - emptyValue).toFixed(2);
                 }
 
-                // Değerler değiştiğinde hesapla
-                incoming.addEventListener("input", calculateRemaining);
-                consumed.addEventListener("input", calculateRemaining);
+                filled.addEventListener('input', calculateNet);
+                empty.addEventListener('input', calculateNet);
 
-                // Modal açıldığında ilk hesabı yap
-                calculateRemaining();
-            });
+                calculateNet();
+            }
+
+            modal.show();
+
+        } catch (error) {
+            console.error('Modal hatası:', error);
+            alert('Form açılırken bir hata oluştu.');
+        }
     }
+
+
+    // CARİ SELECT2
+    function initCompanySelect2(modalEl) {
+
+        var ddlCompanyEl = modalEl.querySelector('#ddlCompany');
+
+        if (!ddlCompanyEl) {
+            return;
+        }
+
+        var formEl = modalEl.querySelector('form');
+        var apiBase = (formEl.dataset.apiBase || '').replace(/\/$/, '');
+        var jwtToken = formEl.dataset.jwt || '';
+        var txtCompanyCode = modalEl.querySelector('#txtCompanyCode');
+        var hdnCompanyName = modalEl.querySelector('#hdnCompanyName');
+        var hdnCompanyRecId = modalEl.querySelector('#hdnCompanyRecId');
+        var $ddlCompany = $(ddlCompanyEl);
+
+        function apiFetch(path) {
+            return fetch(`${apiBase}/DailyShipmentPlan/${path}`, {
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                }
+            });
+        }
+
+        $ddlCompany.select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Cari Seçiniz',
+            width: '100%',
+            dropdownParent: $(modalEl),
+            allowClear: true
+        });
+
+        // Cari listesini yükle
+        apiFetch('currentaccount')
+            .then(function (r) { return r.json(); })
+            .then(function (response) {
+
+                var data = response.data || [];
+
+                data.forEach(function (item) {
+                    var opt = new Option(item.currentAccountName, item.recId, false, false);
+                    opt.dataset.code = item.currentAccountCode;
+                    opt.dataset.name = item.currentAccountName;
+                    ddlCompanyEl.appendChild(opt);
+                });
+
+                $ddlCompany.trigger('change.select2');
+
+                // Düzenleme modunda mevcut cariyi seç
+                if (hdnCompanyRecId && hdnCompanyRecId.value) {
+                    $ddlCompany.val(hdnCompanyRecId.value).trigger('change');
+                }
+            })
+            .catch(function (err) {
+                console.error('Cari yüklenemedi:', err);
+            });
+
+        $ddlCompany.on('change', function () {
+
+            var recId = this.value;
+            var selectedOption = this.options[this.selectedIndex];
+
+            if (!recId) {
+                if (txtCompanyCode) txtCompanyCode.value = '';
+                if (hdnCompanyName) hdnCompanyName.value = '';
+                if (hdnCompanyRecId) hdnCompanyRecId.value = '';
+                return;
+            }
+
+            if (txtCompanyCode) txtCompanyCode.value = selectedOption.dataset.code || '';
+            if (hdnCompanyName) hdnCompanyName.value = selectedOption.dataset.name || '';
+            if (hdnCompanyRecId) hdnCompanyRecId.value = recId;
+        });
+    }
+
 </script>

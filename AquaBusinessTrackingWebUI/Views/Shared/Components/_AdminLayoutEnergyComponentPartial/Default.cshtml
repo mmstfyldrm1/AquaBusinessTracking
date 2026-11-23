@@ -119,18 +119,22 @@
     return (s != null && s.KwhPerTon > 0) ? (double?)Math.Round((double)s.KwhPerTon, 3) : null;
 })
 .ToList();
+
+    DateTime StartDate = DateTime.Now;
+    DateTime EndDate = DateTime.Now.AddDays(-30);
+
 }
 
 <div class="page-section" id="enerji">
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Üretim </div>
+            <div class="kpi-lbl">@(EndDate.ToString("dd-MM")) - @(StartDate.ToString("dd.MM")) Üretim </div>
             <div class="kpi-val">@Model.TotalProduction.ToString("N2")</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Elektrik Tüketimi</div>
+            <div class="kpi-lbl">@(EndDate.ToString("dd-MM")) - @(StartDate.ToString("dd-MM")) Elektrik Tüketimi</div>
             <div class="kpi-val">@Model.TotalElectricity.ToString("N2")</div>
             <div class="kpi-unit">kWh</div>
         </div>

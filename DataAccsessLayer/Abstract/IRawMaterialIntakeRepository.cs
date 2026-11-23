@@ -9,6 +9,7 @@ namespace DataAccsessLayer.Abstract
 
         public Task<List<DB_RawMaterialIntake>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
 
+        public Task<DB_RawMaterialIntake?> GetByExternalSeq(long? externalSeq);
 
     }
 }

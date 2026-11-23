@@ -62,6 +62,12 @@
             @await Component.InvokeAsync("_AdminLayoutNaturelGasTrackingComponentPartial")
         }
 
+        @if (CurrentUser.HasPermission("ADMIN.AdminLayoutBoilerComponentPartial.View"))
+        {
+            <!-- Buhar -->
+            @await Component.InvokeAsync("_AdminLayoutBoilerComponentPartial")
+        }
+
         @if (CurrentUser.HasPermission("ADMIN.AdminLayoutNaturelGasTrackingComponentPartial.View"))
         {
             <!-- DURUŞ -->

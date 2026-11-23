@@ -104,18 +104,21 @@
             return (s != null && s.GasPerKg > 0) ? (double?)Math.Round((double)s.GasPerKg, 3) : null;
         })
         .ToList();
+
+    DateTime StartDate = DateTime.Now;
+    DateTime EndDate = DateTime.Now.AddDays(-30);
 }
 
 <div class="page-section" id="dogalgaz">
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Üretim</div>
+            <div class="kpi-lbl">@(EndDate.ToString("dd-MM")) - @(StartDate.ToString("dd-MM")) Üretim</div>
             <div class="kpi-val">@((Model.TotalRemaning).ToString("N2"))</div>
             <div class="kpi-unit">Kg</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Doğal Gaz Tüketimi</div>
+            <div class="kpi-lbl">@(EndDate.ToString("dd-MM")) - @(StartDate.ToString("dd-MM")) Doğal Gaz Tüketimi</div>
             <div class="kpi-val">@Model.TotalGas.ToString("N2")</div>
             <div class="kpi-unit">m³</div>
         </div>

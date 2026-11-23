@@ -30,8 +30,12 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
+                DateTime StartDate = DateTime.UtcNow.AddDays(-7);
+                DateTime EndDate = DateTime.UtcNow;
+
                 var productionTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas30DaysProductionAsync", cts.Token);
                 var electricTask = client.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/Last30DaysElectricConsumable", cts.Token);
+
 
                 await Task.WhenAll(productionTask, electricTask);
 
@@ -44,6 +48,8 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                     ? JsonSerializer.Deserialize<List<CumulativeElectricityConsumptionDto>>(
                         await electricTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? new()
                     : new();
+
+
 
                 return View(new EnergyProductionViewModel
                 {

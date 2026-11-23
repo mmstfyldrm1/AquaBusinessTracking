@@ -39,7 +39,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<SentezIntegrationsResponsoDto<SentezCurrentAccountResponse>?> GetCurrentAccountCodeAndName()
         {
-            var query = "Select RecId, CurrentAccountCode, CurrentAccountName From Erp_CurrentAccount where CurrentAccountCode Like  'M%' and  CompanyId=22";
+            var query = "Select RecId, CurrentAccountCode, CurrentAccountName From Erp_CurrentAccount where  CompanyId=22";
             return await _service.ExecuteQueryAsync<SentezCurrentAccountResponse>(query);
         }
 

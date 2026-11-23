@@ -19,6 +19,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
         private readonly IWaterPreparationAndConsumptionService _waterPreparationAndConsumptionService;
         private readonly ICumulativeElectricityConsumptionService _cumulativeElectricityConsumptionService;
         private readonly INaturelGasMeterMonitoringService _minerMonitoringService;
+        private readonly IBoilerSteamFeedWaterCondensateDataService _boilerSteamFeedWaterCondensateDataService;
 
         public AdminDashboardController(
             ILogger<AdminDashboardController> logger,
@@ -28,7 +29,8 @@ namespace AquaBusinessTrackingWebApi.Controllers
             IMachineStopService machineStopService,
             IWaterPreparationAndConsumptionService waterPreparationAndConsumptionService,
             ICumulativeElectricityConsumptionService cumulativeElectricityConsumptionService,
-            INaturelGasMeterMonitoringService minerMonitoringService)
+            INaturelGasMeterMonitoringService minerMonitoringService,
+            IBoilerSteamFeedWaterCondensateDataService boilerSteamFeedWaterCondensateDataService)
         {
             _logger = logger;
             _service = service;
@@ -38,6 +40,7 @@ namespace AquaBusinessTrackingWebApi.Controllers
             _waterPreparationAndConsumptionService = waterPreparationAndConsumptionService;
             _cumulativeElectricityConsumptionService = cumulativeElectricityConsumptionService;
             _minerMonitoringService = minerMonitoringService;
+            _boilerSteamFeedWaterCondensateDataService = boilerSteamFeedWaterCondensateDataService;
         }
 
         [HttpGet("production")]
@@ -110,5 +113,17 @@ namespace AquaBusinessTrackingWebApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("Last30DaysBoiler")]
+        public async Task<IActionResult> GetLast30DaysBoiler()
+        {
+            _logger.LogInformation("Son 30 günlük doğal gaz tüketimi istendi.");
+
+            var result = await _boilerSteamFeedWaterCondensateDataService.GetLast30DaysBoilerConsumable();
+
+            return Ok(result);
+        }
+
+
     }
 }

@@ -1,0 +1,269 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@model SentezIntegrationsResponsoDto<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardBySupplierDto>
+
+@{
+    var items = (Model?.Data ?? Enumerable.Empty<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardBySupplierDto>())
+        .OrderByDescending(x => x.TotalQuantity)
+        .ToList();
+
+    // JS tarafına sadece gereken alanları gönderiyoruz
+    var chartData = items.Select(x => new
+    {
+        name = x.SupplierName,
+        total = x.TotalQuantity,
+        approved = x.ApprovedQuantity,
+        rejected = x.RejectedQuantity,
+        deduction = x.TotalDeduction,
+        rate = x.DeductionRate,
+        moisture = x.AverageMoisture,
+        foreign = x.AverageForeignMaterial
+    });
+}
+
+<br />
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <h5 class="mb-0">Tedarikçi Bazlı Performans</h5>
+
+        <div class="d-flex align-items-center gap-2">
+
+            <span class="text-muted small">
+                Kayıt: <strong id="supplierTotalRecords">@items.Count</strong>
+            </span>
+
+            <select id="supplierTopN" class="form-select form-select-sm" style="width: 120px;">
+                <option value="5">İlk 5</option>
+                <option value="10" selected>İlk 10</option>
+                <option value="20">İlk 20</option>
+                <option value="0">Tümü</option>
+            </select>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Görünüm">
+                <button type="button" class="btn btn-primary" id="supplierShowQuantity">Miktar</button>
+                <button type="button" class="btn btn-outline-primary" id="supplierShowRatio">Oranlar</button>
+                <button type="button" class="btn btn-outline-primary" id="supplierShowTable">Tablo</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (items.Count == 0)
+        {
+            <div class="text-center text-muted py-4">Veri bulunamadı.</div>
+        }
+        else
+        {
+            <!-- GRAFİK -->
+            <div id="supplierChartWrap" style="position: relative; height: 380px;">
+                <canvas id="supplierChart"></canvas>
+            </div>
+
+            <!-- TABLO (yedek görünüm) -->
+            <div id="supplierTableWrap" class="table-responsive" style="display:none; max-height: 420px; overflow-y:auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th>Tedarikçi</th>
+                            <th>Toplam Miktar</th>
+                            <th>Onaylanan</th>
+                            <th>Reddedilen</th>
+                            <th>Toplam Kesinti</th>
+                            <th>Kesinti %</th>
+                            <th>Ort. Rutubet</th>
+                            <th>Ort. Yabancı Madde</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items)
+                        {
+                            <tr>
+                                <td><strong>@item.SupplierName</strong></td>
+                                <td>@item.TotalQuantity.ToString("N0") kg</td>
+                                <td>@item.ApprovedQuantity.ToString("N0") kg</td>
+                                <td>@item.RejectedQuantity.ToString("N0") kg</td>
+                                <td>@item.TotalDeduction.ToString("N0") kg</td>
+                                <td>%@item.DeductionRate.ToString("N2")</td>
+                                <td>%@item.AverageMoisture.ToString("N2")</td>
+                                <td>%@item.AverageForeignMaterial.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@if (items.Count > 0)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const allData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
+
+            const canvas    = document.getElementById("supplierChart");
+            const topSelect = document.getElementById("supplierTopN");
+            const chartWrap = document.getElementById("supplierChartWrap");
+            const tableWrap = document.getElementById("supplierTableWrap");
+            const btnQty    = document.getElementById("supplierShowQuantity");
+            const btnRatio  = document.getElementById("supplierShowRatio");
+            const btnTable  = document.getElementById("supplierShowTable");
+
+            const nf = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 });
+
+            let currentView = "quantity"; // quantity | ratio
+
+            // Miktar görünümü: toplam miktara göre, Oranlar görünümü: kesinti %'ye göre sıralı
+            function getData() {
+                const sorted = currentView === "quantity"
+                    ? [...allData].sort((a, b) => b.total - a.total)
+                    : [...allData].sort((a, b) => b.rate - a.rate);
+
+                const n = parseInt(topSelect.value);
+                return n > 0 ? sorted.slice(0, n) : sorted;
+            }
+
+            function buildConfig(data) {
+
+                if (currentView === "quantity") {
+                    return {
+                        data: {
+                            labels: data.map(x => x.name),
+                            datasets: [
+                                { label: "Onaylanan (kg)", data: data.map(x => x.approved), backgroundColor: "#2e9e6b", stack: "miktar" },
+                                { label: "Reddedilen (kg)", data: data.map(x => x.rejected), backgroundColor: "#d9534f", stack: "miktar" }
+                            ]
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                beginAtZero: true,
+                                title: { display: true, text: "Miktar (kg)" },
+                                ticks: { callback: v => nf.format(v) }
+                            },
+                            y: { stacked: true, grid: { display: false } }
+                        },
+                        barHeight: 34,
+                        isRatio: false
+                    };
+                }
+
+                return {
+                    data: {
+                        labels: data.map(x => x.name),
+                        datasets: [
+                            { label: "Kesinti %", data: data.map(x => x.rate), backgroundColor: "#3b4a6b" },
+                            { label: "Ort. Rutubet %", data: data.map(x => x.moisture), backgroundColor: "#4a9fd8" },
+                            { label: "Ort. Yabancı Madde %", data: data.map(x => x.foreign), backgroundColor: "#f0ad4e" }
+                        ]
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: "Oran (%)" },
+                            ticks: { callback: v => "%" + v }
+                        },
+                        y: { grid: { display: false } }
+                    },
+                    barHeight: 62,
+                    isRatio: true
+                };
+            }
+
+            let chart = null;
+
+            function render() {
+
+                const data = getData();
+                const cfg  = buildConfig(data);
+
+                // Tedarikçi sayısına göre yüksekliği ayarla
+                chartWrap.style.height = Math.max(260, data.length * cfg.barHeight + 90) + "px";
+
+                if (chart) {
+                    chart.destroy();
+                }
+
+                chart = new Chart(canvas, {
+                    type: "bar",
+                    data: cfg.data,
+                    options: {
+                        indexAxis: "y", // yatay çubuk: uzun tedarikçi adları okunur kalır
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: "index", intersect: false },
+                        plugins: {
+                            legend: { position: "top" },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (ctx) {
+                                        const v = ctx.parsed.x;
+                                        return cfg.isRatio
+                                            ? ` ${ctx.dataset.label}: %${v.toFixed(2)}`
+                                            : ` ${ctx.dataset.label}: ${nf.format(v)}`;
+                                    },
+                                    afterBody: function (items) {
+                                        const d = data[items[0].dataIndex];
+                                        return cfg.isRatio
+                                            ? ["", `Toplam: ${nf.format(d.total)} kg`]
+                                            : [
+                                                "",
+                                                `Toplam: ${nf.format(d.total)} kg`,
+                                                `Toplam Kesinti: ${nf.format(d.deduction)} kg`,
+                                                `Kesinti: %${d.rate.toFixed(2)}`
+                                            ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: cfg.scales
+                    }
+                });
+            }
+
+            function setActive(active) {
+                [[btnQty, "quantity"], [btnRatio, "ratio"], [btnTable, "table"]].forEach(function (p) {
+                    p[0].className = p[1] === active ? "btn btn-primary" : "btn btn-outline-primary";
+                });
+            }
+
+            function showView(view) {
+
+                setActive(view);
+
+                if (view === "table") {
+                    chartWrap.style.display = "none";
+                    tableWrap.style.display = "";
+                    return;
+                }
+
+                currentView = view;
+                tableWrap.style.display = "none";
+                chartWrap.style.display = "";
+                render();
+            }
+
+            topSelect.addEventListener("change", function () {
+                if (chartWrap.style.display !== "none") {
+                    render();
+                }
+            });
+
+            btnQty.addEventListener("click", function () { showView("quantity"); });
+            btnRatio.addEventListener("click", function () { showView("ratio"); });
+            btnTable.addEventListener("click", function () { showView("table"); });
+
+            render();
+        });
+    </script>
+}

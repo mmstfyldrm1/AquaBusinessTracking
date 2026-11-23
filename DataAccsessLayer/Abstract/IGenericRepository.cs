@@ -1,4 +1,6 @@
-﻿namespace DataAccsessLayer.Abstract
+﻿using System.Linq.Expressions;
+
+namespace DataAccsessLayer.Abstract
 {
     public interface IGenericRepository<T>
     {
@@ -7,5 +9,9 @@
         Task TAdd(T entity);
         Task TUpdate(T entity);
         Task TDelete(T entity);
+
+        public Task<List<T>> TGetAll(Expression<Func<T, bool>> predicate);
+
+
     }
 }

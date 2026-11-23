@@ -78,6 +78,7 @@
                         <th>Süre Kaybı (dk)</th>
                         <th>Kopma Yeri</th>
                         <th>Duruş Nedeni</th>
+                        <th>Ekipman</th>
                         <th>Açıklama</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
@@ -107,13 +108,16 @@
                             </td>
 
                             <td>
-                                @item.BreakLocation
+                                @item.PointofRupture
                             </td>
 
                             <td>
-                                @item.DowntimeReason
+                                @item.ReasonDisconnection
                             </td>
 
+                            <td>
+                                @item.Equipment
+                            </td>
                             <td>
                                 @item.Explanation
                             </td>
@@ -177,6 +181,7 @@
                         <th>Süre Kaybı (dk)</th>
                         <th>Kopma Yeri</th>
                         <th>Duruş Nedeni</th>
+                        <th>Ekipman</th>
                         <th>Açıklama</th>
                         <th>Vardiya</th>
                         <th>Kayıt Tarihi</th>
@@ -204,7 +209,8 @@
 
 
 <script>
-           function openModal(id = null) {
+    function openModal(id = null) {
+
         const url = id
             ? `/MachineStop/Edit/${id}`
             : `/MachineStop/Edit`;
@@ -212,14 +218,117 @@
         fetch(url)
             .then(r => r.text())
             .then(html => {
+
                 document.getElementById('modalContainer').innerHTML = html;
+
                 const modalEl = document.getElementById('machineStopModal');
                 const modal = new bootstrap.Modal(modalEl);
 
                 modal.show();
 
+
+                // =====================================================
+                // SELECT2
+                // =====================================================
+
+                $('#machineStopModal .select2-machine-stop').select2({
+                    dropdownParent: $('#machineStopModal'),
+                    width: '100%',
+                    placeholder: function () {
+                        return $(this).data('placeholder');
+                    },
+                    allowClear: true,
+                    language: {
+                        noResults: function () {
+                            return "Sonuç bulunamadı";
+                        },
+                        searching: function () {
+                            return "Aranıyor...";
+                        }
+                    }
+                });
+
+
+                // =====================================================
+                // BAŞLANGIÇ - BİTİŞ SÜRE HESAPLAMA
+                // =====================================================
+
+                const startInput = modalEl.querySelector(
+                    '[name="Entity.StartTime"]'
+                );
+
+                const endInput = modalEl.querySelector(
+                    '[name="Entity.EndTime"]'
+                );
+
+                const durationInput = modalEl.querySelector(
+                    '[name="Entity.DowntimeDuration"]'
+                );
+
+
+                function calculateDuration() {
+
+                    if (!startInput || !endInput || !durationInput)
+                        return;
+
+                    if (!startInput.value || !endInput.value) {
+                        durationInput.value = '';
+                        return;
+                    }
+
+
+                    const start = new Date(startInput.value);
+                    const end = new Date(endInput.value);
+
+
+                    // Dakika cinsinden fark
+                    const differenceMs = end - start;
+
+                    const differenceMinutes =
+                        differenceMs / (1000 * 60);
+
+
+                    // Bitiş başlangıçtan küçükse
+                    if (differenceMinutes < 0) {
+
+                        durationInput.value = '';
+
+                        return;
+                    }
+
+
+                    // Dakikayı yaz
+                    durationInput.value =
+                        differenceMinutes.toFixed(2);
+                }
+
+
+                // Başlangıç değiştiğinde
+                startInput?.addEventListener(
+                    'change',
+                    calculateDuration
+                );
+
+
+                // Bitiş değiştiğinde
+                endInput?.addEventListener(
+                    'change',
+                    calculateDuration
+                );
+
+
+                // Edit ekranında mevcut değerler varsa
+                calculateDuration();
+
+
+                // =====================================================
+                // FORM SUBMIT
+                // =====================================================
+
                 const form = modalEl.querySelector('form');
+
                 form.addEventListener('submit', function (e) {
+
                     e.preventDefault();
 
                     fetch('/MachineStop/Edit', {
@@ -227,12 +336,18 @@
                         body: new FormData(this)
                     })
                     .then(r => {
+
                         if (r.ok) {
+
                             modal.hide();
+
                             location.reload();
                         }
+
                     });
+
                 });
+
             });
     }
 </script>

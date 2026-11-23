@@ -14,5 +14,7 @@ namespace DataAccsessLayer.Abstract
         public Task<List<DB_SalesScale>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
 
 
+        Task<DB_SalesScale?> GetByExternalSeq(long? externalSeq);
+
     }
 }

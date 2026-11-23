@@ -26,5 +26,17 @@ namespace BusinessLayer.Concrete
             var data = await _repository.GetWithDetails();
             return _mapper.Map<List<BoilerSteamFeedWaterCondensateDataDto>>(data);
         }
+
+        public async Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetLast30DaysBoilerConsumable()
+        {
+            var data = await _repository.GetLast30DaysBoilerConsumable();
+            return _mapper.Map<List<BoilerSteamFeedWaterCondensateDataDto>>(data);
+        }
+
+        public async Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate)
+        {
+            var data = await _repository.GetWithSearchDetails(StartDate, EndDate);
+            return _mapper.Map<List<BoilerSteamFeedWaterCondensateDataDto>>(data);
+        }
     }
 }

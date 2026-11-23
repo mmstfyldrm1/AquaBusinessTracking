@@ -9,14 +9,17 @@
 
         public decimal ScaleNo { get; set; }
 
+        public long? ExternalSeq { get; set; }
+
         public string DeliveryNumber { get; set; }
 
-        public string CurrentAccountName { get; set; }
+        public string? CurrentAccountName { get; set; }
 
         public string TruckPlate { get; set; }
 
         public int AppUserId { get; set; } //FK
 
+        public int CurrentAccountId { get; set; }
 
         public decimal DeliveryQuantity { get; set; }
 

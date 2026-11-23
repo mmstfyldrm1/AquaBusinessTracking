@@ -1,0 +1,244 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@model SentezIntegrationsResponsoDto<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardByDateDto>
+
+@{
+    var items = (Model?.Data ?? Enumerable.Empty<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardByDateDto>())
+        .OrderBy(x => x.Date)
+        .ToList();
+
+    // JS tarafına sadece gereken alanları gönderiyoruz
+    var chartData = items.Select(x => new
+    {
+        date = x.Date.ToString("dd.MM.yyyy"),
+        total = x.TotalQuantity,
+        net = x.NetQuantity,
+        approved = x.ApprovedQuantity,
+        rejected = x.RejectedQuantity,
+        returned = x.ReturnedQuantity,
+        deduction = x.TotalDeduction,
+        rate = x.DeductionRate
+    });
+}
+
+<br />
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">Tarih Bazlı Tedarikçi Performansı</h5>
+
+        <div class="d-flex align-items-center gap-2">
+
+            <span class="text-muted small">
+                Kayıt: <strong id="supplierDateTotalRecords">@items.Count</strong>
+            </span>
+
+            <select id="supplierDateRange" class="form-select form-select-sm" style="width: 110px;">
+                <option value="7">Son 7</option>
+                <option value="14">Son 14</option>
+                <option value="30" selected>Son 30</option>
+                <option value="0">Tümü</option>
+            </select>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Görünüm">
+                <button type="button" class="btn btn-primary" id="supplierDateShowChart">Grafik</button>
+                <button type="button" class="btn btn-outline-primary" id="supplierDateShowTable">Tablo</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (items.Count == 0)
+        {
+            <div class="text-center text-muted py-4">Veri bulunamadı.</div>
+        }
+        else
+        {
+            <!-- GRAFİK -->
+            <div id="supplierDateChartWrap" style="position: relative; height: 380px;">
+                <canvas id="supplierDateChart"></canvas>
+            </div>
+
+            <!-- TABLO (yedek görünüm) -->
+            <div id="supplierDateTableWrap" class="table-responsive" style="display:none; max-height: 380px; overflow-y:auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Toplam Miktar</th>
+                            <th>Net Miktar</th>
+                            <th>Onaylanan</th>
+                            <th>Reddedilen</th>
+                            <th>İade</th>
+                            <th>Toplam Kesinti</th>
+                            <th>Kesinti %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items.OrderByDescending(x => x.Date))
+                        {
+                            <tr>
+                                <td><strong>@item.Date.ToString("dd.MM.yyyy")</strong></td>
+                                <td>@item.TotalQuantity.ToString("N0") kg</td>
+                                <td>@item.NetQuantity.ToString("N0") kg</td>
+                                <td>@item.ApprovedQuantity.ToString("N0") kg</td>
+                                <td>@item.RejectedQuantity.ToString("N0") kg</td>
+                                <td>@item.ReturnedQuantity.ToString("N0") kg</td>
+                                <td>@item.TotalDeduction.ToString("N0") kg</td>
+                                <td>%@item.DeductionRate.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@if (items.Count > 0)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const allData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
+
+            const canvas      = document.getElementById("supplierDateChart");
+            const rangeSelect = document.getElementById("supplierDateRange");
+            const chartWrap   = document.getElementById("supplierDateChartWrap");
+            const tableWrap   = document.getElementById("supplierDateTableWrap");
+            const btnChart    = document.getElementById("supplierDateShowChart");
+            const btnTable    = document.getElementById("supplierDateShowTable");
+
+            const nf = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 });
+
+            function getData() {
+                const n = parseInt(rangeSelect.value);
+                return n > 0 ? allData.slice(-n) : allData;
+            }
+
+            function buildDatasets(data) {
+                return {
+                    labels: data.map(x => x.date),
+                    datasets: [
+                        {
+                            type: "bar",
+                            label: "Onaylanan (kg)",
+                            data: data.map(x => x.approved),
+                            backgroundColor: "#2e9e6b",
+                            stack: "miktar",
+                            yAxisID: "y"
+                        },
+                        {
+                            type: "bar",
+                            label: "Reddedilen (kg)",
+                            data: data.map(x => x.rejected),
+                            backgroundColor: "#d9534f",
+                            stack: "miktar",
+                            yAxisID: "y"
+                        },
+                        {
+                            type: "bar",
+                            label: "İade (kg)",
+                            data: data.map(x => x.returned),
+                            backgroundColor: "#f0ad4e",
+                            stack: "miktar",
+                            yAxisID: "y"
+                        },
+                        {
+                            type: "line",
+                            label: "Kesinti %",
+                            data: data.map(x => x.rate),
+                            borderColor: "#3b4a6b",
+                            backgroundColor: "#3b4a6b",
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            yAxisID: "y1"
+                        }
+                    ]
+                };
+            }
+
+            const chart = new Chart(canvas, {
+                data: buildDatasets(getData()),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: "index", intersect: false },
+                    plugins: {
+                        legend: { position: "top" },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    const v = ctx.parsed.y;
+                                    return ctx.dataset.yAxisID === "y1"
+                                        ? ` ${ctx.dataset.label}: %${v.toFixed(2)}`
+                                        : ` ${ctx.dataset.label}: ${nf.format(v)}`;
+                                },
+                                // Tooltip altına toplam / net miktar bilgisi
+                                afterBody: function (items) {
+                                    const d = getData()[items[0].dataIndex];
+                                    return [
+                                        "",
+                                        `Toplam: ${nf.format(d.total)} kg`,
+                                        `Net: ${nf.format(d.net)} kg`,
+                                        `Toplam Kesinti: ${nf.format(d.deduction)} kg`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: { display: true, text: "Miktar (kg)" },
+                            ticks: { callback: v => nf.format(v) }
+                        },
+                        y1: {
+                            position: "right",
+                            beginAtZero: true,
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: "Kesinti %" },
+                            ticks: { callback: v => "%" + v }
+                        }
+                    }
+                }
+            });
+
+            // Aralık değişince grafiği yenile
+            rangeSelect.addEventListener("change", function () {
+                chart.data = buildDatasets(getData());
+                chart.update();
+            });
+
+            // Grafik / Tablo geçişi
+            function showChart() {
+                chartWrap.style.display = "";
+                tableWrap.style.display = "none";
+                btnChart.className = "btn btn-primary";
+                btnTable.className = "btn btn-outline-primary";
+                chart.resize();
+            }
+
+            function showTable() {
+                chartWrap.style.display = "none";
+                tableWrap.style.display = "";
+                btnChart.className = "btn btn-outline-primary";
+                btnTable.className = "btn btn-primary";
+            }
+
+            btnChart.addEventListener("click", showChart);
+            btnTable.addEventListener("click", showTable);
+        });
+    </script>
+}

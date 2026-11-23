@@ -28,6 +28,8 @@ namespace DataAccsessLayer.Concrete.Repository
             return await _context.Db_ShipmentOrderPlan
                 .Include(x => x.Department)
                 .Include(x => x.AppUser)
+                .Include(x => x.Shift)
+                .Include(x => x.DailyShipmentPlan)
                 .Where(x => x.PlanDate == today)
                 .OrderByDescending(x => x.RecId)
                 .ToListAsync();

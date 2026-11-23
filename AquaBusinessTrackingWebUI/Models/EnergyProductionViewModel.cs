@@ -6,6 +6,7 @@ public class EnergyProductionViewModel
     public List<AdminDahboardDaysStock> Remaning { get; set; } = new();
     public List<CumulativeElectricityConsumptionDto> Electric { get; set; } = new();
 
+
     public decimal TotalElectricity => Electric.Sum(x => x.Consumption);
     public decimal TotalProduction => Remaning.Sum(x => x.Production);
     public decimal KwhPerkg => TotalProduction > 0

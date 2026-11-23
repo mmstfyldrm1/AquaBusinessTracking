@@ -7,5 +7,8 @@ namespace BusinessLayer.Abstract
         public Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetWithDetails();
 
         public Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetPreviousDay();
+        public Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetLast30DaysBoilerConsumable();
+
+        public Task<List<BoilerSteamFeedWaterCondensateDataDto>> GetWithSearchDetails(DateTime StartDate, DateTime EndDate);
     }
 }

@@ -199,6 +199,7 @@
                     @if (Model.IsEdit)
                     {
                         <input type="hidden" asp-for="Entity.Plan.RecId" />
+                        <input type="hidden" asp-for="Entity.Plan.DailyShipmentPlanId" />
                     }
 
                     <h6 class="text-muted mb-3">Plan Bilgileri</h6>
@@ -218,6 +219,16 @@
                                 <option value="">Cari Seçiniz</option>
                             </select>
                             <input type="hidden" asp-for="Entity.Plan.CurrentAccountName" id="hdnCompanyName" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Sevkiyat Planı</label>
+                            <select asp-for="Entity.Plan.DailyShipmentPlanId"
+                                    asp-items="ViewBag.Plans"
+                                    class="form-select"
+                                    >
+                                <option value="">Sevkiyat Planı Seçiniz</option>
+                            </select>
                         </div>
 
                         <div class="col-md-3">
@@ -244,7 +255,7 @@
                                 <option value="1">Onaylandı</option>
                                 <option value="2">Sevk Edildi</option>
                             </select>
-                            <div class="form-text">Durum kodlarını kendi iş kuralınıza göre güncelleyin.</div>
+                            
                         </div>
 
                         <div class="col-md-3">

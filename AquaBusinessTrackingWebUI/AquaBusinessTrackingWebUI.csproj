@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\" />
     <Folder Include="wwwroot\img\ProfilPhotos\" />
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>

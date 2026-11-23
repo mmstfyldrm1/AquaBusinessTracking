@@ -49,6 +49,18 @@ namespace AquaBusinessTrackingWebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetWithSearchDetails([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        {
+            _logger.LogInformation(
+                "Kazan Buhar/Besleme Suyu/Kondens detayları istendi. User={User}",
+                User?.Identity?.Name);
+
+            var result = await _boilerSteamFeedWaterCondensateDataService.GetWithSearchDetails(StartDate, EndDate);
+
+            return Ok(result);
+        }
+
         [HttpGet("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {

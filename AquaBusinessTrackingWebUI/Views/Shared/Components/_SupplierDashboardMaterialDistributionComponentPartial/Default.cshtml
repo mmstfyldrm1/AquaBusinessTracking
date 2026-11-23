@@ -1,0 +1,378 @@
+﻿@using DTOLayer.Dtos.SentezProductionDtos
+@model SentezIntegrationsResponsoDto<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardMaterialDistributionDto>
+
+@{
+    var items = (Model?.Data ?? Enumerable.Empty<DTOLayer.Dtos.SupplierDashboardDtos.SupplierDashboardMaterialDistributionDto>())
+        .OrderBy(x => x.SupplierName)
+        .ThenByDescending(x => x.TotalQuantity)
+        .ToList();
+
+    // JS tarafına sadece gereken alanları gönderiyoruz
+    var chartData = items.Select(x => new
+    {
+        supplier = x.SupplierName,
+        code = x.InventoryCode,
+        material = x.InventoryName,
+        total = x.TotalQuantity,
+        net = x.NetQuantity,
+        approved = x.ApprovedQuantity,
+        rejected = x.RejectedQuantity,
+        pct = x.Percentage
+    });
+}
+
+<br />
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <h5 class="mb-0">Hammadde Dağılımı</h5>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+            <span class="text-muted small">
+                Kayıt: <strong id="materialTotalRecords">@items.Count</strong>
+            </span>
+
+            <select id="materialMetric" class="form-select form-select-sm" style="width: 150px;" aria-label="Ölçü">
+                <option value="total" selected>Toplam Miktar</option>
+                <option value="net">Net Miktar</option>
+                <option value="approved">Onaylanan</option>
+                <option value="rejected">Reddedilen</option>
+            </select>
+
+            <select id="materialTopN" class="form-select form-select-sm" style="width: 120px;" aria-label="Tedarikçi sayısı">
+                <option value="5">İlk 5</option>
+                <option value="10" selected>İlk 10</option>
+                <option value="20">İlk 20</option>
+                <option value="0">Tümü</option>
+            </select>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Görünüm">
+                <button type="button" class="btn btn-primary" id="materialShowMaterial">Hammadde</button>
+                <button type="button" class="btn btn-outline-primary" id="materialShowSupplier">Tedarikçi</button>
+                <button type="button" class="btn btn-outline-primary" id="materialShowTable">Tablo</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        @if (items.Count == 0)
+        {
+            <div class="text-center text-muted py-4">Veri bulunamadı.</div>
+        }
+        else
+        {
+            <!-- GRAFİK -->
+            <div id="materialChartWrap" style="position: relative; height: 380px;">
+                <canvas id="materialChart"></canvas>
+            </div>
+
+            <!-- TABLO (yedek görünüm) -->
+            <div id="materialTableWrap" class="table-responsive" style="display:none; max-height: 420px; overflow-y:auto;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th>Tedarikçi</th>
+                            <th>Stok Kodu</th>
+                            <th>Hammadde</th>
+                            <th>Toplam Miktar</th>
+                            <th>Net Miktar</th>
+                            <th>Onaylanan</th>
+                            <th>Reddedilen</th>
+                            <th>Oran</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items)
+                        {
+                            <tr>
+                                <td><strong>@item.SupplierName</strong></td>
+                                <td>@item.InventoryCode</td>
+                                <td>@item.InventoryName</td>
+                                <td>@item.TotalQuantity.ToString("N0") kg</td>
+                                <td>@item.NetQuantity.ToString("N0") kg</td>
+                                <td>@item.ApprovedQuantity.ToString("N0") kg</td>
+                                <td>@item.RejectedQuantity.ToString("N0") kg</td>
+                                <td>%@item.Percentage.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@if (items.Count > 0)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const allData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
+
+            const canvas       = document.getElementById("materialChart");
+            const metricSelect = document.getElementById("materialMetric");
+            const topSelect    = document.getElementById("materialTopN");
+            const chartWrap    = document.getElementById("materialChartWrap");
+            const tableWrap    = document.getElementById("materialTableWrap");
+            const btnMaterial  = document.getElementById("materialShowMaterial");
+            const btnSupplier  = document.getElementById("materialShowSupplier");
+            const btnTable     = document.getElementById("materialShowTable");
+
+            const nf = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 });
+
+            // Kağıt hurdası / mukavva gibi kalemler çok olabilir: ilk 8 kalem + "Diğer"
+            const MAX_MATERIALS = 8;
+            const OTHER_KEY = "__other";
+            const palette = [
+                "#8c6d46", "#3b4a6b", "#2e9e6b", "#d9a441", "#4a9fd8",
+                "#b5543f", "#7a8f9e", "#9b6fb0"
+            ];
+            const otherColor = "#adb5bd";
+
+            let currentView = "material"; // material | supplier
+            let chart = null;
+
+            // Seçili ölçüye göre hammadde gruplarını (ilk 8 + Diğer) hesaplar
+            function buildGroups() {
+
+                const key = metricSelect.value;
+                const map = new Map();
+
+                allData.forEach(function (r) {
+                    const k = r.code || r.material;
+                    if (!map.has(k)) {
+                        map.set(k, { key: k, label: r.material, value: 0 });
+                    }
+                    map.get(k).value += r[key];
+                });
+
+                const ranking = Array.from(map.values()).sort((a, b) => b.value - a.value);
+                const top = ranking.slice(0, MAX_MATERIALS);
+                const rest = ranking.slice(MAX_MATERIALS);
+
+                const groups = top.map((m, i) => ({ key: m.key, label: m.label, color: palette[i] }));
+
+                if (rest.length > 0) {
+                    groups.push({ key: OTHER_KEY, label: `Diğer (${rest.length} kalem)`, color: otherColor });
+                }
+
+                const topKeys = new Set(top.map(m => m.key));
+
+                return {
+                    groups: groups,
+                    groupOf: function (r) {
+                        const k = r.code || r.material;
+                        return topKeys.has(k) ? k : OTHER_KEY;
+                    }
+                };
+            }
+
+            // Doughnut ortasına toplam yazan küçük eklenti
+            function centerPlugin(totalText) {
+                return {
+                    id: "centerText",
+                    afterDraw: function (c) {
+                        const meta = c.getDatasetMeta(0);
+                        if (!meta || !meta.data.length) { return; }
+                        const x = meta.data[0].x;
+                        const y = meta.data[0].y;
+                        const ctx = c.ctx;
+                        const color = getComputedStyle(document.body).color;
+                        ctx.save();
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = color;
+                        ctx.font = "600 20px sans-serif";
+                        ctx.fillText(totalText, x, y - 8);
+                        ctx.font = "12px sans-serif";
+                        ctx.globalAlpha = 0.7;
+                        ctx.fillText("kg toplam", x, y + 14);
+                        ctx.restore();
+                    }
+                };
+            }
+
+            function renderMaterial() {
+
+                const key = metricSelect.value;
+                const g = buildGroups();
+
+                // Her grup için seçili ölçü + onaylanan/reddedilen toplamları
+                const sums = {};
+                g.groups.forEach(x => sums[x.key] = { value: 0, approved: 0, rejected: 0 });
+
+                allData.forEach(function (r) {
+                    const s = sums[g.groupOf(r)];
+                    s.value += r[key];
+                    s.approved += r.approved;
+                    s.rejected += r.rejected;
+                });
+
+                const visible = g.groups.filter(x => sums[x.key].value > 0);
+                const values  = visible.map(x => sums[x.key].value);
+                const total   = values.reduce((a, b) => a + b, 0);
+
+                chartWrap.style.height = "380px";
+
+                chart = new Chart(canvas, {
+                    type: "doughnut",
+                    data: {
+                        labels: visible.map(x => x.label),
+                        datasets: [{
+                            data: values,
+                            backgroundColor: visible.map(x => x.color),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: "62%",
+                        plugins: {
+                            legend: { position: "right" },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (ctx) {
+                                        const v = ctx.parsed;
+                                        const pct = total > 0 ? (v / total * 100).toFixed(1) : "0";
+                                        return ` ${ctx.label}: ${nf.format(v)} kg (%${pct})`;
+                                    },
+                                    afterLabel: function (ctx) {
+                                        const s = sums[visible[ctx.dataIndex].key];
+                                        return [
+                                            `Onaylanan: ${nf.format(s.approved)} kg`,
+                                            `Reddedilen: ${nf.format(s.rejected)} kg`
+                                        ];
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    plugins: [centerPlugin(nf.format(total))]
+                });
+            }
+
+            function renderSupplier() {
+
+                const key = metricSelect.value;
+                const g = buildGroups();
+
+                // Tedarikçi -> grup bazında toplamlar
+                const suppliers = new Map();
+
+                allData.forEach(function (r) {
+                    if (!suppliers.has(r.supplier)) {
+                        suppliers.set(r.supplier, { name: r.supplier, value: 0, byGroup: {} });
+                    }
+                    const s = suppliers.get(r.supplier);
+                    const gk = g.groupOf(r);
+                    s.byGroup[gk] = (s.byGroup[gk] || 0) + r[key];
+                    s.value += r[key];
+                });
+
+                let list = Array.from(suppliers.values()).sort((a, b) => b.value - a.value);
+                const n = parseInt(topSelect.value);
+                if (n > 0) { list = list.slice(0, n); }
+
+                chartWrap.style.height = Math.max(260, list.length * 34 + 110) + "px";
+
+                chart = new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: list.map(s => s.name),
+                        datasets: g.groups.map(x => ({
+                            label: x.label,
+                            data: list.map(s => s.byGroup[x.key] || 0),
+                            backgroundColor: x.color,
+                            stack: "hammadde"
+                        }))
+                    },
+                    options: {
+                        indexAxis: "y", // yatay çubuk: uzun tedarikçi adları okunur kalır
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: "index", intersect: false },
+                        plugins: {
+                            legend: { position: "top" },
+                            tooltip: {
+                                // Değeri 0 olan kalemleri tooltip'te gösterme
+                                filter: ctx => ctx.parsed.x > 0,
+                                callbacks: {
+                                    label: ctx => ` ${ctx.dataset.label}: ${nf.format(ctx.parsed.x)} kg`,
+                                    afterBody: function (items) {
+                                        const s = list[items[0].dataIndex];
+                                        return ["", `Tedarikçi toplamı: ${nf.format(s.value)} kg`];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                beginAtZero: true,
+                                title: { display: true, text: "Miktar (kg)" },
+                                ticks: { callback: v => nf.format(v) }
+                            },
+                            y: { stacked: true, grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            function render() {
+                if (chart) { chart.destroy(); }
+                topSelect.disabled = currentView !== "supplier";
+                if (currentView === "material") { renderMaterial(); } else { renderSupplier(); }
+            }
+
+            function setActive(active) {
+                [[btnMaterial, "material"], [btnSupplier, "supplier"], [btnTable, "table"]].forEach(function (p) {
+                    p[0].className = p[1] === active ? "btn btn-primary" : "btn btn-outline-primary";
+                });
+            }
+
+            function showView(view) {
+
+                setActive(view);
+
+                if (view === "table") {
+                    chartWrap.style.display = "none";
+                    tableWrap.style.display = "";
+                    topSelect.disabled = true;
+                    metricSelect.disabled = true;
+                    return;
+                }
+
+                currentView = view;
+                metricSelect.disabled = false;
+                tableWrap.style.display = "none";
+                chartWrap.style.display = "";
+                render();
+            }
+
+            metricSelect.addEventListener("change", function () {
+                if (chartWrap.style.display !== "none") { render(); }
+            });
+
+            topSelect.addEventListener("change", function () {
+                if (chartWrap.style.display !== "none") { render(); }
+            });
+
+            btnMaterial.addEventListener("click", function () { showView("material"); });
+            btnSupplier.addEventListener("click", function () { showView("supplier"); });
+            btnTable.addEventListener("click", function () { showView("table"); });
+
+            render();
+        });
+    </script>
+}

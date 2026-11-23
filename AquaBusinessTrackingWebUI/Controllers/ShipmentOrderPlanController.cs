@@ -1,5 +1,6 @@
 ﻿using AquaBusinessTrackingWebUI.Models;
 using AquaBusinessTrackingWebUI.Services;
+using DTOLayer.Dtos.DailyShipmentPlanDtos;
 using DTOLayer.Dtos.ShiftDtos;
 using DTOLayer.Dtos.ShipmentOrderPlan;
 using DTOLayer.Dtos.ShipmentOrderPlanDtos.ShipmentOrderPlanDetailDtos;
@@ -17,8 +18,6 @@ namespace AquaBusinessTrackingWebUI.Controllers
     {
         public ShipmentOrderPlanDto Plan { get; set; } = new ShipmentOrderPlanDto();
         public List<ShipmentOrderPlanDetailDto> Details { get; set; } = new List<ShipmentOrderPlanDetailDto>();
-
-
         public List<int> DeletedDetailIds { get; set; } = new List<int>();
     }
     public class ShipmentOrderPlanListItemVm
@@ -91,6 +90,33 @@ namespace AquaBusinessTrackingWebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var vm = new ShipmentOrderPlanEditVm();
             await LoadShiftListAsync();
+            var user = HttpContext.User;
+            var token = Request.Cookies["AuthToken"];
+            var currentUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var responsePlan = await client.GetAsync($"{_apiSettings.BaseUrl}/DailyShipmentPlan/getActivePlan");
+
+            if (!responsePlan.IsSuccessStatusCode)
+                return RedirectToAction("GetLogisticsTrackingReportList");
+
+            var jsonPlan = await responsePlan.Content.ReadAsStringAsync();
+            var dtoPlan = JsonConvert.DeserializeObject<List<DailyShipmentPlanDto>>(jsonPlan);
+
+            if (dtoPlan == null || !responsePlan.IsSuccessStatusCode)
+            {
+                var errorMessage = await responsePlan.Content.ReadAsStringAsync();
+                return Json("Önce Plan Girişi Yapmanız Gerekmekedir");
+            }
+
+            var plans = dtoPlan?.Select(x => new SelectListItem
+            {
+                Value = x.RecId.ToString(),
+                Text = x.ShipmentNo.ToString(),
+            })
+                 .ToList() ?? new();
+
+            ViewBag.Plans = plans;
             ViewBag.AppUserName = User.Identity?.Name;
             if (id.HasValue)
             {
@@ -112,8 +138,8 @@ namespace AquaBusinessTrackingWebUI.Controllers
                 if (detailResponse.IsSuccessStatusCode)
                 {
                     var detailJson = await detailResponse.Content.ReadAsStringAsync();
-                    vm.Details = JsonConvert.DeserializeObject<List<ShipmentOrderPlanDetailDto>>(detailJson)
-                                 ?? new List<ShipmentOrderPlanDetailDto>();
+                    vm.Details = JsonConvert.DeserializeObject<List<ShipmentOrderPlanDetailDto>>(detailJson) ?? new List<ShipmentOrderPlanDetailDto>();
+
                 }
 
                 var model = new ModalViewModel<ShipmentOrderPlanEditVm>
@@ -153,9 +179,10 @@ namespace AquaBusinessTrackingWebUI.Controllers
             vm.Plan.DepartmentId = int.Parse(User.FindFirst("DepartmentId")?.Value);
             vm.Plan.AppUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-
             var planJson = JsonConvert.SerializeObject(vm.Plan);
             var planContent = new StringContent(planJson, Encoding.UTF8, "application/json");
+
+
 
             if (vm.Plan.RecId != null && vm.Plan.RecId > 0)
             {
@@ -171,7 +198,6 @@ namespace AquaBusinessTrackingWebUI.Controllers
 
                 if (planId == 0)
                 {
-
                     return Json(new { success = false, message = "Plan oluşturuldu fakat RecId alınamadı. API'nin Add metodunu güncelleyin." });
                 }
             }

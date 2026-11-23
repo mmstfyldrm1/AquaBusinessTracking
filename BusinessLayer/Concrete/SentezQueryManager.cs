@@ -113,8 +113,6 @@ namespace BusinessLayer.Concrete
             var query = BuildStockByInventoryCodeAndWidthCM(inventoryCode, WidthCM);
             return await _service.ExecuteQueryAsync<SentezIntegrationsGetStockByInventoryCode>(query);
         }
-
-
         public async Task<SentezIntegrationsResponsoDto<SentezProductionDto>?> GetRawMaterielsPreviousDayStockAsync()
         {
             var query = BuildRawMaterielsPreviousDayStockQuery();
@@ -126,7 +124,6 @@ namespace BusinessLayer.Concrete
             var query = BuildRawMaterielsStockQuery();
             return await _service.ExecuteQueryAsync<SentezProductionDto>(query);
         }
-
 
         private string BuildRawMaterielsStockQuery()
         {
@@ -351,44 +348,34 @@ namespace BusinessLayer.Concrete
 
         private string BuildLast7DaysProductionQuery(DateTime startDate, DateTime endDate)
         {
+            // yyyyMMdd biçimi SQL Server'da kültürden bağımsız okunur
+            string startDateStr = startDate.Date.ToString("yyyyMMdd");
+            string endExclusiveStr = endDate.Date.AddDays(1).ToString("yyyyMMdd");
+
             var sb = new StringBuilder();
 
-            int DateCount = (endDate - startDate).Days;
+            sb.AppendLine("select");
+            sb.AppendLine("    cast(ir.ReceiptDate as date) [Date]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType > 100 then ist.Quantity else 0 end) [Consumable]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType < 100 then ist.Quantity else 0 end) [Production]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType < 100 then ist.Quantity else 0 end)");
+            sb.AppendLine("     - sum(case when ir.ReceiptType > 100 then ist.Quantity else 0 end) [Remaning]");
+            sb.AppendLine("from Erp_InventorySerialTransaction ist with(nolock)");
+            sb.AppendLine("inner join Erp_InventorySerialCard isc with(nolock) on isc.RecId = ist.SerialCardId");
+            sb.AppendLine("inner join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
+            sb.AppendLine("inner join Erp_InventoryReceiptItem iri with(nolock) on iri.RecId = ist.ReceiptItemId");
+            sb.AppendLine("inner join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine("where isc.CompanyId = 22");
+            sb.AppendLine("  and i.InventoryCode like '9%'");
+            sb.AppendLine("  and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine("  and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine("  and isnull(ir.IsTransportReceipt,0) = 0");
+            sb.AppendLine("  and ir.ReceiptType in (10,18,130,132)");
+            sb.AppendLine("  and ir.ReceiptDate >= '" + startDateStr + "'");
+            sb.AppendLine("  and ir.ReceiptDate <  '" + endExclusiveStr + "'");
+            sb.AppendLine("group by cast(ir.ReceiptDate as date)");
+            sb.AppendLine("order by cast(ir.ReceiptDate as date)");
 
-            string startDateStr = startDate.ToString("yyyyMMdd");
-            string endDateStr = endDate.ToString("yyyyMMdd");
-
-            sb.AppendLine($"select ");
-            sb.AppendLine($"isnull(ir.ReceiptDate,'-') [Date]");
-            sb.AppendLine($",sum(case when ir.ReceiptType > 100 then (ist.Quantity) else 0 end) [Consumable]");
-            sb.AppendLine($",sum(case When ir.ReceiptType < 100 then (ist.Quantity) else 0 end) [Production]");
-            sb.AppendLine($",sum(case When ir.ReceiptType < 100 then (ist.Quantity) else 0 end)-sum(case when ir.ReceiptType > 100 then (ist.Quantity) else 0 end) [Remaning]");
-            sb.AppendLine($"");
-            sb.AppendLine($"from Erp_InventorySerialTransaction ist with(nolock)");
-            sb.AppendLine($"");
-            sb.AppendLine($"left join Erp_InventorySerialCard isc with(nolock) on isc.RecId = ist.SerialCardId");
-            sb.AppendLine($"left join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
-            sb.AppendLine($"left join Erp_InventoryReceiptItem iri with(nolock) on iri.RecId = ist.ReceiptItemId");
-            sb.AppendLine($"left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
-            sb.AppendLine($"");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 223 and isnull(CodeValue,'') = isnull(i.UD_InventoryGroup,'')) grupkodu");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 219 and isnull(CodeValue,'') = isnull(i.UD_Gramaj,'')) gramaj");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 222 and isnull(CodeValue,'') = isnull(i.UD_Dimensions,'')) en");
-            sb.AppendLine($"");
-            sb.AppendLine($"");
-            sb.AppendLine($"where isc.CompanyId = 22");
-            sb.AppendLine($"and i.InventoryCode like '9%'");
-            sb.AppendLine($"and isnull(ir.IsCancelled,0 ) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
-            sb.AppendLine($"and ISNULL(ir.IsTransportReceipt,0)=0");
-            sb.AppendLine($"and ir.ReceiptType in (10,18,130,132) --and ir.DocumentNo is null");
-            sb.AppendLine($"  AND ir.ReceiptDate >= '{startDateStr}'");
-            sb.AppendLine($"  AND ir.ReceiptDate < DATEADD(DAY, 1, '{endDateStr}')");
-            sb.AppendLine($"and cast(ir.ReceiptDate as date) >= cast(DATEADD(day,-{DateCount}, GETDATE()) as date) -- tarih");
-            sb.AppendLine($"");
-            sb.AppendLine($"group by ir.ReceiptDate ");
-            sb.AppendLine($"");
-            sb.AppendLine($"order by ir.ReceiptDate ");
             return sb.ToString();
         }
 
@@ -429,12 +416,13 @@ namespace BusinessLayer.Concrete
             sb.AppendLine("        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
             sb.AppendLine("            ON iss.RecId = iri.InventoryId");
 
-            sb.AppendLine("        WHERE ir.CompanyId = 44");
+            sb.AppendLine($"        WHERE ir.CompanyId = 22");
             sb.AppendLine("          AND ISNULL(ir.IsCancelled, 0) = 0");
             sb.AppendLine("          AND ISNULL(ir.IsApproved, 1) = 1");
             sb.AppendLine("          AND ISNULL(iri.IsCancelled, 0) = 0");
             sb.AppendLine("          AND ISNULL(iri.IsApproved, 1) = 1");
             sb.AppendLine("          AND ISNULL(ir.IsTransportReceipt, 0) = 0");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21915)");
             sb.AppendLine("          AND ir.ReceiptType = 120");
 
             // Tarih filtresi
@@ -461,12 +449,13 @@ namespace BusinessLayer.Concrete
             sb.AppendLine("        INNER JOIN Erp_Inventory iss WITH(NOLOCK)");
             sb.AppendLine("            ON iss.RecId = iri.InventoryId");
 
-            sb.AppendLine("        WHERE ir.CompanyId = 44");
+            sb.AppendLine($"        WHERE ir.CompanyId  = 22");
             sb.AppendLine("          AND ISNULL(ir.IsCancelled, 0) = 0");
             sb.AppendLine("          AND ISNULL(ir.IsApproved, 1) = 1");
             sb.AppendLine("          AND ISNULL(iri.IsCancelled, 0) = 0");
             sb.AppendLine("          AND ISNULL(iri.IsApproved, 1) = 1");
             sb.AppendLine("          AND ISNULL(ir.IsTransportReceipt, 0) = 0");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21968)");
             sb.AppendLine("          AND ir.ReceiptType = 3");
 
             // Tarih filtresi
@@ -480,7 +469,7 @@ namespace BusinessLayer.Concrete
             sb.AppendLine("    ) YIADE");
 
             // Stok kartı
-            sb.AppendLine("    WHERE i.CompanyId = 44");
+            sb.AppendLine("    WHERE i.CompanyId = 22");
             sb.AppendLine("      AND i.InventoryCode LIKE '9%'");
 
             sb.AppendLine(") a");
@@ -496,40 +485,93 @@ namespace BusinessLayer.Concrete
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine($"select ");
-            sb.AppendLine($"isnull(ir.ReceiptDate,'-') [Date]");
-            sb.AppendLine($",sum(case when ir.ReceiptType > 100 then (ist.Quantity) else 0 end) [Consumable]");
-            sb.AppendLine($",sum(case When ir.ReceiptType < 100 then (ist.Quantity) else 0 end) [Production]");
-            sb.AppendLine($",sum(case When ir.ReceiptType < 100 then (ist.Quantity) else 0 end)-sum(case when ir.ReceiptType > 100 then (ist.Quantity) else 0 end) [Remaning]");
-            sb.AppendLine($"");
-            sb.AppendLine($"from Erp_InventorySerialTransaction ist with(nolock)");
-            sb.AppendLine($"");
-            sb.AppendLine($"left join Erp_InventorySerialCard isc with(nolock) on isc.RecId = ist.SerialCardId");
-            sb.AppendLine($"left join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
-            sb.AppendLine($"left join Erp_InventoryReceiptItem iri with(nolock) on iri.RecId = ist.ReceiptItemId");
-            sb.AppendLine($"left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
-            sb.AppendLine($"");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 223 and isnull(CodeValue,'') = isnull(i.UD_InventoryGroup,'')) grupkodu");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 219 and isnull(CodeValue,'') = isnull(i.UD_Gramaj,'')) gramaj");
-            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 222 and isnull(CodeValue,'') = isnull(i.UD_Dimensions,'')) en");
-            sb.AppendLine($"");
-            sb.AppendLine($"");
-            sb.AppendLine($"where isc.CompanyId = 22");
-            sb.AppendLine($"and i.InventoryCode like '9%'");
-            sb.AppendLine($"and isnull(ir.IsCancelled,0 ) = 0 and isnull(ir.IsApproved,1) = 1");
-            sb.AppendLine($"and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
-            sb.AppendLine($"and ISNULL(ir.IsTransportReceipt,0)=0");
-            sb.AppendLine($"and ir.ReceiptType in (10,18,130,132) --and ir.DocumentNo is null");
-            sb.AppendLine($"AND ir.ReceiptDate >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)");
-            sb.AppendLine($"AND ir.ReceiptDate < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))");
-            sb.AppendLine($"group by ir.ReceiptDate ");
-            sb.AppendLine($"order by ir.ReceiptDate ");
+            sb.AppendLine("select");
+            sb.AppendLine("    cast(ir.ReceiptDate as date) [Date]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType > 100 then ist.Quantity else 0 end) [Consumable]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType < 100 then ist.Quantity else 0 end) [Production]");
+            sb.AppendLine("    ,sum(case when ir.ReceiptType < 100 then ist.Quantity else 0 end)");
+            sb.AppendLine("     - sum(case when ir.ReceiptType > 100 then ist.Quantity else 0 end) [Remaning]");
+            sb.AppendLine("from Erp_InventorySerialTransaction ist with(nolock)");
+            sb.AppendLine("inner join Erp_InventorySerialCard isc with(nolock) on isc.RecId = ist.SerialCardId");
+            sb.AppendLine("inner join Erp_Inventory i with(nolock) on i.RecId = isc.InventoryId");
+            sb.AppendLine("inner join Erp_InventoryReceiptItem iri with(nolock) on iri.RecId = ist.ReceiptItemId");
+            sb.AppendLine("inner join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine("where isc.CompanyId = 22");
+            sb.AppendLine("  and i.InventoryCode like '9%'");
+            sb.AppendLine("  and isnull(ir.IsCancelled,0) = 0");
+            sb.AppendLine("  and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine("  and isnull(iri.IsCancelled,0) = 0");
+            sb.AppendLine("  and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine("  and isnull(ir.IsTransportReceipt,0) = 0");
+            sb.AppendLine("  and ir.ReceiptType in (10,18,130,132)");
+
+            // SON 30 GÜN (bugün dahil)
+            sb.AppendLine("  and ir.ReceiptDate >= DATEADD(DAY, -29, CAST(GETDATE() AS DATE))");
+            sb.AppendLine("  and ir.ReceiptDate <  DATEADD(DAY, 1, CAST(GETDATE() AS DATE))");
+
+            sb.AppendLine("group by cast(ir.ReceiptDate as date)");
+            sb.AppendLine("order by cast(ir.ReceiptDate as date)");
+
             return sb.ToString();
         }
 
         private string BuildSalesQuery()
         {
             var sb = new StringBuilder();
+            sb.AppendLine($"select ");
+            sb.AppendLine($"a.Explanation as [PapperType]");
+            sb.AppendLine($",sum(a.Satıs) as [Sales]");
+            sb.AppendLine($",SUM(a.İade) as [Return]");
+            sb.AppendLine($",SUM(a.Stok) as [Stock]");
+            sb.AppendLine($"from (");
+            sb.AppendLine($"select");
+            sb.AppendLine($"'Yıllık' Tip");
+            sb.AppendLine($",4 Type");
+            sb.AppendLine($",CONVERT(VARCHAR, DATEADD(YEAR, DATEDIFF(YEAR, 0, GETDATE() - 1), 0), 104) +' - '+ CONVERT(VARCHAR, GETDATE() - 1, 104) Tarih");
+            sb.AppendLine($",grupkodu.Explanation ");
+            sb.AppendLine($",isnull(YSATİS.Quantity,0) Satıs");
+            sb.AppendLine($",isnull(YİADE.Quantity,0) İade");
+            sb.AppendLine($",isnull(YSATİS.Quantity,0)-isnull(YİADE.Quantity,0) Stok");
+            sb.AppendLine($"from  Erp_Inventory i with(nolock)");
+            sb.AppendLine($"outer apply (select top 1 Explanation from Meta_DataFieldValue where FieldId = 223 and isnull(CodeValue,'') = isnull(i.UD_InventoryGroup,'')) grupkodu");
+
+            // SATIŞ
+            sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
+            sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
+            sb.AppendLine($"	where ir.CompanyId in (22,44) and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (120)");
+            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'");
+            sb.AppendLine($"	AND ir.ReceiptDate < CAST(GETDATE() AS DATE)");
+            sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21915)"); // 22 -> 44 şirketler arası satışı hariç tut
+            sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
+            sb.AppendLine($") YSATİS");
+
+            // İADE
+            sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
+            sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
+            sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
+            sb.AppendLine($"	where ir.CompanyId in (22,44) and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
+            sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (3)");
+            sb.AppendLine($"	AND ir.ReceiptDate >= '2025-01-01'");
+            sb.AppendLine($"	AND ir.ReceiptDate < CAST(GETDATE() AS DATE)");
+            sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21968)"); // 44'ün 22'ye yaptığı iadeyi de hariç tut
+            sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
+            sb.AppendLine($") YİADE");
+
+            sb.AppendLine($"where i.CompanyId = 44 and i.InventoryCode like '9%'");
+            sb.AppendLine($"group by  grupkodu.Explanation ,isnull(YSATİS.Quantity,0),isnull(YİADE.Quantity,0),isnull(YSATİS.Quantity,0)-isnull(YİADE.Quantity,0)");
+            sb.AppendLine($")a");
+            sb.AppendLine($"group by a.Explanation");
+            sb.AppendLine($"having sum(a.Stok) != 0");
+
+            return sb.ToString();
+
+            /*
 
             sb.AppendLine($"select ");
             sb.AppendLine($"");
@@ -592,8 +634,9 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"group by a.Explanation");
             sb.AppendLine($"having sum(a.Stok) != 0");
             sb.AppendLine($"");
+            */
 
-            return sb.ToString();
+
         }
 
         private string BuildSalesGetbyDateQuery(DateTime startDate, DateTime endDate)
@@ -637,12 +680,13 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"    left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"    left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
 
-            sb.AppendLine($"    where ir.CompanyId = 44");
+            sb.AppendLine($"    where ir.CompanyId = 22");
             sb.AppendLine($"    and isnull(ir.IsCancelled,0) = 0");
             sb.AppendLine($"    and isnull(ir.IsApproved,1) = 1");
             sb.AppendLine($"    and isnull(iri.IsCancelled,0) = 0");
             sb.AppendLine($"    and isnull(iri.IsApproved,1) = 1");
             sb.AppendLine($"    and ISNULL(ir.IsTransportReceipt,0)=0");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21915)");
             sb.AppendLine($"    and ir.ReceiptType in (120)");
 
             // TARİH
@@ -661,13 +705,14 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"    left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"    left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
 
-            sb.AppendLine($"    where ir.CompanyId = 44");
+            sb.AppendLine($"    where ir.CompanyId = 22");
             sb.AppendLine($"    and isnull(ir.IsCancelled,0) = 0");
             sb.AppendLine($"    and isnull(ir.IsApproved,1) = 1");
             sb.AppendLine($"    and isnull(iri.IsCancelled,0) = 0");
             sb.AppendLine($"    and isnull(iri.IsApproved,1) = 1");
             sb.AppendLine($"    and ISNULL(ir.IsTransportReceipt,0)=0");
             sb.AppendLine($"    and ir.ReceiptType in (3)");
+            sb.AppendLine($"	and not (ir.CompanyId = 22 and ir.CurrentAccountId = 21968)");
 
             // TARİH
             sb.AppendLine($"    and ir.ReceiptDate >= '{startDateStr}'");
@@ -678,7 +723,7 @@ namespace BusinessLayer.Concrete
 
             sb.AppendLine($") YİADE");
 
-            sb.AppendLine($"where i.CompanyId = 44");
+            sb.AppendLine($"where i.CompanyId = 22");
             sb.AppendLine($"and i.InventoryCode like '9%'");
 
             sb.AppendLine($"group by grupkodu.Explanation");
@@ -722,10 +767,11 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 44 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId = 22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
             sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (120)");
-            sb.AppendLine($"	AND convert(Date, ir.ReceiptDate)= convert(Date ,GETDATE() - 1)");
+            sb.AppendLine($"    AND ir.ReceiptDate >= DATEADD(DAY, -1, CONVERT(date, GETDATE()))");
+            sb.AppendLine($"    AND ir.ReceiptDate < CONVERT(date, GETDATE())");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
             sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
             sb.AppendLine($") YSATİS");
@@ -733,17 +779,18 @@ namespace BusinessLayer.Concrete
             sb.AppendLine($"outer apply (select sum(iri.Quantity) Quantity from Erp_InventoryReceiptItem iri with(nolock)");
             sb.AppendLine($"	left join Erp_InventoryReceipt ir with(nolock) on ir.RecId = iri.InventoryReceiptId");
             sb.AppendLine($"	left join Erp_Inventory iss with(nolock) on iss.RecId = iri.InventoryId");
-            sb.AppendLine($"	where ir.CompanyId = 44 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
+            sb.AppendLine($"	where ir.CompanyId =22 and isnull(ir.IsCancelled,0) = 0 and isnull(ir.IsApproved,1) = 1");
             sb.AppendLine($"	and isnull(iri.IsCancelled,0) = 0 and isnull(iri.IsApproved,1) = 1");
             sb.AppendLine($"	and ISNULL(ir.IsTransportReceipt,0)=0 and ir.ReceiptType in (3)");
-            sb.AppendLine($"	AND convert(Date, ir.ReceiptDate) = convert(Date ,GETDATE() - 1)");
+            sb.AppendLine($"    AND ir.ReceiptDate >= DATEADD(DAY, -1, CONVERT(date, GETDATE()))");
+            sb.AppendLine($"    AND ir.ReceiptDate < CONVERT(date, GETDATE())");
             sb.AppendLine($"	and ir.RecId not in (365137,354647,364242,364243,364874,365112,365336,365342,368546)");
             sb.AppendLine($"	and iss.InventoryCode=i.InventoryCode");
             sb.AppendLine($"");
             sb.AppendLine($") YİADE");
             sb.AppendLine($"");
             sb.AppendLine($"");
-            sb.AppendLine($"where i.CompanyId = 44 and i.InventoryCode like '9%' --and isc.SerialCode not like 'E%'");
+            sb.AppendLine($"where i.CompanyId =22 and i.InventoryCode like '9%' --and isc.SerialCode not like 'E%'");
             sb.AppendLine($"group by  grupkodu.Explanation ,isnull(YSATİS.Quantity,0),isnull(YİADE.Quantity,0),isnull(YSATİS.Quantity,0)-isnull(YİADE.Quantity,0)");
             sb.AppendLine($"");
             sb.AppendLine($")a");

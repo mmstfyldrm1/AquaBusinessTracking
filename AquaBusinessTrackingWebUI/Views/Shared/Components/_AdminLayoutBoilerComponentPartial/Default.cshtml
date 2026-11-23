@@ -1,0 +1,308 @@
+﻿@model BoilerProductionViewModel
+
+<style>
+    @@media (max-width: 600px) {
+        .kpi-row {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    @@media (max-width: 700px) {
+        .two-col {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .chart-wrap {
+            height: 180px;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .hide-xs {
+            display: none;
+        }
+
+        .e-table thead th,
+        .e-table tbody td {
+            padding: .5rem .75rem;
+        }
+    }
+
+    .card-title i {
+        margin-right: 8px;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 6px 12px;
+    }
+
+    .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+        border-radius: 8px;
+        padding: 1rem;
+    }
+
+    .kpi-lbl {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+    }
+
+    .kpi-val {
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.1;
+    }
+
+    .kpi-unit {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 2px;
+    }
+
+    .e-card {
+        border: 0.5px solid #e8e8e6;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 7px;
+        border-radius: 99px;
+    }
+
+    .pill-blue {
+        background: #E6F1FB;
+        color: #185FA5;
+    }
+
+    .pill-green {
+        background: #EAF3DE;
+        color: #3B6D11;
+    }
+</style>
+
+@{
+    var last7Days = Enumerable.Range(0, 7)
+        .Select(i => DateTime.Today.AddDays(-6 + i))
+        .ToList();
+
+    var chartLabels = last7Days
+        .Select(d => d.ToString("dd.MM"))
+        .ToList();
+
+    var chartProd = last7Days
+        .Select(d => Model.Remaning.FirstOrDefault(x => x.Date.Date == d.Date)?.Remaning ?? 0)
+        .ToList();
+
+    var chartBoil = last7Days
+        .Select(d => Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date)?.TotalBoiler ?? 0)
+        .ToList();
+
+    var chartBoilPerKg = last7Days
+        .Select(d =>
+        {
+            var s = Model.DailyStats.FirstOrDefault(x => x.Date.Date == d.Date);
+            return (s != null && s.BoilPerTons > 0) ? (double?)Math.Round((double)s.BoilPerTons, 3) : null;
+        })
+        .ToList();
+
+    DateTime StartDate = DateTime.Now;
+    DateTime EndDate = DateTime.Now.AddDays(-30);
+}
+
+<div class="page-section" id="buhar">
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-lbl">@(EndDate.ToString("dd-MM")) - @(StartDate.ToString("dd-MM")) Üretim </div>
+            <div class="kpi-val">@Model.TotalProduction.ToString("N2")</div>
+            <div class="kpi-unit">Kg</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-lbl">@(DateTime.Now.ToString("01.MM")) - @(DateTime.Now.ToString("dd.MM")) Buhar Tüketimi</div>
+            <div class="kpi-val">@Model.TotalBoil.ToString("N2")</div>
+            <div class="kpi-unit">kg</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-lbl">Kg Başına Buhar - Ton Başına Buhar </div>
+            <div class="kpi-val">@Model.BoilPerkg.ToString("N2") - @Model.BoilPerTons.ToString("N2")</div>
+            <div class="kpi-unit">kg Buhar / Kg - Ton</div>
+        </div>
+    </div>
+
+    <div class="e-card">
+        <div class="card-title p-3">
+            <i class="ti ti-flame"></i> Buhar Tüketimi (Son 7 Gün)
+        </div>
+        <div style="display:flex;gap:12px;padding:.75rem 1.25rem;font-size:12px;color:#888">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Üretim (kg)</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F09595;margin-right:4px"></span>Buhar (kg)</span>
+        </div>
+        <div class="chart-wrap">
+            <canvas id="boilerChart"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Buhar Tüketimi Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-flame"></i> Buhar Tüketimi (Son 7 Gün)
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Buhar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.DailyStats.OrderByDescending(x => x.Date).Take(7).OrderBy(x => x.Date))
+                            {
+                                <tr>
+                                    <td>@item.Date.ToString("dd.MM")</td>
+                                    <td class="">@item.TotalBoiler.ToString("N2") kg</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="">@Model.DailyStats.OrderByDescending(x => x.Date).Take(7).Sum(x => x.TotalBoiler).ToString("N2") kg</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7 Günlük Üretim Kartı -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-title p-3">
+                    <i class="ti ti-package"></i> 7 Günlük Üretim
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Üretim</th>
+                                <th>Kg Başına Buhar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Remaning.OrderByDescending(x => x.Date).Take(7).OrderBy(x => x.Date))
+                            {
+                                var daily = Model.DailyStats.FirstOrDefault(x => x.Date.Date == item.Date.Date);
+                                <tr>
+                                    <td>@item.Date.ToString("dd.MM")</td>
+                                    <td class="text-success">@item.Remaning.ToString("N2")</td>
+                                    <td>@((daily?.BoilPerTons ?? 0).ToString()) kg/kg</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td>Toplam</td>
+                                <td class="text-success">@Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Remaning).ToString("N2")</td>
+                                <td>
+                                    @{
+                                        var totalBoil = Model.DailyStats
+                                        .Where(x => Model.Remaning.Select(r => r.Date.Date).Contains(x.Date.Date))
+                                        .Sum(x => x.BoilPerTons * x.Production);
+                                        var totalProduction = Model.Remaning.OrderByDescending(x => x.Date).Take(7).Sum(x => x.Remaning);
+                                        var avgBoilPerKg = totalProduction > 0 ? (totalBoil / totalProduction) : 0;
+                                    }
+                                    @avgBoilPerKg.ToString("N2") kg/kg
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const labels = @Html.Raw(Json.Serialize(chartLabels));
+        const prodVal = @Html.Raw(Json.Serialize(chartProd));
+        const boilVal = @Html.Raw(Json.Serialize(chartBoil));
+        const boilPerKg = @Html.Raw(Json.Serialize(chartBoilPerKg));
+
+        const existing = Chart.getChart('boilerChart');
+        if (existing) existing.destroy();
+
+        new Chart(document.getElementById('boilerChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        type: 'bar',
+                        label: 'Üretim (kg)',
+                        data: prodVal,
+                        backgroundColor: 'rgba(55,138,221,0.75)',
+                        yAxisID: 'y',
+                        order: 3
+                    },
+                    {
+                        type: 'line',
+                        label: 'Buhar (kg)',
+                        data: boilVal,
+                        borderColor: '#E24B4A',
+                        backgroundColor: '#E24B4A',
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        order: 2
+                    },
+                    {
+                        type: 'line',
+                        label: 'kg Buhar / kg',
+                        data: boilPerKg,
+                        borderColor: '#1D9E75',
+                        backgroundColor: '#1D9E75',
+                        borderDash: [6, 4],
+                        tension: 0.3,
+                        spanGaps: true,
+                        yAxisID: 'y2',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: true } },
+                scales: {
+                    y:  { position: 'left',  beginAtZero: true, title: { display: true, text: 'kg' } },
+                    y1: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false },
+                          title: { display: true, text: 'kg Buhar' }, ticks: { color: '#E24B4A' } },
+                    y2: { position: 'right', grid: { drawOnChartArea: false },
+                          title: { display: true, text: 'kg Buhar / kg' }, ticks: { color: '#1D9E75' } }
+                }
+            }
+        });
+    });
+</script>

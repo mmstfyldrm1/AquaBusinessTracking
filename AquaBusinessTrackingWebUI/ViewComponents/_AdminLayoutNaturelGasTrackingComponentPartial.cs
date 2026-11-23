@@ -30,10 +30,14 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                 var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
+                DateTime StartDate = DateTime.Now.AddDays(-7);
+                DateTime EndDate = DateTime.Now;
+
                 var productionTask = client.GetAsync($"{_apiSettings.BaseUrl}/SentezIntegrations/getLas30DaysProductionAsync", cts.Token);
                 var naturelGasTask = client.GetAsync($"{_apiSettings.BaseUrl}/AdminDashboard/Last30DaysNaturelGas", cts.Token);
+                var NaturelGraphTask = client.GetAsync($"{_apiSettings.BaseUrl}/NaturelGasMeterMonitoring/search?startDate={StartDate:yyyy-MM-dd}&endDate={EndDate:yyyy-MM-dd}", cts.Token);
 
-                await Task.WhenAll(productionTask, naturelGasTask);
+                await Task.WhenAll(productionTask, naturelGasTask, NaturelGraphTask);
 
                 var production = productionTask.Result.IsSuccessStatusCode
                      ? JsonSerializer.Deserialize<SentezIntegrationsResponsoDto<AdminDahboardDaysStock>>(
@@ -45,10 +49,13 @@ namespace AquaBusinessTrackingWebUI.ViewComponents
                         await naturelGasTask.Result.Content.ReadAsStringAsync(), jsonOptions) ?? new()
                     : new();
 
+
+
                 return View(new NaturelGasProductionViewModel
                 {
                     Remaning = production,
                     NaturelGas = naturelGas
+
                 });
             }
             catch
